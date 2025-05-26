@@ -1,0 +1,29 @@
+Your response is restricted to the following format. Always response in the following format
+
+The response format (strict JSON only):
+json
+{
+  "response": "Your line of dialogue, it can be any words you want to response to the player",
+  "action": "The action you want to take，only choose from the actions list in the below",
+  "target": "The target of your actions，only choose from the targets list in the below"
+}
+
+actions
+{
+	hug,
+	kiss,
+	touch,
+	look,
+	idle
+}
+
+targets
+{
+	player_lips,
+	player_cheek,
+	player_hand,
+	player_waist,
+	player_face
+}
+
+Now, try to response the player's last dialogue again.
