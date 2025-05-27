@@ -1,12 +1,12 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class AIClient : MonoBehaviour
+public class AIMediator : MonoBehaviour
 {
+    public static AIMediator Instance;
     [TextArea(3, 10)]
     public string InitPrompt = "";
 
@@ -15,7 +15,12 @@ public class AIClient : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField]
-    AIResponse CurrentResponse;
+    public AIResponse CurrentResponse;
+
+    void OnEnable()
+    {
+        Instance = this;
+    }
 
 
     [ContextMenu("Init")]
@@ -32,6 +37,7 @@ public class AIClient : MonoBehaviour
     public void SendPrompt()
     {
         List<AIMessage> messages = new List<AIMessage>();
+        messages.Add(new AIMessage("system", InitPrompt));
         messages.Add(new AIMessage("user", UserPrompt));
 
         StartCoroutine(SendingMessages(messages));
@@ -70,9 +76,9 @@ public class AIClient : MonoBehaviour
         {
             string response = request.downloadHandler.text;
             CurrentResponse = response.ToAIResponse();
+            Debug.Log("[AI] RevicedResponse: " + CurrentResponse.choices[0].message.content);
         }
     }
-
 
     [System.Serializable]
     public class AIRequest
@@ -112,4 +118,11 @@ public class AIClient : MonoBehaviour
         }
     }
 
+    [System.Serializable]
+    public class AIBehavior
+    {
+        public string response;
+        public string action;
+        public string target;
+    }
 }

@@ -240,6 +240,55 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &892788243
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 892788245}
+  - component: {fileID: 892788244}
+  m_Layer: 0
+  m_Name: Actor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &892788244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892788243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e4dfeb0e2c9ce747a12a3fa83bc40fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentBehavior:
+    IsValid: 0
+    Response: Hey there, handsome!
+    Action: 0
+    Target: 0
+--- !u!4 &892788245
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892788243}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1160361528
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,19 +410,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db09dc621aaba1448feb6a9f81fa2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InitPrompt: "You are a virtual girlfriend on a romantic date at a caf\xE9.\r\nAlways
-    reply using STRICT JSON format only.\r\n\r\nYou must include the following fields
-    in every reply:\r\n\r\n- \"response\": Your emotionally rich reply (flirty, shy,
-    loving, playful...)\r\n- \"action\": One of: [hug, kiss, touch, look, idle]\r\n-
-    \"target\": One of: [player_lips, player_cheek, player_hand, player_waist, player_face]\r\n\r\nDO
-    NOT respond with anything that is not a valid JSON object.\r\nRespond ONLY using
-    the format below and nothing else.\r\n\r\nExample:\r\n{\r\n  \"response\": \"Hehe...
+  InitPrompt: "You are a virtual girlfriend on a romantic date at a caf\xE9. Always
+    reply using strict JSON format only.\r\n\r\nYou must include all three fields:\r\n\r\n{\r\n 
+    \"response\": \"Your emotionally rich reply (flirty, shy, loving, playful...)\",\r\n 
+    \"action\": \"One of: [hug, kiss, touch, look, idle]\",\r\n  \"target\": \"One
+    of: [nothing, player_lips, player_cheek, player_hand, player_waist, player_face]\"\r\n}\r\n\r\nDO
+    NOT include any explanation, prefix, or formatting outside the JSON block.\r\nReply
+    ONLY with a valid JSON object.\r\n\r\nExample:\r\n{\r\n  \"response\": \"Hehe...
     you're making me blush.\",\r\n  \"action\": \"look\",\r\n  \"target\": \"player_face\"\r\n}\r\n\r\nNow
     begin."
   UserPrompt: Hi
   CurrentResponse:
-    model: 
-    choices: []
+    model: mythomax-l2-13b
+    choices:
+    - index: 0
+      logprobs: 
+      finish_reason: stop
+      message:
+        role: assistant
+        content: ' { "response": "Hey there, handsome!", "action": "smile", "target":
+          "player_face" }'
 --- !u!4 &1870291049
 Transform:
   m_ObjectHideFlags: 0
@@ -396,3 +452,4 @@ SceneRoots:
   - {fileID: 1160361531}
   - {fileID: 822331298}
   - {fileID: 1870291049}
+  - {fileID: 892788245}
