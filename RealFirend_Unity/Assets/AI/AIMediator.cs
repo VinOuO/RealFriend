@@ -7,15 +7,22 @@ using UnityEngine.Networking;
 public class AIMediator : MonoBehaviour
 {
     public static AIMediator Instance;
+
+    [Header("Prompt")]
     [TextArea(3, 10)]
     public string InitPrompt = "";
-
     [TextArea(3, 10)]
     public string UserPrompt = "";
+    public List<string> ArousalHintPrompts;
+
+    [Header("Setting")]
+    [Range(0.3f, 2.0f)]
+    public float Temperature = 0.65f;
 
     [Header("Debug")]
     [SerializeField]
     public AIResponse CurrentResponse;
+    public float CurrentArousal;
 
     void OnEnable()
     {
@@ -37,10 +44,50 @@ public class AIMediator : MonoBehaviour
     public void SendPrompt()
     {
         List<AIMessage> messages = new List<AIMessage>();
+
         messages.Add(new AIMessage("system", InitPrompt));
         messages.Add(new AIMessage("user", UserPrompt));
+        string tmp;
+        if(GetArousalHintPrompt(out tmp) == Result.Success)
+        {
+            messages.Add(new AIMessage("user", tmp));
+        }
 
         StartCoroutine(SendingMessages(messages));
+    }
+
+    Result GetArousalHintPrompt(out string result)
+    {
+        if (ArousalHintPrompts.Count < 4)
+        {
+            result = "";
+            return Result.Failed;
+        }
+        if (!AIActor.Instance.CurrentBehavior.IsValid)
+        {
+            result = "";
+            return Result.Failed;
+        }
+        if(AIActor.Instance.CurrentBehavior.Arousal < 0.2f)
+        {
+            result = ArousalHintPrompts[0];
+            return Result.Success;
+        }
+        else if (AIActor.Instance.CurrentBehavior.Arousal < 0.2f)
+        {
+            result = ArousalHintPrompts[1];
+            return Result.Success;
+        }
+        else if (AIActor.Instance.CurrentBehavior.Arousal < 0.2f)
+        {
+            result = ArousalHintPrompts[2];
+            return Result.Success;
+        }
+        else 
+        {
+            result = ArousalHintPrompts[3];
+            return Result.Success;
+        }
     }
 
     IEnumerator SendingMessages(List<AIMessage> messages)
@@ -52,7 +99,7 @@ public class AIMediator : MonoBehaviour
             model = "mythomax-l2-13b.Q4_K_S.gguf",
             messages = messages,
             max_tokens = 200,
-            temperature = 0.9f
+            temperature = 0.65f
         });
 
         Debug.Log(jsonPayload);
@@ -124,5 +171,6 @@ public class AIMediator : MonoBehaviour
         public string response;
         public string action;
         public string target;
+        public string arousal;
     }
 }

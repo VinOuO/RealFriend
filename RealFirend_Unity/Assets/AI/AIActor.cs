@@ -1,5 +1,4 @@
 using UnityEngine;
-using static AIMediator;
 
 public class AIActor : MonoBehaviour
 {
@@ -7,7 +6,7 @@ public class AIActor : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField]
-    ActorBehavior CurrentBehavior;
+    public ActorBehavior CurrentBehavior;
 
     void OnEnable()
     {
@@ -35,6 +34,8 @@ public class AIActor : MonoBehaviour
         public string Response;
         public BehaviorAction Action;
         public BehaviorTarget Target;
+        [Range(0.0f, 1.0f)]
+        public float Arousal;
     }
 
     public enum BehaviorAction

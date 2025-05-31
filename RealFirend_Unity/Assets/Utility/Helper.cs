@@ -29,6 +29,7 @@ public static class AIExt
         object tmp;
         if(!Enum.TryParse(typeof(AIActor.BehaviorAction), value.action, out tmp))
         {
+            Debug.Log("1");
             result.IsValid = false;
         }
         else
@@ -36,13 +37,23 @@ public static class AIExt
             result.Action = (AIActor.BehaviorAction)tmp;
         }
 
-        if (!Enum.TryParse(typeof(AIActor.BehaviorAction), value.target, out tmp))
+        if (!Enum.TryParse(typeof(AIActor.BehaviorTarget), value.target, out tmp))
         {
             result.IsValid = false;
         }
         else
         {
             result.Target = (AIActor.BehaviorTarget)tmp;
+        }
+        int tmpArousal = 0;
+        if (!Int32.TryParse(value.arousal, out tmpArousal))
+        {
+            Debug.Log("3");
+            result.IsValid = false;
+        }
+        else
+        {
+            result.Arousal = ((float)tmpArousal)/100f;
         }
         result.Response = value.response;
 
