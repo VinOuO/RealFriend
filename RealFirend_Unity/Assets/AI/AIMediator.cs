@@ -8,6 +8,11 @@ public class AIMediator : MonoBehaviour
 {
     public static AIMediator Instance;
 
+    [Header("Setting")]
+    public string ModelName;
+    [Range(0.3f, 2.0f)]
+    public float Temperature = 0.65f;
+
     [Header("Prompt")]
     [TextArea(3, 10)]
     public string InitPrompt = "";
@@ -15,9 +20,6 @@ public class AIMediator : MonoBehaviour
     public string UserPrompt = "";
     public List<string> ArousalHintPrompts;
 
-    [Header("Setting")]
-    [Range(0.3f, 2.0f)]
-    public float Temperature = 0.65f;
 
     [Header("Debug")]
     [SerializeField]
@@ -96,10 +98,10 @@ public class AIMediator : MonoBehaviour
 
         string jsonPayload = JsonUtility.ToJson(new AIRequest
         {
-            model = "mythomax-l2-13b.Q4_K_S.gguf",
+            model = ModelName,
             messages = messages,
             max_tokens = 200,
-            temperature = 0.65f
+            temperature = Temperature
         });
 
         Debug.Log(jsonPayload);
@@ -170,6 +172,7 @@ public class AIMediator : MonoBehaviour
     {
         public string response;
         public string action;
+        public string scenario;
         public string target;
         public string arousal;
     }

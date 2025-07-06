@@ -32,6 +32,7 @@ public class AIActor : MonoBehaviour
     {
         public bool IsValid = true;
         public string Response;
+        public string Scenario;
         public BehaviorAction Action;
         public BehaviorTarget Target;
         [Range(0.0f, 1.0f)]

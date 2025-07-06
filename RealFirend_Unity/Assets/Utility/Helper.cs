@@ -29,7 +29,6 @@ public static class AIExt
         object tmp;
         if(!Enum.TryParse(typeof(AIActor.BehaviorAction), value.action, out tmp))
         {
-            Debug.Log("1");
             result.IsValid = false;
         }
         else
@@ -48,7 +47,6 @@ public static class AIExt
         int tmpArousal = 0;
         if (!Int32.TryParse(value.arousal, out tmpArousal))
         {
-            Debug.Log("3");
             result.IsValid = false;
         }
         else
@@ -56,7 +54,7 @@ public static class AIExt
             result.Arousal = ((float)tmpArousal)/100f;
         }
         result.Response = value.response;
-
+        result.Scenario = value.scenario;
         return result;
     }
 }
