@@ -58,3 +58,12 @@ public static class AIExt
         return result;
     }
 }
+
+
+public static class Vector3Ext
+{
+    public static Vector2 ToLevelPosition(this Vector3 self)
+    {
+        return new Vector2(self.x, self.z);
+    }
+}
