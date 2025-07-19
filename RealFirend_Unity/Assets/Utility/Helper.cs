@@ -1,7 +1,7 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using static AIMediator;
+using UniHumanoid;
 
 public static class AIExt
 {
@@ -62,8 +62,26 @@ public static class AIExt
 
 public static class Vector3Ext
 {
-    public static Vector2 ToLevelPosition(this Vector3 self)
+    public static Vector3 ToLevelPosition(this Vector3 self)
     {
-        return new Vector2(self.x, self.z);
+        return new Vector3(self.x, 0, self.z);
+    }
+
+    public static Vector3 ToLevelPosition(this Vector3 self, Transform levelRef)
+    {
+        return new Vector3(self.x, levelRef.position.y, self.z);
+    }
+}
+
+public static class HumanoidExt
+{
+    public static Vector3 GetJointPosition(this Humanoid self, HumanBodyBones joint)
+    {
+        return self.GetBoneTransform(joint).position;
+    }
+
+    public static float GetDistanceBetweenJoints(this Humanoid self, HumanBodyBones joint1, HumanBodyBones joint2)
+    {
+        return Vector3.Distance(self.GetBoneTransform(joint1).position, self.GetBoneTransform(joint2).position);
     }
 }

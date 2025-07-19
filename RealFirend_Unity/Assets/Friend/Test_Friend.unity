@@ -543,7 +543,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4896050908531277339}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a70e525c82ce9413fa4d940ad7fcf1db, type: 3}
   m_Name: 
@@ -898,7 +898,7 @@ MonoBehaviour:
       planeRotationOffset: {x: 0, y: 0, z: 0, w: 1}
     - bone: {fileID: 6668629385164124311}
       target: {fileID: 0}
-      positionWeight: 1
+      positionWeight: 0
       rotationWeight: 0
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
@@ -15445,6 +15445,7 @@ GameObject:
   - component: {fileID: 4925925850587693879}
   - component: {fileID: 7495358342455360784}
   - component: {fileID: 7495358342455360783}
+  - component: {fileID: 7495358342455360785}
   m_Layer: 0
   m_Name: Friend1
   m_TagString: Untagged
@@ -15504,7 +15505,52 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  ReachingDuraction: 2
+  ReachingTowardTargetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.8928562
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   m_VRMAnimationController: {fileID: 7495358342455360783}
+  m_FriendBodyInfo: {fileID: 0}
+  m_FullBodyBipedIK: {fileID: 0}
+  de_TouchingTarget: {fileID: 4467870057237425986}
+--- !u!114 &7495358342455360785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7495358342455360782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4620b6810e95b14fbd887ebf2e1fc5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LeftArmLength: 0
+  RightArmLength: 0
+  LeftLegLength: 0
+  RightLegLength: 0
+  m_Humanoid: {fileID: 1650079979389814039}
 --- !u!114 &7524728870522844217
 MonoBehaviour:
   m_ObjectHideFlags: 0
