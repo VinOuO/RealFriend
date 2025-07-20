@@ -37,11 +37,6 @@ public class FriendController : MonoBehaviour
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
     }
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         m_VRMAnimationController.TravelingSpeed = FinalMovingSpeed;
@@ -50,7 +45,8 @@ public class FriendController : MonoBehaviour
     [ContextMenu("TouchObject")]
     public void de_TouchObject()
     {
-        TouchObject(de_TouchingTarget);
+        TouchObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
+        //TouchObject(de_TouchingTarget);
     }
 
     public void TouchObject(GameObject obj)
@@ -67,7 +63,7 @@ public class FriendController : MonoBehaviour
     IEnumerator TouchingObject(GameObject obj, HumanBodyBones usingJoint)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.LeftArmLength : m_FriendBodyInfo.RightArmLength) * 0.8f));
+        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetLimbLength.LeftArmLength : m_FriendBodyInfo.GetLimbLength.RightArmLength) * 0.8f));
         float startReachingTime = Time.time;
 
         IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
@@ -77,7 +73,6 @@ public class FriendController : MonoBehaviour
             effector.positionWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime)/ReachingDuraction);
             yield return wait;
         }
-        Debug.Log("Touched: " + obj.name);
     }
 
     IEnumerator WalkingToObjectPosition(Transform obj, float distanceThreshold)

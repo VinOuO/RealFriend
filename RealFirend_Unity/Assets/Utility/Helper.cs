@@ -85,3 +85,66 @@ public static class HumanoidExt
         return Vector3.Distance(self.GetBoneTransform(joint1).position, self.GetBoneTransform(joint2).position);
     }
 }
+
+public static class GameObjectExt
+{
+    public static GameObject FindInChild(this GameObject self, string name) 
+    {
+        for (int i = 0; i < self.transform.childCount; i++)
+        {
+            if(self.transform.GetChild(i).name == name)
+            {
+                return self.transform.GetChild(i).gameObject;
+            }
+            else
+            {
+                GameObject tmp = self.transform.GetChild(i).gameObject.FindInChild(name);
+                if (tmp != null)
+                {
+                    return tmp;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static bool IsParentOf(this GameObject self, GameObject testChild)
+    {
+        for (int i = 0; i < self.transform.childCount; i++)
+        {
+            if(testChild == self.transform.GetChild(i).gameObject)
+            {
+                return true;
+            }
+            else if(self.transform.GetChild(i).gameObject.IsParentOf(testChild))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+public static class SupportJointsExt
+{
+    public static void Clear(this BodyInfo.SupportJoints self)
+    {
+        if(self == null)
+        {
+            return;
+        }
+        if (self.HeadCenter)
+        {
+            UnityEngine.Object.DestroyImmediate(self.HeadCenter.gameObject);
+        }
+        if (self.LeftCheek)
+        {
+            UnityEngine.Object.DestroyImmediate(self.LeftCheek.gameObject);
+        }
+        if (self.RightCheek)
+        {
+            UnityEngine.Object.DestroyImmediate(self.RightCheek.gameObject);
+        }
+        self = null;
+    }
+}
