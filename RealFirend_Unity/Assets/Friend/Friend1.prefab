@@ -8167,7 +8167,6 @@ GameObject:
   - component: {fileID: 5119513089194494788}
   - component: {fileID: 7011509796105651827}
   - component: {fileID: 8536241483596847942}
-  - component: {fileID: 929428039730650385}
   m_Layer: 0
   m_Name: J_Bip_L_UpperArm
   m_TagString: Untagged
@@ -8242,22 +8241,6 @@ MonoBehaviour:
   Radius: 0.043148845
   Tail: {x: 0, y: 0, z: 0}
   Normal: {x: 0, y: 1, z: 0}
---- !u!114 &929428039730650385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7993207275567871206}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45281828b4c9247558c7c695124d6877, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  axis: {x: -1, y: 0, z: 1}
-  defaultLocalRotation: {x: 0.000000014901159, y: -0.0000000027939675, z: -0.07061426, w: 0.99750376}
-  limit: 45
-  twistLimit: 180
 --- !u!1 &8040702432406326984
 GameObject:
   m_ObjectHideFlags: 0

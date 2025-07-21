@@ -86,7 +86,7 @@ public class BodyInfo : MonoBehaviour
         faceCollider.sharedMesh = faceRenderer.sharedMesh;
         faceCollider.gameObject.layer = LayerMask.NameToLayer("Face");
 
-        Vector3 leftCheekCastFrom = m_SupportJoints.HeadCenter.position + Quaternion.Euler(LeftCheekDetectAngle) * m_SupportJoints.HeadCenter.forward;
+        Vector3 leftCheekCastFrom = m_SupportJoints.HeadCenter.position + GetDetectDirection(LeftCheekDetectAngle, m_SupportJoints.HeadCenter);
         Ray tmpRay = new Ray(leftCheekCastFrom, m_SupportJoints.HeadCenter.position - leftCheekCastFrom);
 
         RaycastHit[] hits = Physics.RaycastAll(ray: tmpRay,
@@ -118,7 +118,7 @@ public class BodyInfo : MonoBehaviour
             return Result.Failed;
         }
 
-        Vector3 rightCheekCastFrom = m_SupportJoints.HeadCenter.position + Quaternion.Euler(LeftCheekDetectAngle) * m_SupportJoints.HeadCenter.forward;
+        Vector3 rightCheekCastFrom = m_SupportJoints.HeadCenter.position + GetDetectDirection(RightCheekDetectAngle, m_SupportJoints.HeadCenter);
         tmpRay = new Ray(rightCheekCastFrom, m_SupportJoints.HeadCenter.position - rightCheekCastFrom);
         hits = Physics.RaycastAll(ray: tmpRay,
                                   maxDistance: 10f,
@@ -174,6 +174,24 @@ public class BodyInfo : MonoBehaviour
         }
     }
 
+    Vector3 GetDetectDirection(Vector3 detectAngle, Transform space)
+    {
+        Vector3 dir = Quaternion.Euler(detectAngle) * Vector3.forward;
+        dir = space.rotation * dir;
+        return dir;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (m_SupportJoints.HeadCenter)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + GetDetectDirection(LeftCheekDetectAngle, m_SupportJoints.HeadCenter));
+            Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + GetDetectDirection(RightCheekDetectAngle, m_SupportJoints.HeadCenter));
+        }
+    }
+
+
     [System.Serializable]
     public class SupportJoints
     {
@@ -195,16 +213,6 @@ public class BodyInfo : MonoBehaviour
             HeadCenter.rotation = head.rotation;
             LeftCheek.rotation = head.rotation;
             RightCheek.rotation = head.rotation;
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (m_SupportJoints.HeadCenter)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + Quaternion.Euler(LeftCheekDetectAngle) * m_SupportJoints.HeadCenter.forward);
-            Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + Quaternion.Euler(RightCheekDetectAngle) * m_SupportJoints.HeadCenter.forward);
         }
     }
 }
