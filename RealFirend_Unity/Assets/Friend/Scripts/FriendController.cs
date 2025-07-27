@@ -67,10 +67,13 @@ public class FriendController : MonoBehaviour
         float startReachingTime = Time.time;
 
         IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
+        IKMappingLimb mapping = m_FullBodyBipedIK.solver.leftArmMapping;
         effector.target = obj.transform;
         while ((Time.time - startReachingTime) / ReachingDuraction < 1)
         {
-            effector.positionWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime)/ReachingDuraction);
+            mapping.weight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
+            effector.positionWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
+            effector.rotationWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
             yield return wait;
         }
     }

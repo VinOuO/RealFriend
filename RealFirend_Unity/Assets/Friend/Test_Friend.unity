@@ -240,6 +240,42 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &471992985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 471992986}
+  m_Layer: 0
+  m_Name: LeftArmBlendGoal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &471992986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471992985}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.5, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 611040962}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &611040962 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 93827181825416237, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+  m_PrefabInstance: {fileID: 2112320673193545688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &624108275
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,6 +907,34 @@ PrefabInstance:
       propertyPath: twistLimit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[1].reach
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.limbMappings.Array.data[0].weight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.effectors.Array.data[5].positionWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.effectors.Array.data[5].rotationWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[1].bendConstraint.weight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[1].bendConstraint.bendGoal
+      value: 
+      objectReference: {fileID: 471992986}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.limbMappings.Array.data[2].maintainRotationWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5788699071978750580, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: LeftCheekDetectAngle.x
       value: 40
@@ -939,9 +1003,16 @@ PrefabInstance:
       propertyPath: de_TouchingTarget
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7829367662504929059, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: ReachingTowardTargetCurve.m_Curve.Array.data[1].value
+      value: 1.0151432
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 93827181825416237, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 471992986}
     - targetCorrespondingSourceObject: {fileID: 4820914362650691757, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1540383211}

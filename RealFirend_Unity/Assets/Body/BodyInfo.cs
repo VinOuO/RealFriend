@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using static BodyInfo;
+using UnityEngine.XR;
 
 public class BodyInfo : MonoBehaviour
 {
@@ -100,8 +101,14 @@ public class BodyInfo : MonoBehaviour
                 if (gameObject.IsParentOf(hit.collider.gameObject))
                 {
                     m_SupportJoints.LeftCheek.position = hit.point;
-                    Debug.Log("HitPosL: " + hit.point);
-                    m_SupportJoints.LeftCheek.rotation = Quaternion.LookRotation(hit.normal, m_Humanoid.Head.up);
+                    Vector3 up = hit.normal;
+                    Vector3 shoulderToHand = m_Humanoid.LeftHand.position - m_Humanoid.LeftLowerArm.position;
+                    Vector3 forward = Vector3.Cross(up, Vector3.Cross(shoulderToHand, up));
+                    if (forward == Vector3.zero)
+                    {
+                        forward = Vector3.Cross(up, Vector3.forward);
+                    }
+                    m_SupportJoints.LeftCheek.rotation = Quaternion.LookRotation(forward.normalized, up);
                     set = true;
                     break;
                 }
@@ -131,8 +138,14 @@ public class BodyInfo : MonoBehaviour
                 if (gameObject.IsParentOf(hit.collider.gameObject))
                 {
                     m_SupportJoints.RightCheek.position = hit.point;
-                    Debug.Log("HitPosR: " + hit.point);
-                    m_SupportJoints.RightCheek.rotation = Quaternion.LookRotation(hit.normal, m_Humanoid.Head.up);
+                    Vector3 up = hit.normal;
+                    Vector3 shoulderToHand = m_Humanoid.RightHand.position - m_Humanoid.RightLowerArm.position;
+                    Vector3 forward = Vector3.Cross(up, Vector3.Cross(shoulderToHand, up));
+                    if (forward == Vector3.zero)
+                    {
+                        forward = Vector3.Cross(up, Vector3.forward);
+                    }
+                    m_SupportJoints.RightCheek.rotation = Quaternion.LookRotation(forward.normalized, up);
                     set = true;
                     break;
                 }
