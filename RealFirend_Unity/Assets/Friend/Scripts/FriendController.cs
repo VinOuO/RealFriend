@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using RootMotion.FinalIK;
+using Unity.VisualScripting;
 
 public class FriendController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class FriendController : MonoBehaviour
     [Range(0.0f, 1.0f)]
     [SerializeField] float FinalMovingSpeed = 0.0f;
     [SerializeField] AnimationCurve MovingSpeedTowardTargetCurve;
+    [SerializeField] AnimationCurve FacingTargetCurve;
+    [SerializeField] AnimationCurve SittingElevateCurve;
 
     /// <summary>
     /// How fast does it take for friend to reach an object
@@ -30,6 +33,7 @@ public class FriendController : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] GameObject de_TouchingTarget;
+    [SerializeField] Sitable de_SittingTarget;
 
     void OnEnable()
     {
@@ -41,29 +45,77 @@ public class FriendController : MonoBehaviour
     {
         m_VRMAnimationController.TravelingSpeed = FinalMovingSpeed;
     }
-
-    [ContextMenu("TouchObject")]
-    public void de_TouchObject()
-    {
-        TouchObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
-        //TouchObject(de_TouchingTarget);
-    }
-
-    public void TouchObject(GameObject obj)
-    {
-        StartCoroutine(TouchingObject(obj, HumanBodyBones.LeftHand));
-    }
-
+    #region Walk
     [ContextMenu("WalkToTarget")]
     public void WalkToTarget()
     {
         StartCoroutine(WalkingToPosition(Vector3.zero, 0.5f));
     }
 
+    IEnumerator WalkingToObjectPosition(Transform obj, float distanceThreshold)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        float distance = Vector3.Distance(obj.position.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
+
+        while (distance > distanceThreshold)
+        {
+            WalkToPos(obj.position, distanceThreshold, ref distance);
+            yield return wait;
+
+        }
+        FinalMovingSpeed = 0;
+    }
+    IEnumerator WalkingToPosition(Vector3 pos, float distanceThreshold)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        float distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
+
+        while (distance > distanceThreshold)
+        {
+            WalkToPos(pos, distanceThreshold, ref distance);
+            yield return wait;
+        }
+        FinalMovingSpeed = 0;
+    }
+    private void WalkToPos(Vector3 pos, float distanceThreshold, ref float distance)
+    {
+        transform.LookAt(pos.ToLevelPosition(transform), Vector3.up);
+        FinalMovingSpeed = NormalMovingSpeed * MovingSpeedTowardTargetCurve.Evaluate(distance - (distanceThreshold * 0.75f));
+        transform.Translate((pos.ToLevelPosition(transform) - transform.position.ToLevelPosition(transform)).normalized * Time.deltaTime * FinalMovingSpeed);
+        distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
+    }
+    #endregion
+    #region Facing
+    private IEnumerator Facing(Vector3 pos, float withInDuraction)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        float angleDiff = Vector3.SignedAngle(transform.forward, (pos - transform.position).normalized, Vector3.up);
+        float startFacingTime = Time.time;
+        Quaternion originalFacing = transform.rotation;
+        while (Time.time - startFacingTime < withInDuraction)
+        {
+            float currentAngle = angleDiff * FacingTargetCurve.Evaluate((Time.time - startFacingTime) / withInDuraction);
+            transform.rotation = originalFacing * Quaternion.AngleAxis(currentAngle, Vector3.up); ;
+            yield return wait;
+        }
+        transform.LookAt(pos.ToLevelPosition(transform), Vector3.up);
+    }
+    #endregion
+    #region Touch
+    [ContextMenu("TouchObject")]
+    public void de_TouchObject()
+    {
+        TouchObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
+        //TouchObject(de_TouchingTarget);
+    }
+    public void TouchObject(GameObject obj)
+    {
+        StartCoroutine(TouchingObject(obj, HumanBodyBones.LeftHand));
+    }
     IEnumerator TouchingObject(GameObject obj, HumanBodyBones usingJoint)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetLimbLength.LeftArmLength : m_FriendBodyInfo.GetLimbLength.RightArmLength) * 0.8f));
+        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetBodyCode.LeftArmLength : m_FriendBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
         float startReachingTime = Time.time;
 
         IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
@@ -77,36 +129,40 @@ public class FriendController : MonoBehaviour
             yield return wait;
         }
     }
-
-    IEnumerator WalkingToObjectPosition(Transform obj, float distanceThreshold)
+    #endregion
+    #region Sit
+    [ContextMenu("SitOnTarget")]
+    [ContextMenu("TouchObject")]
+    public void de_SitOnObject()
     {
-        YieldInstruction wait = new WaitForEndOfFrame();
-        float distance = Vector3.Distance(obj.position.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
-
-        while (distance > distanceThreshold)
-        {
-            transform.LookAt(obj.position.ToLevelPosition(transform), Vector3.up);
-            FinalMovingSpeed = NormalMovingSpeed * MovingSpeedTowardTargetCurve.Evaluate(distance - (distanceThreshold * 0.75f));
-            transform.Translate((obj.position.ToLevelPosition(transform) - transform.position.ToLevelPosition(transform)).normalized * Time.deltaTime * FinalMovingSpeed);
-            yield return wait;
-            distance = Vector3.Distance(obj.position.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
-        }
-        FinalMovingSpeed = 0;
+        SitOnObject(de_SittingTarget);
+        //TouchObject(de_TouchingTarget);
+    }
+    public void SitOnObject(Sitable sitObj)
+    {
+        StartCoroutine(SittingOnObject(sitObj));
     }
 
-    IEnumerator WalkingToPosition(Vector3 pos, float distanceThreshold)
+    private IEnumerator SitingElevatingToHeight(float targetHeight, float withInDuraction, Transform hip)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        float distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
-        
-        while (distance > distanceThreshold)
+        float startElevatingTime = Time.time;
+        Vector3 originalPos = transform.position;
+        while ((Time.time - startElevatingTime) < withInDuraction)
         {
-            transform.LookAt(pos.ToLevelPosition(transform), Vector3.up);
-            FinalMovingSpeed = NormalMovingSpeed * MovingSpeedTowardTargetCurve.Evaluate(distance - (distanceThreshold * 0.75f));
-            transform.Translate((pos.ToLevelPosition(transform) - transform.position.ToLevelPosition(transform)).normalized * Time.deltaTime * FinalMovingSpeed);
+            transform.position = transform.position + Vector3.up * (targetHeight - hip.position.y) * SittingElevateCurve.Evaluate((Time.time - startElevatingTime) / withInDuraction);
             yield return wait;
-            distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
         }
-        FinalMovingSpeed = 0;
+        transform.position = transform.position + Vector3.up * (targetHeight - hip.position.y);
     }
+
+    private IEnumerator SittingOnObject(Sitable sitObj)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        yield return StartCoroutine(WalkingToObjectPosition(sitObj.transform, 0.05f));
+        yield return StartCoroutine(Facing(sitObj.transform.position + sitObj.transform.forward, 1f));
+        m_VRMAnimationController.GetAnimator.SetTrigger("TriggerSit");
+        yield return StartCoroutine(SitingElevatingToHeight(sitObj.SitPose.position.y + m_FriendBodyInfo.GetBodyCode.HipRadious, 3f, m_FriendBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
+    }
+    #endregion
 }

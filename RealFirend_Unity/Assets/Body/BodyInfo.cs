@@ -1,19 +1,14 @@
 using UnityEngine;
 using UniHumanoid;
 using UniVRM10;
-using UnityEngine.EventSystems;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
-using static BodyInfo;
-using UnityEngine.XR;
-
 public class BodyInfo : MonoBehaviour
 {
     [Header("Configeration")]
-    [SerializeField] private Humanoid m_Humanoid;
+    [SerializeField] private Humanoid m_Humanoid; public Humanoid GetHumanoid => m_Humanoid; 
 
     [Header("Infos")]
-    [SerializeField] private LimbLength m_LimbLength = LimbLength.Default; public LimbLength GetLimbLength => m_LimbLength;
+    [SerializeField] private BodyCode m_BodyCode = BodyCode.Default; public BodyCode GetBodyCode => m_BodyCode;
+
     [SerializeField] private SupportJoints m_SupportJoints; public SupportJoints GetSupportJoints => m_SupportJoints;
 
     [Header("Debug")]
@@ -29,18 +24,35 @@ public class BodyInfo : MonoBehaviour
 
     void UpdateLimbInfo()
     {
-        m_LimbLength = LimbLength.Zero;
-        m_LimbLength.LeftArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftUpperArm, HumanBodyBones.LeftLowerArm);
-        m_LimbLength.LeftArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftLowerArm, HumanBodyBones.LeftHand);
+        m_BodyCode = BodyCode.Zero;
+        #region Limb
+        m_BodyCode.LeftArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftUpperArm, HumanBodyBones.LeftLowerArm);
+        m_BodyCode.LeftArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftLowerArm, HumanBodyBones.LeftHand);
 
-        m_LimbLength.RightArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightUpperArm, HumanBodyBones.RightLowerArm);
-        m_LimbLength.RightArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightLowerArm, HumanBodyBones.RightHand);
+        m_BodyCode.RightArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightUpperArm, HumanBodyBones.RightLowerArm);
+        m_BodyCode.RightArmLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightLowerArm, HumanBodyBones.RightHand);
 
-        m_LimbLength.LeftLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg);
-        m_LimbLength.LeftLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot);
+        m_BodyCode.LeftLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg);
+        m_BodyCode.LeftLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot);
 
-        m_LimbLength.RightLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg);
-        m_LimbLength.RightLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightLowerLeg, HumanBodyBones.RightFoot);
+        m_BodyCode.RightLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg);
+        m_BodyCode.RightLegLength += m_Humanoid.GetDistanceBetweenJoints(HumanBodyBones.RightLowerLeg, HumanBodyBones.RightFoot);
+        #endregion
+        if(m_Humanoid.GetComponentFromJoint<VRM10SpringBoneCollider>(HumanBodyBones.LeftUpperLeg, out VRM10SpringBoneCollider leftSpringBone) == Result.Success &&
+           m_Humanoid.GetComponentFromJoint<VRM10SpringBoneCollider>(HumanBodyBones.LeftUpperLeg, out VRM10SpringBoneCollider rightSpringBone) == Result.Success)
+        {
+            m_BodyCode.HipRadious = Vector3.Distance(m_Humanoid.GetJointPosition(HumanBodyBones.Spine),
+                                                    (m_Humanoid.GetJointPosition(HumanBodyBones.LeftUpperLeg) + m_Humanoid.GetJointPosition(HumanBodyBones.RightUpperLeg)) / 2.0f)
+                                    + (leftSpringBone.Radius + rightSpringBone.Radius) / 2.0f;
+        }
+        else
+        {
+            m_BodyCode.HipRadious = Vector3.Distance(m_Humanoid.GetJointPosition(HumanBodyBones.Spine),
+                                                   (m_Humanoid.GetJointPosition(HumanBodyBones.LeftUpperLeg) + m_Humanoid.GetJointPosition(HumanBodyBones.RightUpperLeg)) / 2.0f);
+            m_BodyCode.HipRadious *= 1.2f;
+        }
+
+                    
     }
 
     [ContextMenu("SetSupportJoints")]
@@ -169,21 +181,23 @@ public class BodyInfo : MonoBehaviour
 
 
     [System.Serializable]
-    public struct LimbLength
+    public struct BodyCode
     {
-        public static LimbLength Default = new LimbLength(0.75f, 0.75f, 1.15f, 1.15f);
-        public static LimbLength Zero = new LimbLength(0.0f, 0.0f, 0.0f, 0.0f);
+        public static BodyCode Default = new BodyCode(0.75f, 0.75f, 1.15f, 1.15f, 0.3f);
+        public static BodyCode Zero = new BodyCode(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         public float LeftArmLength;
         public float RightArmLength;
         public float LeftLegLength;
         public float RightLegLength;
+        public float HipRadious;
 
-        public LimbLength(float leftArmLength, float rightArmLength, float leftLegLength, float rightLegLength)
+        public BodyCode(float leftArmLength, float rightArmLength, float leftLegLength, float rightLegLength, float hipMeasurements)
         {
             LeftArmLength = leftArmLength;
             RightArmLength = rightArmLength;
             LeftLegLength = leftLegLength;
             RightLegLength = rightLegLength;
+            HipRadious = hipMeasurements;
         }
     }
 

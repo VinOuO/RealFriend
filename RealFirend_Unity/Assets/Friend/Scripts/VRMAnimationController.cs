@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class VRMAnimationController : MonoBehaviour
 {
-    [SerializeField] Animator m_Animator;
+    [SerializeField] private Animator m_Animator; public Animator GetAnimator => m_Animator;
     public float TravelingSpeed = 0;
 
     void Start()

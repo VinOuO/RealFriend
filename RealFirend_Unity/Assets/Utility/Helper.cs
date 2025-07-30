@@ -59,7 +59,6 @@ public static class AIExt
     }
 }
 
-
 public static class Vector3Ext
 {
     public static Vector3 ToLevelPosition(this Vector3 self)
@@ -83,6 +82,16 @@ public static class HumanoidExt
     public static float GetDistanceBetweenJoints(this Humanoid self, HumanBodyBones joint1, HumanBodyBones joint2)
     {
         return Vector3.Distance(self.GetBoneTransform(joint1).position, self.GetBoneTransform(joint2).position);
+    }
+
+    public static Result GetComponentFromJoint<T>(this Humanoid self, HumanBodyBones joint, out T result)
+    {
+        result = self.GetBoneTransform(joint).GetComponent<T>();
+        if(result == null)
+        {
+            return Result.Failed;
+        }
+        return Result.Success;
     }
 }
 
