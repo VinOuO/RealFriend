@@ -240,6 +240,125 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &426104543 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2725157160200903112, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+  m_PrefabInstance: {fileID: 2112320673193545688}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &426104544 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6229436171416461673, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+  m_PrefabInstance: {fileID: 2112320673193545688}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &426104545 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+  m_PrefabInstance: {fileID: 2112320673193545688}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426104543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70e525c82ce9413fa4d940ad7fcf1db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &426104546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426104543}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebbd066464934494f896947690872ad4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ik: {fileID: 426104545}
+  positionWeight: 1
+  bodyWeight: 0.8
+  thighWeight: 0.8
+  handsPullBody: 1
+  rotationWeight: 0
+  bodyClampWeight: 0.5
+  headClampWeight: 0.5
+  bendWeight: 1
+  bendBones: []
+  CCDWeight: 1
+  roll: 0
+  damper: 500
+  CCDBones: []
+  postStretchWeight: 1
+  maxStretch: 0.1
+  stretchDamper: 0
+  fixHead: 0
+  stretchBones: []
+  chestDirection: {x: 0, y: 0, z: 1}
+  chestDirectionWeight: 1
+  chestBones: []
+--- !u!114 &426104547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426104543}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776adaaacdc5c4e8ab0395120a6e972b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fixTransforms: 1
+  solver:
+    executedInEditor: 0
+    IKPosition: {x: 2.4992518, y: 1.3527386, z: -2.3473148}
+    IKPositionWeight: 1
+    root: {fileID: 426104544}
+    target: {fileID: 1903748323}
+    spine: []
+    head:
+      transform: {fileID: 1859994102}
+      weight: 1
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 1}
+      defaultLocalPosition: {x: 0.000000022938426, y: 0.07178723, z: 0.0003717877}
+      defaultLocalRotation: {x: -0.05433496, y: -0.00000022020603, z: -0.0000000119823635, w: 0.99852276}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0.0000004379166, y: 0.010808409, z: 0.9999416}
+      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
+    eyes: []
+    bodyWeight: 0.5
+    headWeight: 0.5
+    eyesWeight: 1
+    clampWeight: 0.5
+    clampWeightHead: 0.5
+    clampWeightEyes: 0.5
+    clampSmoothing: 2
+    spineWeightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.3
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    spineTargetOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &543254289
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,6 +787,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1859994102 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4820914362650691757, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+  m_PrefabInstance: {fileID: 2112320673193545688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1903748322
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,9 +1044,29 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[1].pull
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[2].pull
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[3].pull
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.chain.Array.data[4].pull
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: solver.effectors.Array.data[0].target
       value: 
       objectReference: {fileID: 740829207}
+    - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: solver.boneMappings.Array.data[0].maintainRotationWeight
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 7829367662504929059, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: de_SittingTarget
       value: 
@@ -954,7 +1098,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2725157160200903112, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 426104547}
+    - targetCorrespondingSourceObject: {fileID: 2725157160200903112, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 426104546}
   m_SourcePrefab: {fileID: 100100000, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
 --- !u!1 &4491206365717060478 stripped
 GameObject:

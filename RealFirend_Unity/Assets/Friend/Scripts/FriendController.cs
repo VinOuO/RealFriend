@@ -101,23 +101,20 @@ public class FriendController : MonoBehaviour
         transform.LookAt(pos.ToLevelPosition(transform), Vector3.up);
     }
     #endregion
-    #region Touch
-    [ContextMenu("TouchObject")]
-    public void de_TouchObject()
+    #region Reach
+    [ContextMenu("ReachObject")]
+    public void de_ReachObject()
     {
-        TouchObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
-        //TouchObject(de_TouchingTarget);
+        ReachObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
     }
-    public void TouchObject(GameObject obj)
+    public void ReachObject(GameObject obj)
     {
-        StartCoroutine(TouchingObject(obj, HumanBodyBones.LeftHand));
+        StartCoroutine(ReachingObject(obj, HumanBodyBones.LeftHand));
     }
-    IEnumerator TouchingObject(GameObject obj, HumanBodyBones usingJoint)
+    IEnumerator ReachingObject(GameObject obj, HumanBodyBones usingJoint)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetBodyCode.LeftArmLength : m_FriendBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
         float startReachingTime = Time.time;
-
         IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
         IKMappingLimb mapping = m_FullBodyBipedIK.solver.leftArmMapping;
         effector.target = obj.transform;
@@ -130,9 +127,25 @@ public class FriendController : MonoBehaviour
         }
     }
     #endregion
+    #region Touch
+    [ContextMenu("TouchObject")]
+    public void de_TouchObject()
+    {
+        TouchObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
+    }
+    public void TouchObject(GameObject obj)
+    {
+        StartCoroutine(TouchingObject(obj, HumanBodyBones.LeftHand));
+    }
+    IEnumerator TouchingObject(GameObject obj, HumanBodyBones usingJoint)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetBodyCode.LeftArmLength : m_FriendBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
+        yield return StartCoroutine(ReachingObject(obj, usingJoint));
+    }
+    #endregion
     #region Sit
     [ContextMenu("SitOnTarget")]
-    [ContextMenu("TouchObject")]
     public void de_SitOnObject()
     {
         SitOnObject(de_SittingTarget);
@@ -163,6 +176,22 @@ public class FriendController : MonoBehaviour
         yield return StartCoroutine(Facing(sitObj.transform.position + sitObj.transform.forward, 1f));
         m_VRMAnimationController.GetAnimator.SetTrigger("TriggerSit");
         yield return StartCoroutine(SitingElevatingToHeight(sitObj.SitPose.position.y + m_FriendBodyInfo.GetBodyCode.HipRadious, 3f, m_FriendBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
+    }
+    #endregion
+    #region Kiss
+    public void de_KissObject()
+    {
+        KissObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
+    }
+    public void KissObject(GameObject obj)
+    {
+        StartCoroutine(KissingObject(obj, HumanBodyBones.LeftHand));
+    }
+    IEnumerator KissingObject(GameObject obj, HumanBodyBones usingJoint)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetBodyCode.LeftArmLength : m_FriendBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
+        yield return StartCoroutine(ReachingObject(obj, usingJoint));
     }
     #endregion
 }
