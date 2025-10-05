@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using RootMotion.FinalIK;
-using Unity.VisualScripting;
+using UnityEngine.InputSystem.HID;
 
 public class FriendController : MonoBehaviour
 {
@@ -25,11 +26,22 @@ public class FriendController : MonoBehaviour
     [SerializeField] float ReachingDuraction = 0.1f;
     [SerializeField] AnimationCurve ReachingTowardTargetCurve;
 
+    /// <summary>
+    /// How fast does it take for friend to kiss an object
+    /// </summary>
+    [Range(0.1f, 5.0f)]
+    [SerializeField] float KissingDuraction = 0.1f;
+    [SerializeField] AnimationCurve KissingTowardTargetCurve;
 
     [Header("Configeration")]
     [SerializeField] VRMAnimationController m_VRMAnimationController;
     [SerializeField] FriendBodyInfo m_FriendBodyInfo;
     [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
+    [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
+
+    [Header("Status")]
+    private Holdable m_HoldingObj;
+    private bool IsHolding { get { return m_HoldingObj == null ? false : true; } }
 
     [Header("Debug")]
     [SerializeField] GameObject de_TouchingTarget;
@@ -39,6 +51,7 @@ public class FriendController : MonoBehaviour
     {
         m_FriendBodyInfo = GetComponent<FriendBodyInfo>();
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
+        m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
     }
 
     void Update()
@@ -61,7 +74,6 @@ public class FriendController : MonoBehaviour
         {
             WalkToPos(obj.position, distanceThreshold, ref distance);
             yield return wait;
-
         }
         FinalMovingSpeed = 0;
     }
@@ -179,19 +191,66 @@ public class FriendController : MonoBehaviour
     }
     #endregion
     #region Kiss
+    [ContextMenu("KissObject")]
     public void de_KissObject()
     {
-        KissObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.LeftCheek.gameObject);
+        KissObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.HeadCenter.gameObject);
     }
-    public void KissObject(GameObject obj)
+    public void KissObject(GameObject kissObj)
     {
-        StartCoroutine(KissingObject(obj, HumanBodyBones.LeftHand));
+        StartCoroutine(KissingObject(kissObj));
     }
-    IEnumerator KissingObject(GameObject obj, HumanBodyBones usingJoint)
+    IEnumerator KissingObject(GameObject kissObj)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        yield return StartCoroutine(WalkingToObjectPosition(obj.transform, (usingJoint != HumanBodyBones.RightHand ? m_FriendBodyInfo.GetBodyCode.LeftArmLength : m_FriendBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
-        yield return StartCoroutine(ReachingObject(obj, usingJoint));
+        m_FBBIKHeadEffector.positionWeight = 0;
+        m_FBBIKHeadEffector.transform.SetParent(null);
+        m_FBBIKHeadEffector.transform.position = kissObj.transform.position;
+        yield return StartCoroutine(WalkingToObjectPosition(kissObj.transform, m_FriendBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+        float startKissingTime = Time.time;
+        while ((Time.time - startKissingTime) / KissingDuraction < 0.8f)
+        {
+            Debug.Log(m_FBBIKHeadEffector.positionWeight);
+            m_FBBIKHeadEffector.positionWeight = KissingTowardTargetCurve.Evaluate((Time.time - startKissingTime) / KissingDuraction);
+            yield return wait;
+        }
+    }
+
+    IEnumerator KissingObjectWhileHolding(GameObject kissObj, Holdable holdObj)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        if (m_HoldingObj != holdObj)
+        {
+            yield return StartCoroutine(HoldingObject(holdObj));
+        }
+        StartCoroutine(KissingObject(kissObj));
     }
     #endregion
+
+    #region Hold
+    [ContextMenu("HoldObject")]
+    public void de_HoldObject()
+    {
+        HoldObject(GameObject.Find("Dummy").GetComponentInChildren<Holdable>());
+    }
+    public void HoldObject(Holdable holdObj)
+    {
+        StartCoroutine(HoldingObject(holdObj));
+    }
+    IEnumerator HoldingObject(Holdable holdObj)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        yield return StartCoroutine(WalkingToObjectPosition(holdObj.transform, m_FriendBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+        bool leftHandReached = false, rightHandReached = false;
+        StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[0].gameObject, HumanBodyBones.LeftHand), () => leftHandReached = true));
+        StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[1].gameObject, HumanBodyBones.LeftHand), () => rightHandReached = true));
+        yield return new WaitUntil(() => leftHandReached && leftHandReached);
+        m_HoldingObj = holdObj;
+    }
+    #endregion
+    public IEnumerator CoroutineWithCallback(IEnumerator targetCoroutine, Action onComplete)
+    {
+        yield return StartCoroutine(targetCoroutine);
+        onComplete?.Invoke();
+    }
 }

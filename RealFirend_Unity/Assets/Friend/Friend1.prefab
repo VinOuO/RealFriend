@@ -91,6 +91,7 @@ Transform:
   - {fileID: 3015023593981215221}
   - {fileID: 9098304737464567046}
   - {fileID: 1379737729428915124}
+  - {fileID: 1827101505124678379}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7875884265792848210
@@ -570,6 +571,54 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  FacingTargetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SittingElevateCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   ReachingDuraction: 2
   ReachingTowardTargetCurve:
     serializedVersion: 2
@@ -595,10 +644,19 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  KissingDuraction: 0.1
+  KissingTowardTargetCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   m_VRMAnimationController: {fileID: 2007694752574727070}
   m_FriendBodyInfo: {fileID: 0}
   m_FullBodyBipedIK: {fileID: 0}
+  m_FBBIKHeadEffector: {fileID: 0}
   de_TouchingTarget: {fileID: 0}
+  de_SittingTarget: {fileID: 0}
 --- !u!114 &2007694752574727070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,11 +684,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Humanoid: {fileID: 7875884265792848210}
-  m_LimbLength:
-    LeftArmLength: 11.045469
-    RightArmLength: 11.045469
-    LeftLegLength: 17.80338
-    RightLegLength: 17.80338
+  m_BodyCode:
+    LeftArmLength: 0.75
+    RightArmLength: 0.75
+    LeftLegLength: 1.15
+    RightLegLength: 1.15
+    HipRadious: 0.3
   m_SupportJoints:
     HeadCenter: {fileID: 1785697518212587615}
     LeftCheek: {fileID: 2124305826007359052}
@@ -1932,6 +1991,81 @@ MonoBehaviour:
   m_gravityDir: {x: 0, y: -1, z: 0}
   m_dragForce: 0.5
   m_jointRadius: 0
+--- !u!1 &1507980463955152758
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1827101505124678379}
+  - component: {fileID: 791126072652052462}
+  m_Layer: 0
+  m_Name: HeadEffector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1827101505124678379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507980463955152758}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.059730463, y: -0, z: -0, w: 0.9982146}
+  m_LocalPosition: {x: 0, y: 1.281508, z: -0.028169155}
+  m_LocalScale: {x: 1, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 93827181825416237}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &791126072652052462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507980463955152758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebbd066464934494f896947690872ad4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ik: {fileID: 5537571954703598928}
+  positionWeight: 1
+  bodyWeight: 0.8
+  thighWeight: 0.8
+  handsPullBody: 1
+  rotationWeight: 0
+  bodyClampWeight: 0.5
+  headClampWeight: 0.5
+  bendWeight: 1
+  bendBones:
+  - transform: {fileID: 2133039418762462527}
+    weight: 1
+  - transform: {fileID: 6661165575325734784}
+    weight: 1
+  - transform: {fileID: 5225211014657356493}
+    weight: 1
+  CCDWeight: 1
+  roll: 0
+  damper: 500
+  CCDBones:
+  - {fileID: 2133039418762462527}
+  - {fileID: 6661165575325734784}
+  - {fileID: 5225211014657356493}
+  postStretchWeight: 1
+  maxStretch: 0.1
+  stretchDamper: 0
+  fixHead: 0
+  stretchBones: []
+  chestDirection: {x: 0, y: 0, z: 1}
+  chestDirectionWeight: 1
+  chestBones: []
 --- !u!1 &1525245320430091424
 GameObject:
   m_ObjectHideFlags: 0
@@ -3231,7 +3365,7 @@ MonoBehaviour:
         defaultLocalDirection: {x: 0, y: 0, z: 0}
         defaultChildDirection: {x: 0, y: 0, z: 0}
     - pin: 0
-      pull: 1
+      pull: 0
       push: 0
       pushParent: 0
       reach: 0.2
@@ -3281,7 +3415,7 @@ MonoBehaviour:
         defaultLocalDirection: {x: 0, y: 0, z: 0}
         defaultChildDirection: {x: 0, y: 0, z: 0}
     - pin: 0
-      pull: 1
+      pull: 0
       push: 0
       pushParent: 0
       reach: 0.1
@@ -3331,7 +3465,7 @@ MonoBehaviour:
         defaultLocalDirection: {x: 0, y: 0, z: 0}
         defaultChildDirection: {x: 0, y: 0, z: 0}
     - pin: 0
-      pull: 1
+      pull: 0
       push: 0
       pushParent: 0
       reach: 0.1
@@ -3381,7 +3515,7 @@ MonoBehaviour:
         defaultLocalDirection: {x: 0, y: 0, z: 0}
         defaultChildDirection: {x: 0, y: 0, z: 0}
     - pin: 0
-      pull: 1
+      pull: 0
       push: 0
       pushParent: 0
       reach: 0.1
@@ -3573,7 +3707,7 @@ MonoBehaviour:
       twistWeight: 1
     boneMappings:
     - bone: {fileID: 4820914362650691757}
-      maintainRotationWeight: 0
+      maintainRotationWeight: 0.8
     limbMappings:
     - parentBone: {fileID: 495694271614680804}
       bone1: {fileID: 6512058483699782081}
@@ -3601,7 +3735,7 @@ MonoBehaviour:
       weight: 1
     FABRIKPass: 1
     rootNode: {fileID: 2311896326284898538}
-    spineStiffness: 0.5
+    spineStiffness: 0.2
     pullBodyVertical: 0.5
     pullBodyHorizontal: 0
 --- !u!1 &2840813567615890434
