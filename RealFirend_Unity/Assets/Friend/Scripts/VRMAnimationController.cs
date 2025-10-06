@@ -1,15 +1,26 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using RootMotion.FinalIK;
 
 public class VRMAnimationController : MonoBehaviour
 {
-    [SerializeField] private Animator m_Animator; public Animator GetAnimator => m_Animator;
+
     public float TravelingSpeed = 0;
 
-    void Start()
+    [Header("Configeration")]
+    [SerializeField] private Animator m_Animator; public Animator GetAnimator => m_Animator;
+    [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
+    [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
+    [SerializeField] BodyInfo m_BodyInfo;
+
+    [Header("SplineClips")]
+    [SerializeField] private GameObject m_HugClip;
+    void OnEnable()
     {
-        //StartCoroutine(CaulatingMovingSpeed());
+        m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
+        m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
+        m_BodyInfo = GetComponentInChildren<BodyInfo>();
     }
 
     void Update()
@@ -31,5 +42,13 @@ public class VRMAnimationController : MonoBehaviour
             oldPos2D = newPos2D;
             yield return wait;
         }
+    }
+
+    [ContextMenu("PlayHugAnim")]
+    public void PlayHug()
+    {
+        SplineClip clip = Instantiate(m_HugClip).GetComponent<SplineClip>();
+        clip.Init(m_FullBodyBipedIK, m_FBBIKHeadEffector, m_BodyInfo.GetHumanoid);
+        clip.Play();
     }
 }

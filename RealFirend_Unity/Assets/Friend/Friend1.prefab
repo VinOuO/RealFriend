@@ -91,6 +91,7 @@ Transform:
   - {fileID: 3015023593981215221}
   - {fileID: 9098304737464567046}
   - {fileID: 1379737729428915124}
+  - {fileID: 125190901337076231}
   - {fileID: 1827101505124678379}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -644,10 +645,28 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  KissingDuraction: 0.1
+  KissingDuraction: 2
   KissingTowardTargetCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1.0151432
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -669,8 +688,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dfc90824b22f044cafe249b0e97aa71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Animator: {fileID: 1853204428574182196}
   TravelingSpeed: 0
+  m_Animator: {fileID: 1853204428574182196}
+  m_FullBodyBipedIK: {fileID: 0}
+  m_FBBIKHeadEffector: {fileID: 0}
+  m_BodyInfo: {fileID: 0}
+  m_HugClip: {fileID: 5841725091121027642, guid: dd7cc23cea527c94fa2ae97c0fa29152, type: 3}
 --- !u!114 &5788699071978750580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2036,14 +2059,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ik: {fileID: 5537571954703598928}
-  positionWeight: 1
+  positionWeight: 0
   bodyWeight: 0.8
   thighWeight: 0.8
-  handsPullBody: 1
+  handsPullBody: 0
   rotationWeight: 0
   bodyClampWeight: 0.5
   headClampWeight: 0.5
-  bendWeight: 1
+  bendWeight: 0.8
   bendBones:
   - transform: {fileID: 2133039418762462527}
     weight: 1
@@ -2051,7 +2074,7 @@ MonoBehaviour:
     weight: 1
   - transform: {fileID: 5225211014657356493}
     weight: 1
-  CCDWeight: 1
+  CCDWeight: 0
   roll: 0
   damper: 500
   CCDBones:
@@ -3458,7 +3481,7 @@ MonoBehaviour:
         bone1: {fileID: 0}
         bone2: {fileID: 0}
         bone3: {fileID: 0}
-        bendGoal: {fileID: 0}
+        bendGoal: {fileID: 125190901337076231}
         direction: {x: 1, y: 0, z: 0}
         rotationOffset: {x: 0, y: 0, z: 0, w: 0}
         weight: 0
@@ -6400,6 +6423,37 @@ Transform:
   m_Children:
   - {fileID: 7729766276006769353}
   m_Father: {fileID: 8474962696185812774}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6144087105197663578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 125190901337076231}
+  m_Layer: 0
+  m_Name: RightArmBlendGoal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &125190901337076231
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6144087105197663578}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 93827181825416237}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6299222132429321917
 GameObject:

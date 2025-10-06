@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.HID;
 public class FriendController : MonoBehaviour
 {
     /// <summary>
-    /// The usual moving speed of Friend
+    /// The usual moving speed of friend
     /// </summary>
     [Header("Settings")]
     [Range(0.0f, 1.0f)]
@@ -244,10 +244,43 @@ public class FriendController : MonoBehaviour
         bool leftHandReached = false, rightHandReached = false;
         StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[0].gameObject, HumanBodyBones.LeftHand), () => leftHandReached = true));
         StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[1].gameObject, HumanBodyBones.LeftHand), () => rightHandReached = true));
-        yield return new WaitUntil(() => leftHandReached && leftHandReached);
+        yield return new WaitUntil(() => leftHandReached && rightHandReached);
         m_HoldingObj = holdObj;
     }
     #endregion
+
+    #region Hug
+    [ContextMenu("HugObject")]
+    public void de_HugObject()
+    {
+        HugObject(GameObject.Find("Dummy").GetComponentInChildren<Holdable>());
+    }
+    public void HugObject(Holdable hugObj)
+    {
+        StartCoroutine(HugingObject(hugObj));
+    }
+    IEnumerator HugingObject(Holdable hugObj)
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        yield return StartCoroutine(WalkingToObjectPosition(hugObj.transform, m_FriendBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+        bool leftHandReached = false, rightHandReached = false;
+        StartCoroutine(CoroutineWithCallback(ReachingObject(hugObj.HoldTrans[0].gameObject, HumanBodyBones.LeftHand), () => leftHandReached = true));
+        StartCoroutine(CoroutineWithCallback(ReachingObject(hugObj.HoldTrans[1].gameObject, HumanBodyBones.LeftHand), () => rightHandReached = true));
+        yield return new WaitUntil(() => leftHandReached && rightHandReached);
+        m_HoldingObj = hugObj;
+    }
+    #endregion
+
+
+
+
+
+
+
+
+
+
+
     public IEnumerator CoroutineWithCallback(IEnumerator targetCoroutine, Action onComplete)
     {
         yield return StartCoroutine(targetCoroutine);
