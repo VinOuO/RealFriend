@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Splines;
 
 [System.Serializable]
 public class SplineClipSetting
@@ -16,6 +15,8 @@ public class SplineClipSetting
     {
         public Effector TargetEffector;
         public bool IntertXAxis = false;
+        public int UsingSplineIndex = 0;
+        public bool Enable = true;
     }
     public enum Effector
     {

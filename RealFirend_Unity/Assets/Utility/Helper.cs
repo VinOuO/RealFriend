@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using static AIMediator;
 using UniHumanoid;
+using static RootMotion.Baker;
+using RootMotion.FinalIK;
 
 public static class AIExt
 {
@@ -92,6 +94,50 @@ public static class HumanoidExt
             return Result.Failed;
         }
         return Result.Success;
+    }
+}
+
+public static class IKEffectorExt
+{
+    public static Quaternion RotationOffset(this IKEffector self, Vector3 upAxis, FullBodyBipedIK m_FullBodyBipedIK)
+    {
+        return Quaternion.AngleAxis(angle: self.IsLeftBody(m_FullBodyBipedIK) ? 90f : -90f,
+                             axis: upAxis);
+    }
+
+    /// <summary>
+    /// This API assumes the target of the effector is set already, and is going to set the given target as the parent of the target of the effector
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="isLeftBody"></param>
+    /// <param name="upAxis"></param>
+    /// <returns></returns>
+    public static Result VRMSetTarget(this IKEffector self, Transform target, FullBodyBipedIK m_FullBodyBipedIK)
+    {
+        if(self.target == null)
+        {
+            return Result.Failed;
+        }
+
+        self.target.SetParent(target);
+        self.target.localPosition = Vector3.zero;
+        self.target.localRotation = self.RotationOffset(Vector3.up, m_FullBodyBipedIK) * Quaternion.identity;
+        return Result.Success;
+    }
+
+    public static bool IsLeftBody(this IKEffector self, FullBodyBipedIK m_FullBodyBipedIK)
+    {
+        if( m_FullBodyBipedIK.solver.leftShoulderEffector == self   ||
+            m_FullBodyBipedIK.solver.leftFootEffector == self       ||
+            m_FullBodyBipedIK.solver.leftHandEffector == self       ||
+            m_FullBodyBipedIK.solver.leftThighEffector == self      )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 

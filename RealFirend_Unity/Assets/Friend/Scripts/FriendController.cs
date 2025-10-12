@@ -38,7 +38,11 @@ public class FriendController : MonoBehaviour
     [SerializeField] FriendBodyInfo m_FriendBodyInfo;
     [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
     [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
-
+    [Header("AutoConfigeration")]
+    [SerializeField] Transform m_LeftHandTarget;
+    [SerializeField] Transform m_RightHandTarget;
+    [SerializeField] Transform m_LeftFootTarget;
+    [SerializeField] Transform m_RightFootTarget;
     [Header("Status")]
     private Holdable m_HoldingObj;
     private bool IsHolding { get { return m_HoldingObj == null ? false : true; } }
@@ -52,6 +56,19 @@ public class FriendController : MonoBehaviour
         m_FriendBodyInfo = GetComponent<FriendBodyInfo>();
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
         m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
+        Init();
+    }
+
+    private void Init()
+    {
+        m_LeftHandTarget = new GameObject(name + "_LeftHandTarget").transform;
+        m_RightHandTarget = new GameObject(name + "_RightHandTarget").transform;
+        m_LeftFootTarget = new GameObject(name + "_LeftFootTarget").transform;
+        m_RightFootTarget = new GameObject(name + "_RightFootTarget").transform;
+        m_FullBodyBipedIK.solver.leftHandEffector.target = m_LeftHandTarget;
+        m_FullBodyBipedIK.solver.rightHandEffector.target = m_RightHandTarget;
+        m_FullBodyBipedIK.solver.leftFootEffector.target = m_LeftFootTarget;
+        m_FullBodyBipedIK.solver.rightFootEffector.target = m_RightFootTarget;
     }
 
     void Update()
@@ -128,8 +145,8 @@ public class FriendController : MonoBehaviour
         YieldInstruction wait = new WaitForEndOfFrame();
         float startReachingTime = Time.time;
         IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
-        IKMappingLimb mapping = m_FullBodyBipedIK.solver.leftArmMapping;
-        effector.target = obj.transform;
+        IKMappingLimb mapping = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftArmMapping : m_FullBodyBipedIK.solver.rightArmMapping;
+        effector.VRMSetTarget(obj.transform, m_FullBodyBipedIK);
         while ((Time.time - startReachingTime) / ReachingDuraction < 1)
         {
             mapping.weight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
@@ -243,7 +260,7 @@ public class FriendController : MonoBehaviour
         yield return StartCoroutine(WalkingToObjectPosition(holdObj.transform, m_FriendBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
         bool leftHandReached = false, rightHandReached = false;
         StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[0].gameObject, HumanBodyBones.LeftHand), () => leftHandReached = true));
-        StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[1].gameObject, HumanBodyBones.LeftHand), () => rightHandReached = true));
+        StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[1].gameObject, HumanBodyBones.RightHand), () => rightHandReached = true));
         yield return new WaitUntil(() => leftHandReached && rightHandReached);
         m_HoldingObj = holdObj;
     }

@@ -120,7 +120,7 @@ public class BodyInfo : MonoBehaviour
                     {
                         forward = Vector3.Cross(up, Vector3.forward);
                     }
-                    m_SupportJoints.LeftCheek.rotation = Quaternion.LookRotation(forward.normalized, up);
+                    m_SupportJoints.LeftCheek.rotation = Quaternion.LookRotation(-forward.normalized, up);
                     set = true;
                     break;
                 }
@@ -157,7 +157,7 @@ public class BodyInfo : MonoBehaviour
                     {
                         forward = Vector3.Cross(up, Vector3.forward);
                     }
-                    m_SupportJoints.RightCheek.rotation = Quaternion.LookRotation(forward.normalized, up);
+                    m_SupportJoints.RightCheek.rotation = Quaternion.LookRotation(-forward.normalized, up);
                     set = true;
                     break;
                 }
