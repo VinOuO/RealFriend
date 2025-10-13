@@ -67,19 +67,29 @@ public class SplineClip : MonoBehaviour
                 targetHeadEffector.transform.SetParent(tmpEffectorTarget.transform);
                 targetHeadEffector.transform.localPosition = Vector3.zero;
                 targetHeadEffector.transform.localRotation = Quaternion.identity;
-                targetHeadEffector.positionWeight = 1f;
-                targetHeadEffector.rotationWeight = 1f;
             }
             else
             {
                 targetEffector.target = tmpEffectorTarget.transform;
-                targetEffector.positionWeight = 1f;
-                targetEffector.rotationWeight = 1f;
             }
 
             float startPlayingTime = Time.time;
-            while ((Time.time - startPlayingTime) / clipSetting.Duration * clipSetting.Speed < 0.98f)
+            float playingProgress = 0f;
+            while (playingProgress < 0.98f)
             {
+                playingProgress = (Time.time - startPlayingTime) / clipSetting.Duration * clipSetting.Speed;
+
+                if (isHeadEffectorController)
+                {
+                    targetHeadEffector.positionWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
+                    targetHeadEffector.rotationWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
+                }
+                else
+                {
+                    targetEffector.positionWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
+                    targetEffector.rotationWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
+                }
+
                 float clipProgress = clipSetting.Curve.Evaluate((Time.time - startPlayingTime) / clipSetting.Duration * clipSetting.Speed);
                 int usinSplineIndex = clipSetting.Controllers[controllerIndex].UsingSplineIndex;
                 #region Get local space pose
@@ -99,17 +109,13 @@ public class SplineClip : MonoBehaviour
                                                                     m_SplineContainer.Splines[usinSplineIndex].EvaluateUpVector(clipProgress));
                 }
                 #endregion
-                #region Get wold space pose
+                #region Get world space pose
                 Pose worldPose = new Pose();
                 worldPose.rotation = parentPose.rotation * localPose.rotation;
-                Debug.Log("localRot: " + localPose.rotation.eulerAngles);
-                Debug.Log("ParentRot: " + parentPose.rotation.eulerAngles);
-                Debug.Log("WorldRot: " + worldPose.rotation.eulerAngles);
                 worldPose.position = parentPose.position + (parentPose.rotation * localPose.position);
                 #endregion
                 tmpEffectorTarget.transform.position = worldPose.position;
                 tmpEffectorTarget.transform.rotation = worldPose.rotation;
-                Debug.Log("FinalWorldRot: " + tmpEffectorTarget.transform.rotation.eulerAngles);
                 yield return wait;
             }
         }

@@ -306,11 +306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].Position.y
-      value: 0.3712249
+      value: 0.3925903
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].Position.z
-      value: -0.0054221153
+      value: 0.100087166
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_MetaData.Array.data[0].Tension
@@ -342,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[0].TangentIn.z
-      value: -0.007816879
+      value: -0.01850931
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].TangentIn.x
@@ -354,7 +354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].TangentIn.z
-      value: -0.007816879
+      value: -0.01850931
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[0].m_Knots.Array.data[0].TangentOut.z
@@ -370,11 +370,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[0].TangentOut.z
-      value: 0.007816879
+      value: 0.01850931
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].TangentOut.z
-      value: 0.007816879
+      value: 0.01850931
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[0].m_Knots.Array.data[0].Rotation.value.w
@@ -442,11 +442,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[0].Rotation.value.w
-      value: 0.99994695
+      value: 0.99806446
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[0].Rotation.value.x
-      value: -0.010305897
+      value: -0.062187828
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[0].Rotation.value.z
@@ -454,11 +454,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].Rotation.value.w
-      value: 0.99994695
+      value: 0.99806446
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].Rotation.value.x
-      value: -0.010305897
+      value: -0.062187828
       objectReference: {fileID: 0}
     - target: {fileID: 7892058490824433428, guid: 29bbdb2242d5f884fa59159befd10807, type: 3}
       propertyPath: m_Splines.Array.data[2].m_Knots.Array.data[1].Rotation.value.z

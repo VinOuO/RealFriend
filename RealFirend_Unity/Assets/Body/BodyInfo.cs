@@ -3,7 +3,7 @@ using UniHumanoid;
 using UniVRM10;
 public class BodyInfo : MonoBehaviour
 {
-    [Header("Configeration")]
+    [Header("AutoConfig")]
     [SerializeField] private Humanoid m_Humanoid; public Humanoid GetHumanoid => m_Humanoid; 
 
     [Header("Infos")]

@@ -106,11 +106,11 @@ public static class IKEffectorExt
     }
 
     /// <summary>
-    /// This API assumes the target of the effector is set already, and is going to set the given target as the parent of the target of the effector
+    /// Set the API target with an rotation offset based on m_FullBodyBipedIK 
     /// </summary>
     /// <param name="self"></param>
-    /// <param name="isLeftBody"></param>
-    /// <param name="upAxis"></param>
+    /// <param name="target"></param>
+    /// <param name="m_FullBodyBipedIK">Rotation offset helper</param>
     /// <returns></returns>
     public static Result VRMSetTarget(this IKEffector self, Transform target, FullBodyBipedIK m_FullBodyBipedIK)
     {
@@ -122,6 +122,19 @@ public static class IKEffectorExt
         self.target.SetParent(target);
         self.target.localPosition = Vector3.zero;
         self.target.localRotation = self.RotationOffset(Vector3.up, m_FullBodyBipedIK) * Quaternion.identity;
+        return Result.Success;
+    }
+
+    public static Result VRMSetTarget(this IKEffector self, Transform target)
+    {
+        if (self.target == null)
+        {
+            return Result.Failed;
+        }
+
+        self.target.SetParent(target);
+        self.target.localPosition = Vector3.zero;
+        self.target.localRotation = Quaternion.identity;
         return Result.Success;
     }
 
@@ -138,6 +151,17 @@ public static class IKEffectorExt
         {
             return false;
         }
+    }
+}
+
+public static class FBBIKHeadEffectorExt
+{
+    public static Result VRMSetTarget(this FBBIKHeadEffector self, Transform target)
+    {
+        self.transform.SetParent(target);
+        self.transform.localPosition = Vector3.zero;
+        self.transform.localRotation = Quaternion.identity;
+        return Result.Success;
     }
 }
 

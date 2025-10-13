@@ -38,15 +38,12 @@ public class FriendController : MonoBehaviour
     [SerializeField] FriendBodyInfo m_FriendBodyInfo;
     [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
     [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
+    [SerializeField] BodyStatus m_BodyStatus;
     [Header("AutoConfigeration")]
     [SerializeField] Transform m_LeftHandTarget;
     [SerializeField] Transform m_RightHandTarget;
     [SerializeField] Transform m_LeftFootTarget;
     [SerializeField] Transform m_RightFootTarget;
-    [Header("Status")]
-    private Holdable m_HoldingObj;
-    private bool IsHolding { get { return m_HoldingObj == null ? false : true; } }
-
     [Header("Debug")]
     [SerializeField] GameObject de_TouchingTarget;
     [SerializeField] Sitable de_SittingTarget;
@@ -56,6 +53,7 @@ public class FriendController : MonoBehaviour
         m_FriendBodyInfo = GetComponent<FriendBodyInfo>();
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
         m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
+        m_BodyStatus = GetComponentInChildren<BodyStatus>();
         Init();
     }
 
@@ -69,6 +67,11 @@ public class FriendController : MonoBehaviour
         m_FullBodyBipedIK.solver.rightHandEffector.target = m_RightHandTarget;
         m_FullBodyBipedIK.solver.leftFootEffector.target = m_LeftFootTarget;
         m_FullBodyBipedIK.solver.rightFootEffector.target = m_RightFootTarget;
+        m_FullBodyBipedIK.solver.leftHandEffector.VRMSetTarget(m_FriendBodyInfo.GetHumanoid.LeftHand);
+        m_FullBodyBipedIK.solver.rightHandEffector.VRMSetTarget(m_FriendBodyInfo.GetHumanoid.RightHand);
+        m_FullBodyBipedIK.solver.leftFootEffector.VRMSetTarget(m_FriendBodyInfo.GetHumanoid.LeftFoot);
+        m_FullBodyBipedIK.solver.rightFootEffector.VRMSetTarget(m_FriendBodyInfo.GetHumanoid.RightFoot);
+        StartCoroutine(TippingToes());
     }
 
     void Update()
@@ -211,23 +214,22 @@ public class FriendController : MonoBehaviour
     [ContextMenu("KissObject")]
     public void de_KissObject()
     {
-        KissObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.HeadCenter.gameObject);
+        KissObject(GameObject.Find("Dummy").GetComponentInChildren<BodyInfo>().GetSupportJoints.HeadCenter.gameObject, GameObject.Find("Dummy").GetComponentInChildren<Holdable>());
     }
-    public void KissObject(GameObject kissObj)
+    public void KissObject(GameObject kissObj, Holdable holdObj)
     {
-        StartCoroutine(KissingObject(kissObj));
+        StartCoroutine(KissingObjectWhileHolding(kissObj, holdObj));
     }
     IEnumerator KissingObject(GameObject kissObj)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
+        EnableTippingToes(true);
         m_FBBIKHeadEffector.positionWeight = 0;
-        m_FBBIKHeadEffector.transform.SetParent(null);
-        m_FBBIKHeadEffector.transform.position = kissObj.transform.position;
+        m_FBBIKHeadEffector.VRMSetTarget(kissObj.transform);
         yield return StartCoroutine(WalkingToObjectPosition(kissObj.transform, m_FriendBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
         float startKissingTime = Time.time;
-        while ((Time.time - startKissingTime) / KissingDuraction < 0.8f)
+        while ((Time.time - startKissingTime) / KissingDuraction < 0.8f && m_BodyStatus.IsGrounded(BodyStatus.GroundedPart.Tipping))
         {
-            Debug.Log(m_FBBIKHeadEffector.positionWeight);
             m_FBBIKHeadEffector.positionWeight = KissingTowardTargetCurve.Evaluate((Time.time - startKissingTime) / KissingDuraction);
             yield return wait;
         }
@@ -236,7 +238,7 @@ public class FriendController : MonoBehaviour
     IEnumerator KissingObjectWhileHolding(GameObject kissObj, Holdable holdObj)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        if (m_HoldingObj != holdObj)
+        if (m_BodyStatus.HoldingObj != holdObj)
         {
             yield return StartCoroutine(HoldingObject(holdObj));
         }
@@ -262,7 +264,7 @@ public class FriendController : MonoBehaviour
         StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[0].gameObject, HumanBodyBones.LeftHand), () => leftHandReached = true));
         StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[1].gameObject, HumanBodyBones.RightHand), () => rightHandReached = true));
         yield return new WaitUntil(() => leftHandReached && rightHandReached);
-        m_HoldingObj = holdObj;
+        m_BodyStatus.HoldingObj = holdObj;
     }
     #endregion
 
@@ -270,25 +272,75 @@ public class FriendController : MonoBehaviour
     [ContextMenu("HugObject")]
     public void de_HugObject()
     {
-        HugObject(GameObject.Find("Dummy").GetComponentInChildren<Holdable>());
+        HugObject(GameObject.Find("Dummy").GetComponentInChildren<Hugable>());
     }
-    public void HugObject(Holdable hugObj)
+    public void HugObject(Hugable hugObj)
     {
         StartCoroutine(HugingObject(hugObj));
     }
-    IEnumerator HugingObject(Holdable hugObj)
+    IEnumerator HugingObject(Hugable hugObj)
     {
         YieldInstruction wait = new WaitForEndOfFrame();
-        yield return StartCoroutine(WalkingToObjectPosition(hugObj.transform, m_FriendBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
-        bool leftHandReached = false, rightHandReached = false;
-        StartCoroutine(CoroutineWithCallback(ReachingObject(hugObj.HoldTrans[0].gameObject, HumanBodyBones.LeftHand), () => leftHandReached = true));
-        StartCoroutine(CoroutineWithCallback(ReachingObject(hugObj.HoldTrans[1].gameObject, HumanBodyBones.LeftHand), () => rightHandReached = true));
-        yield return new WaitUntil(() => leftHandReached && rightHandReached);
-        m_HoldingObj = hugObj;
+        yield return StartCoroutine(WalkingToObjectPosition(hugObj.transform, hugObj.HugableDistance));
+        m_VRMAnimationController.PlayHug();
+        m_BodyStatus.HugingObj = hugObj;
     }
     #endregion
 
 
+    private bool EnableTipping = false;
+    private void EnableTippingToes(bool enable)
+    {
+        if (enable)
+        {
+            m_FullBodyBipedIK.solver.leftFootEffector.rotationWeight = 1f;
+            m_FullBodyBipedIK.solver.rightFootEffector.rotationWeight = 1f;
+            m_LeftFootTarget.localRotation = Quaternion.identity;
+            m_RightFootTarget.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            m_FullBodyBipedIK.solver.leftFootEffector.rotationWeight = 0f;
+            m_FullBodyBipedIK.solver.rightFootEffector.rotationWeight = 0f;
+        }
+        EnableTipping = enable;
+    }
+    IEnumerator TippingToes()
+    {
+        YieldInstruction wait = new WaitForEndOfFrame();
+        while (true)
+        {
+            if (EnableTipping)
+            {
+                if (!m_BodyStatus.IsGrounded(BodyStatus.GroundedPart.LeftToes))
+                {
+                    Vector3 leftFootAngle = m_FriendBodyInfo.GetHumanoid.LeftFoot.eulerAngles;
+                    if (leftFootAngle.x > 180)
+                    {
+                        leftFootAngle.x -= 360;
+                    }
+                    if (leftFootAngle.x < 35f)
+                    {
+                        m_LeftFootTarget.localRotation *= Quaternion.AngleAxis(Time.deltaTime * 200f, m_FriendBodyInfo.GetHumanoid.LeftFoot.localRotation * Vector3.right);
+                    }
+                }
+
+                if (!m_BodyStatus.IsGrounded(BodyStatus.GroundedPart.RightToes))
+                {
+                    Vector3 rightFootAngle = m_FriendBodyInfo.GetHumanoid.RightFoot.localRotation.eulerAngles;
+                    if (rightFootAngle.x > 180)
+                    {
+                        rightFootAngle.x -= 360;
+                    }
+                    if (rightFootAngle.x < 35f)
+                    {
+                        m_RightFootTarget.localRotation *= Quaternion.AngleAxis(Time.deltaTime * 200f, m_FriendBodyInfo.GetHumanoid.RightFoot.localRotation * Vector3.right);
+                    }
+                }
+            }
+            yield return wait;
+        }
+    }
 
 
 

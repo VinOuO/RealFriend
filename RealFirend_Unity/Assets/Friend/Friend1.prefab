@@ -65,6 +65,7 @@ GameObject:
   - component: {fileID: 7829367662504929059}
   - component: {fileID: 2007694752574727070}
   - component: {fileID: 5788699071978750580}
+  - component: {fileID: 7593734572911384496}
   m_Layer: 0
   m_Name: Friend1
   m_TagString: Untagged
@@ -645,7 +646,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  KissingDuraction: 2
+  KissingDuraction: 5
   KissingTowardTargetCurve:
     serializedVersion: 2
     m_Curve:
@@ -674,6 +675,11 @@ MonoBehaviour:
   m_FriendBodyInfo: {fileID: 0}
   m_FullBodyBipedIK: {fileID: 0}
   m_FBBIKHeadEffector: {fileID: 0}
+  m_BodyStatus: {fileID: 0}
+  m_LeftHandTarget: {fileID: 0}
+  m_RightHandTarget: {fileID: 0}
+  m_LeftFootTarget: {fileID: 0}
+  m_RightFootTarget: {fileID: 0}
   de_TouchingTarget: {fileID: 0}
   de_SittingTarget: {fileID: 0}
 --- !u!114 &2007694752574727070
@@ -719,6 +725,25 @@ MonoBehaviour:
     RightCheek: {fileID: 4320030099875182896}
   LeftCheekDetectAngle: {x: 40, y: 40, z: 0}
   RightCheekDetectAngle: {x: 40, y: -40, z: 0}
+--- !u!114 &7593734572911384496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65849829221209886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ddc1bdf175be6b4fae0baa9ae22bb75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BodyInfo: {fileID: 0}
+  m_LeftBodyFootStatus: {fileID: 0}
+  m_RightBodyFootStatus: {fileID: 0}
+  m_LeftBodyToesStatus: {fileID: 0}
+  m_RightBodyToesStatus: {fileID: 0}
+  m_HoldingObj: {fileID: 0}
+  m_HugingObj: {fileID: 0}
 --- !u!1 &69650224360352388
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,9 +2064,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507980463955152758}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.059730463, y: -0, z: -0, w: 0.9982146}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.281508, z: -0.028169155}
-  m_LocalScale: {x: 1, y: 0.99999994, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 93827181825416237}
@@ -3441,7 +3466,7 @@ MonoBehaviour:
       pull: 0
       push: 0
       pushParent: 0
-      reach: 0.1
+      reach: 0.2
       reachSmoothing: 1
       pushSmoothing: 1
       nodes:
@@ -3484,7 +3509,7 @@ MonoBehaviour:
         bendGoal: {fileID: 125190901337076231}
         direction: {x: 1, y: 0, z: 0}
         rotationOffset: {x: 0, y: 0, z: 0, w: 0}
-        weight: 0
+        weight: 0.5
         defaultLocalDirection: {x: 0, y: 0, z: 0}
         defaultChildDirection: {x: 0, y: 0, z: 0}
     - pin: 0
@@ -3737,7 +3762,7 @@ MonoBehaviour:
       bone2: {fileID: 3131729846434985369}
       bone3: {fileID: 7438151927749721316}
       maintainRotationWeight: 0
-      weight: 0
+      weight: 1
     - parentBone: {fileID: 209739348674538160}
       bone1: {fileID: 7014099283090739154}
       bone2: {fileID: 7833042889263340715}
