@@ -78,6 +78,7 @@ public class FriendController : MonoBehaviour
     {
         m_VRMAnimationController.TravelingSpeed = FinalMovingSpeed;
     }
+
     #region Walk
     [ContextMenu("WalkToTarget")]
     public void WalkToTarget()
@@ -245,7 +246,6 @@ public class FriendController : MonoBehaviour
         StartCoroutine(KissingObject(kissObj));
     }
     #endregion
-
     #region Hold
     [ContextMenu("HoldObject")]
     public void de_HoldObject()
@@ -267,7 +267,6 @@ public class FriendController : MonoBehaviour
         m_BodyStatus.HoldingObj = holdObj;
     }
     #endregion
-
     #region Hug
     [ContextMenu("HugObject")]
     public void de_HugObject()
@@ -286,8 +285,7 @@ public class FriendController : MonoBehaviour
         m_BodyStatus.HugingObj = hugObj;
     }
     #endregion
-
-
+    #region TipToes
     private bool EnableTipping = false;
     private void EnableTippingToes(bool enable)
     {
@@ -341,6 +339,7 @@ public class FriendController : MonoBehaviour
             yield return wait;
         }
     }
+    #endregion
 
 
 

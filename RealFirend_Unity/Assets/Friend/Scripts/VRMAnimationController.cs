@@ -16,6 +16,10 @@ public class VRMAnimationController : MonoBehaviour
 
     [Header("SplineClips")]
     [SerializeField] private GameObject m_HugClip;
+
+    [Header("FacialExpression")]
+    [SerializeField] private SkinnedMeshRenderer m_FaceMesh;
+
     void OnEnable()
     {
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
@@ -42,6 +46,11 @@ public class VRMAnimationController : MonoBehaviour
             oldPos2D = newPos2D;
             yield return wait;
         }
+    }
+
+    public void SetFacialExpressionBlendShape(FacialExpression expression, bool controlMouth)
+    {
+
     }
 
     [ContextMenu("PlayHugAnim")]
