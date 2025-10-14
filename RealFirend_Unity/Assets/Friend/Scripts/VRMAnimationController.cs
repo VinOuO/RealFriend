@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using RootMotion.FinalIK;
+using UniVRM10;
 
 public class VRMAnimationController : MonoBehaviour
 {
@@ -10,31 +11,30 @@ public class VRMAnimationController : MonoBehaviour
 
     [Header("Configeration")]
     [SerializeField] private Animator m_Animator; public Animator GetAnimator => m_Animator;
-    [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
-    [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
-    [SerializeField] BodyInfo m_BodyInfo;
+    [SerializeField] private FullBodyBipedIK m_FullBodyBipedIK;
+    [SerializeField] private FBBIKHeadEffector m_FBBIKHeadEffector;
+    [SerializeField] private BodyInfo m_BodyInfo;
+    [SerializeField] private Vrm10Instance m_VRMInstance;
 
     [Header("SplineClips")]
     [SerializeField] private GameObject m_HugClip;
 
-    [Header("FacialExpression")]
-    [SerializeField] private SkinnedMeshRenderer m_FaceMesh;
-
-    void OnEnable()
+    private void OnEnable()
     {
+        m_Animator = GetComponentInChildren<Animator>();
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
         m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
-        m_BodyInfo = GetComponentInChildren<BodyInfo>();
+        m_VRMInstance = GetComponentInChildren<Vrm10Instance>();
     }
 
-    void Update()
+    private void Update()
     {
         float lerpedTravelingSpeed = Mathf.InverseLerp(0, 0.2f, TravelingSpeed);
         m_Animator.SetFloat("TravelingSpeed", lerpedTravelingSpeed);
         m_Animator.SetFloat("MovementAnimSpeed", Mathf.Clamp(lerpedTravelingSpeed, 0.1f, 1f));
     }
 
-    IEnumerator CaulatingMovingSpeed()
+    private IEnumerator CaulatingMovingSpeed()
     {
         YieldInstruction wait = new WaitForFixedUpdate();
         Vector2 oldPos2D, newPos2D;
@@ -48,9 +48,35 @@ public class VRMAnimationController : MonoBehaviour
         }
     }
 
-    public void SetFacialExpressionBlendShape(FacialExpression expression, bool controlMouth)
+    [SerializeField] FacialExpression de_Expression;
+    [SerializeField][Range(0, 1.0f)] float de_ExpressionWeight;
+    [ContextMenu("DoExpression")]
+    public void de_DoExpression()
     {
+        SetFacialExpression(de_Expression, de_ExpressionWeight);
+    }
 
+    private void SetFacialExpression(FacialExpression expression, float weight)
+    {
+        m_VRMInstance.Runtime.Expression.SetWeight(expression.ToVRMExpressionKey(), weight);
+    }
+
+    public void SetFacialExpression(FacialExpression expression)
+    {
+        m_VRMInstance.Runtime.Expression.CleanExpression();
+        Debug.Log("1");
+        if (expression.ExtractExpression(out FacialExpression resultExpression) == Result.Success)
+        {
+            Debug.Log("2");
+            m_VRMInstance.Runtime.Expression.SetWeight(resultExpression.ToVRMExpressionKey(), 1f);
+        }
+
+        if (expression.ExtractVowel(out FacialExpression resultVowel) == Result.Success)
+        {
+            Debug.Log("3: " + expression);
+            Debug.Log("4: " + resultVowel);
+            m_VRMInstance.Runtime.Expression.SetWeight(resultVowel.ToVRMExpressionKey(), 1f);
+        }
     }
 
     [ContextMenu("PlayHugAnim")]

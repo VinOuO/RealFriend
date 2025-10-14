@@ -66,6 +66,7 @@ GameObject:
   - component: {fileID: 2007694752574727070}
   - component: {fileID: 5788699071978750580}
   - component: {fileID: 7593734572911384496}
+  - component: {fileID: 6624074019169316508}
   m_Layer: 0
   m_Name: Friend1
   m_TagString: Untagged
@@ -699,7 +700,10 @@ MonoBehaviour:
   m_FullBodyBipedIK: {fileID: 0}
   m_FBBIKHeadEffector: {fileID: 0}
   m_BodyInfo: {fileID: 0}
+  m_VRMInstance: {fileID: 0}
   m_HugClip: {fileID: 5841725091121027642, guid: dd7cc23cea527c94fa2ae97c0fa29152, type: 3}
+  de_Expression: 0
+  de_ExpressionWeight: 0
 --- !u!114 &5788699071978750580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,6 +748,21 @@ MonoBehaviour:
   m_RightBodyToesStatus: {fileID: 0}
   m_HoldingObj: {fileID: 0}
   m_HugingObj: {fileID: 0}
+--- !u!114 &6624074019169316508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65849829221209886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09ee303b332eb714aa87e5625e84344d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InputText: 
+  m_CurrentSpeach: 
+  m_PhressedSpeach: 
 --- !u!1 &69650224360352388
 GameObject:
   m_ObjectHideFlags: 0

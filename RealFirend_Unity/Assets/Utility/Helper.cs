@@ -2,8 +2,9 @@ using System;
 using UnityEngine;
 using static AIMediator;
 using UniHumanoid;
-using static RootMotion.Baker;
 using RootMotion.FinalIK;
+using UniVRM10;
+using UnityEditor;
 
 public static class AIExt
 {
@@ -225,5 +226,153 @@ public static class SupportJointsExt
             UnityEngine.Object.DestroyImmediate(self.RightCheek.gameObject);
         }
         self = null;
+    }
+}
+
+public static class Vrm10RuntimeExpressionExt
+{
+    public static void CleanExpression(this Vrm10RuntimeExpression self)
+    {
+        foreach(ExpressionKey key in self.ExpressionKeys)
+        {
+            self.SetWeight(key, 0);
+        }
+    } 
+}
+
+public static class charExt
+{
+    public static bool IsVowel(this char self)
+    {
+        if( self == 'A' |
+            self == 'a' |
+            self == 'E' |
+            self == 'e' |
+            self == 'I' |
+            self == 'i' |
+            self == 'O' |
+            self == 'o' |
+            self == 'U' |
+            self == 'u' )
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static FacialExpression ToVowel(this char self)
+    {
+        if (self == 'A' |
+            self == 'a' )
+        {
+            return FacialExpression.A;
+        }
+        if (self == 'E' |
+            self == 'e' )
+        {
+            return FacialExpression.E;
+        }
+        if (self == 'I' |
+            self == 'i' )
+        {
+            return FacialExpression.I;
+        }
+        if (self == 'O' |
+            self == 'o' )
+        {
+            return FacialExpression.O;
+        }
+        if (self == 'U' |
+            self == 'u' )
+        {
+            return FacialExpression.U;
+        }
+        return FacialExpression.NoVowel;
+    }
+}
+
+public static class FacialExpressionExt
+{
+    public static ExpressionKey ToVRMExpressionKey(this FacialExpression self)
+    {
+        switch (self)
+        {
+            case FacialExpression.Natural:
+                return ExpressionKey.Neutral;
+            case FacialExpression.Happy:
+                return ExpressionKey.Happy;
+            case FacialExpression.Sad:
+                return ExpressionKey.Sad;
+            case FacialExpression.Angry:
+                return ExpressionKey.Angry;
+            case FacialExpression.Surprised:
+                return ExpressionKey.Surprised;
+
+            case FacialExpression.A:
+                return ExpressionKey.Aa;
+            case FacialExpression.E:
+                return ExpressionKey.Ee;
+            case FacialExpression.I:
+                return ExpressionKey.Ih;
+            case FacialExpression.O:
+                return ExpressionKey.Oh;
+            case FacialExpression.U:
+                return ExpressionKey.Ou;
+        }
+        return ExpressionKey.Neutral;
+    }
+
+
+    /// <returns>If failed, return FacialExpression.Null</returns>
+    public static Result ExtractExpression(this FacialExpression self, out FacialExpression result)
+    {
+        foreach (FacialExpression expression in Enum.GetValues(typeof(FacialExpression)))
+        {
+            if (self.HasFlag(expression) && (FacialExpression.Natural   | 
+                                             FacialExpression.Angry     | 
+                                             FacialExpression.Happy     | 
+                                             FacialExpression.Sad       | 
+                                             FacialExpression.Surprised ).HasFlag(expression))
+            {
+                result = expression;
+                return Result.Success;
+            }
+        }
+        result = FacialExpression.Null;
+        return Result.Failed;
+    }
+
+    /// <returns>If failed, return FacialExpression.Null</returns>
+    public static Result ExtractVowel(this FacialExpression self, out FacialExpression result)
+    {
+        // All vowel flags
+        const FacialExpression VowelMask =
+            FacialExpression.A | FacialExpression.E |
+            FacialExpression.I | FacialExpression.O | FacialExpression.U;
+
+        // Bitwise AND to find if self contains any vowel
+        FacialExpression matched = self & VowelMask;
+
+        if (matched != 0)
+        {
+            // Find the first vowel it contains
+            foreach (FacialExpression vowel in new[]{
+                                                    FacialExpression.A,
+                                                    FacialExpression.E,
+                                                    FacialExpression.I,
+                                                    FacialExpression.O,
+                                                    FacialExpression.U,
+                                                    })
+            {
+                if ((matched & vowel) != 0)
+                {
+                    result = vowel;
+                    return Result.Success;
+                }
+            }
+        }
+
+        result = FacialExpression.Null;
+        return Result.Failed;
     }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using RootMotion.FinalIK;
-using UnityEngine.InputSystem.HID;
 
 public class FriendController : MonoBehaviour
 {
@@ -38,6 +37,7 @@ public class FriendController : MonoBehaviour
     [SerializeField] FriendBodyInfo m_FriendBodyInfo;
     [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
     [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
+    [SerializeField] FriendSpeachController m_FriendSpeachController;
     [SerializeField] BodyStatus m_BodyStatus;
     [Header("AutoConfigeration")]
     [SerializeField] Transform m_LeftHandTarget;
@@ -53,6 +53,7 @@ public class FriendController : MonoBehaviour
         m_FriendBodyInfo = GetComponent<FriendBodyInfo>();
         m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
         m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
+        m_FriendSpeachController = GetComponentInChildren<FriendSpeachController>();
         m_BodyStatus = GetComponentInChildren<BodyStatus>();
         Init();
     }
@@ -340,7 +341,27 @@ public class FriendController : MonoBehaviour
         }
     }
     #endregion
+    #region Speak
+    [ContextMenu("Speak")]
+    public void Speak()
+    {
+        m_FriendSpeachController.Speak();
+        StartCoroutine(LipSyncing());
+    }
 
+    private IEnumerator LipSyncing()
+    {
+        YieldInstruction wait = new WaitForSeconds(0.1f);
+        while (!m_FriendSpeachController.FinishedSpeaking)
+        {
+            if (m_FriendSpeachController.GetCurrentVowelExpression(out FacialExpression facialExpression) == Result.Success)
+            {
+                m_VRMAnimationController.SetFacialExpression(facialExpression);
+            }
+            yield return wait;
+        }
+    }
+    #endregion
 
 
 
