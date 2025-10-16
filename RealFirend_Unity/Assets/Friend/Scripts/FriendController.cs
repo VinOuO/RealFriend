@@ -351,12 +351,18 @@ public class FriendController : MonoBehaviour
 
     private IEnumerator LipSyncing()
     {
-        YieldInstruction wait = new WaitForSeconds(0.1f);
+        YieldInstruction wait = new WaitForEndOfFrame();
         while (!m_FriendSpeachController.FinishedSpeaking)
         {
-            if (m_FriendSpeachController.GetCurrentVowelExpression(out FacialExpression facialExpression) == Result.Success)
+            if (m_FriendSpeachController.GetCurrentMouthShape(out MouthShape mouthShape) == Result.Success)
             {
-                m_VRMAnimationController.SetFacialExpression(facialExpression);
+                Debug.Log("Exp1: " + mouthShape.Vowel1);
+                Debug.Log("Exp2: " + mouthShape.Vowel2);
+                m_VRMAnimationController.SetFacialExpressionBlend(mouthShape.ToFacialBlend());
+            }
+            else
+            {
+                Debug.Log("Failed");
             }
             yield return wait;
         }

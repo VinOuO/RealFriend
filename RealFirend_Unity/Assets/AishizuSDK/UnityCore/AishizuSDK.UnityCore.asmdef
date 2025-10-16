@@ -1,0 +1,11 @@
+{
+  "name": "Aishizu.UnityCore",
+  "rootNamespace": "Aishizu.UnityCore",
+  "references": [
+    "Aishizu.Native"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

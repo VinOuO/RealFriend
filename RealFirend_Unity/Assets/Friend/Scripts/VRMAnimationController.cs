@@ -56,7 +56,12 @@ public class VRMAnimationController : MonoBehaviour
         SetFacialExpression(de_Expression, de_ExpressionWeight);
     }
 
-    private void SetFacialExpression(FacialExpression expression, float weight)
+    public void CleanExpression()
+    {
+        m_VRMInstance.Runtime.Expression.CleanExpression();
+    }
+
+    public void SetFacialExpression(FacialExpression expression, float weight)
     {
         m_VRMInstance.Runtime.Expression.SetWeight(expression.ToVRMExpressionKey(), weight);
     }
@@ -64,19 +69,22 @@ public class VRMAnimationController : MonoBehaviour
     public void SetFacialExpression(FacialExpression expression)
     {
         m_VRMInstance.Runtime.Expression.CleanExpression();
-        Debug.Log("1");
         if (expression.ExtractExpression(out FacialExpression resultExpression) == Result.Success)
         {
-            Debug.Log("2");
             m_VRMInstance.Runtime.Expression.SetWeight(resultExpression.ToVRMExpressionKey(), 1f);
         }
 
         if (expression.ExtractVowel(out FacialExpression resultVowel) == Result.Success)
         {
-            Debug.Log("3: " + expression);
-            Debug.Log("4: " + resultVowel);
             m_VRMInstance.Runtime.Expression.SetWeight(resultVowel.ToVRMExpressionKey(), 1f);
         }
+    }
+
+    public void SetFacialExpressionBlend(FacialBlend expressionBlend)
+    {
+        m_VRMInstance.Runtime.Expression.CleanExpression();
+        m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression1.ToVRMExpressionKey(), expressionBlend.Weight1);
+        m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression2.ToVRMExpressionKey(), expressionBlend.Weight2);
     }
 
     [ContextMenu("PlayHugAnim")]

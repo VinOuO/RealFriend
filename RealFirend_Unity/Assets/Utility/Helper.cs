@@ -98,6 +98,14 @@ public static class HumanoidExt
     }
 }
 
+public static class MouthShapeExt
+{
+    public static FacialBlend ToFacialBlend(this MouthShape self)
+    {
+        return new FacialBlend(self.Vowel1.ToVowelExpression(), self.Vowel2.ToVowelExpression(), self.Weight1, self.Weight2);
+    }
+}
+
 public static class IKEffectorExt
 {
     public static Quaternion RotationOffset(this IKEffector self, Vector3 upAxis, FullBodyBipedIK m_FullBodyBipedIK)
@@ -260,7 +268,7 @@ public static class charExt
         return false;
     }
 
-    public static FacialExpression ToVowel(this char self)
+    public static FacialExpression ToVowelExpression(this char self)
     {
         if (self == 'A' |
             self == 'a' )

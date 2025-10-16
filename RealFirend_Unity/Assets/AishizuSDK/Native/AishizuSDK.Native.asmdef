@@ -1,0 +1,9 @@
+{
+  "name": "Aishizu.Native",
+  "rootNamespace": "Aishizu.Native",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}
