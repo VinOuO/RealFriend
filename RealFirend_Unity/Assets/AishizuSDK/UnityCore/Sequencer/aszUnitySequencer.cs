@@ -3,26 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using Aishizu.Native.Actions;
 using Aishizu.Native.Sequencer;
+using Aishizu.UnityCore.Actions;
 
 namespace Aishizu.UnityCore.Sequencer
 {
     /// <summary>
     /// Simple sequential executor that runs Aishizu Native actions one after another.
     /// </summary>
-    public class aszUnitySequencer : MonoBehaviour, ISequencer
+    public class aszUnitySequencer : MonoBehaviour, aszISequencer
     {
-        private readonly Queue<IAction> m_Queue = new();
+        [SerializeField] private aszCharacterController m_Controller;
+        private readonly Queue<aszIAction> m_Queue = new();
         private bool m_IsRunning;
         private bool m_IsPaused;
 
-        public void Enqueue(IAction action)
+        public void Enqueue(aszIAction action)
         {
             m_Queue.Enqueue(action);
         }
 
-        public void Enqueue(IEnumerable<IAction> actions)
+        public void Enqueue(IEnumerable<aszIAction> actions)
         {
-            foreach (IAction action in actions)
+            foreach (aszIAction action in actions)
             {
                 m_Queue.Enqueue(action);
             }
@@ -48,7 +50,7 @@ namespace Aishizu.UnityCore.Sequencer
 
             while (m_Queue.Count > 0)
             {
-                IAction current = m_Queue.Dequeue();
+                aszIAction current = m_Queue.Dequeue();
                 yield return Execute(current);
                 m_IsRunning = false;
                 while (m_IsPaused)
@@ -61,47 +63,54 @@ namespace Aishizu.UnityCore.Sequencer
             m_IsRunning = false;
         }
 
-        private IEnumerator Execute(IAction action)
+        private IEnumerator Execute(aszIAction action)
         {
             switch (action)
             {
-                case ActionWalk walk:
+                case aszActionWalk walk:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing WalkAction ¡÷ Target: {walk.TargetId}, StopDistance: {walk.StopDistance}");
+                    m_Controller.Execute(new aszUnityActionWalk(walk));
                     yield return aszUnityCoroutine.WaitForSeconds(2.0f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished WalkAction.");
                     break;
 
-                case ActionReach reach:
+                case aszActionReach reach:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing ReachAction ¡÷ Target: {reach.TargetId}, Hand: {reach.Hand}");
+                    m_Controller.Execute(new aszUnityActionReach(reach));
                     yield return aszUnityCoroutine.WaitForSeconds(1.5f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished ReachAction.");
                     break;
 
-                case ActionTouch touch:
+                case aszActionTouch touch:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing TouchAction ¡÷ Target: {touch.TargetId}, Hand: {touch.Hand}");
+                    m_Controller.Execute(new aszUnityActionTouch(touch));
                     yield return aszUnityCoroutine.WaitForSeconds(1.0f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished TouchAction.");
                     break;
 
-                case ActionHold hold:
+                case aszActionHold hold:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing HoldAction ¡÷ Target: {hold.TargetId}");
+                    m_Controller.Execute(new aszUnityActionHold(hold));
                     yield return aszUnityCoroutine.WaitForSeconds(1.0f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished HoldAction.");
                     break;
 
-                case ActionSit sit:
+                case aszActionSit sit:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing SitAction ¡÷ Target: {sit.TargetId}");
+                    m_Controller.Execute(new aszUnityActionSit(sit));
                     yield return aszUnityCoroutine.WaitForSeconds(1.5f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished SitAction.");
                     break;
 
-                case ActionHug hug:
+                case aszActionHug hug:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing HugAction ¡÷ Target: {hug.TargetId}");
+                    m_Controller.Execute(new aszUnityActionHug(hug));
                     yield return aszUnityCoroutine.WaitForSeconds(1.2f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished HugAction.");
                     break;
-                case ActionKiss kiss:
+                case aszActionKiss kiss:
                     Debug.Log($"<color=#7FFF00>[Sequencer]</color> Executing KissAction ¡÷ Target: {kiss.TargetId}");
+                    m_Controller.Execute(new aszUnityActionKiss(kiss));
                     yield return aszUnityCoroutine.WaitForSeconds(1.2f);
                     Debug.Log($"<color=#00FFFF>[Sequencer]</color> Finished KissAction.");
                     break;

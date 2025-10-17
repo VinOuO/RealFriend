@@ -21,7 +21,7 @@ public class TestSequencer : MonoBehaviour
     void PlaySequencer()
     {
         string json = jsonList[0];
-        List<IAction> actions = aszActionTranslator.TranslateFromJson(json);
+        List<aszIAction> actions = aszActionTranslator.TranslateFromJson(json);
 
         m_Sequencer.Stop();
         m_Sequencer.Enqueue(actions);

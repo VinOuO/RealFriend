@@ -9,10 +9,10 @@ namespace Aishizu.Native.Actions
     /// </summary>
     public static class aszActionTranslator
     {
-        public static List<IAction> TranslateFromJson(string json)
+        public static List<aszIAction> TranslateFromJson(string json)
         {
             JsonDocument doc = JsonDocument.Parse(json);
-            List<IAction> actions = new List<IAction>();
+            List<aszIAction> actions = new List<aszIAction>();
 
             if (!doc.RootElement.TryGetProperty("actions", out JsonElement actionArray))
                 return actions;
@@ -53,43 +53,43 @@ namespace Aishizu.Native.Actions
             return actions;
         }
 
-        private static ActionWalk CreateWalkAction(JsonElement element)
+        private static aszActionWalk CreateWalkAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
             float stop = element.TryGetProperty("stopDistance", out JsonElement s) ? s.GetSingle() : 0.5f;
-            return new ActionWalk(target, stop);
+            return new aszActionWalk(target, stop);
         }
-        private static ActionReach CreateReachAction(JsonElement element)
+        private static aszActionReach CreateReachAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
             string hand = element.TryGetProperty("hand", out JsonElement s) ? s.GetString() : "Right";
-            return new ActionReach(target, hand);
+            return new aszActionReach(target, hand);
         }
-        private static ActionHold CreatHoldAction(JsonElement element)
+        private static aszActionHold CreatHoldAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
-            return new ActionHold(target);
+            return new aszActionHold(target);
         }
-        private static ActionTouch CreateTouchAction(JsonElement element)
+        private static aszActionTouch CreateTouchAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
             string hand = element.TryGetProperty("hand", out JsonElement s) ? s.GetString() : "Right";
-            return new ActionTouch(target, hand);
+            return new aszActionTouch(target, hand);
         }
-        private static ActionSit CreateSitAction(JsonElement element)
+        private static aszActionSit CreateSitAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
-            return new ActionSit(target);
+            return new aszActionSit(target);
         }
-        private static ActionHug CreateHugAction(JsonElement element)
+        private static aszActionHug CreateHugAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
-            return new ActionHug(target);
+            return new aszActionHug(target);
         }
-        private static ActionKiss CreateKissAction(JsonElement element)
+        private static aszActionKiss CreateKissAction(JsonElement element)
         {
             string target = element.GetProperty("target").GetString();
-            return new ActionKiss(target);
+            return new aszActionKiss(target);
         }
     }
 }

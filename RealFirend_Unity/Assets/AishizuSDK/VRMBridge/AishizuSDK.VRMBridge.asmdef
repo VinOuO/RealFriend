@@ -1,0 +1,22 @@
+{
+    "name": "Aishizu.VRMBridge",
+    "rootNamespace": "Aishizu.VRMBridge",
+    "references": [
+        "Aishizu.Native",
+        "Aishizu.UnityCore",
+        "VRM10",
+        "UniHumanoid",
+        "FinalIK.RootMotion",
+        "Unity.Splines",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
