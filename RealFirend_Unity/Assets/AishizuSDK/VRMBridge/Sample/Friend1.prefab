@@ -62,11 +62,11 @@ GameObject:
   - component: {fileID: 7875884265792848210}
   - component: {fileID: 1853204428574182196}
   - component: {fileID: 7388103850060295581}
-  - component: {fileID: 7829367662504929059}
+  - component: {fileID: 6914746546010267062}
   - component: {fileID: 2007694752574727070}
-  - component: {fileID: 5788699071978750580}
   - component: {fileID: 7593734572911384496}
   - component: {fileID: 6624074019169316508}
+  - component: {fileID: 1242315988984777050}
   m_Layer: 0
   m_Name: Friend1
   m_TagString: Untagged
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfba4ccd3f854e64f868ce83553071a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Vrm: {fileID: 5929401533440927806, guid: 1157bb58b9633f84b8f326d1672df0af, type: 3}
+  Vrm: {fileID: 11400000, guid: 937b37a065ba3a7458e85a38ef6b6a3a, type: 2}
   SpringBone:
     ColliderGroups:
     - {fileID: 492282251374420834}
@@ -536,7 +536,7 @@ MonoBehaviour:
   DrawLookAtGizmo: 1
   LookAtTarget: {fileID: 0}
   LookAtTargetType: 0
---- !u!114 &7829367662504929059
+--- !u!114 &6914746546010267062
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -545,17 +545,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 65849829221209886}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21659dbcdaa5537489c028fb8cd3ed57, type: 3}
+  m_Script: {fileID: 11500000, guid: cb98f59be71919d448f55143067dd5ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NormalMovingSpeed: 0.8
-  FinalMovingSpeed: 0
+  NormalMovingSpeed: 1
+  FinalMovingSpeed: 1
   MovingSpeedTowardTargetCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.05
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -622,7 +622,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  ReachingDuraction: 2
+  ReachingDuraction: 0.1
   ReachingTowardTargetCurve:
     serializedVersion: 2
     m_Curve:
@@ -637,7 +637,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1.0151432
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -647,7 +647,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  KissingDuraction: 5
+  KissingDuraction: 0.1
   KissingTowardTargetCurve:
     serializedVersion: 2
     m_Curve:
@@ -662,7 +662,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1.0151432
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -672,10 +672,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_VRMAnimationController: {fileID: 2007694752574727070}
-  m_FriendBodyInfo: {fileID: 0}
+  m_VRMAnimationController: {fileID: 0}
+  m_VRMBodyInfo: {fileID: 0}
   m_FullBodyBipedIK: {fileID: 0}
   m_FBBIKHeadEffector: {fileID: 0}
+  m_FriendSpeachController: {fileID: 0}
   m_BodyStatus: {fileID: 0}
   m_LeftHandTarget: {fileID: 0}
   m_RightHandTarget: {fileID: 0}
@@ -704,31 +705,6 @@ MonoBehaviour:
   m_HugClip: {fileID: 5841725091121027642, guid: dd7cc23cea527c94fa2ae97c0fa29152, type: 3}
   de_Expression: 0
   de_ExpressionWeight: 0
---- !u!114 &5788699071978750580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65849829221209886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4620b6810e95b14fbd887ebf2e1fc5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Humanoid: {fileID: 7875884265792848210}
-  m_BodyCode:
-    LeftArmLength: 0.75
-    RightArmLength: 0.75
-    LeftLegLength: 1.15
-    RightLegLength: 1.15
-    HipRadious: 0.3
-  m_SupportJoints:
-    HeadCenter: {fileID: 1785697518212587615}
-    LeftCheek: {fileID: 2124305826007359052}
-    RightCheek: {fileID: 4320030099875182896}
-  LeftCheekDetectAngle: {x: 40, y: 40, z: 0}
-  RightCheekDetectAngle: {x: 40, y: -40, z: 0}
 --- !u!114 &7593734572911384496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -760,9 +736,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ee303b332eb714aa87e5625e84344d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InputText: 
+  m_InputSpeach: "I never imagined I\u2019d meet someone like you. The way your eyes
+    sparkle when you laugh, how your voice softens when you say my name \u2014 it
+    all makes my heart race. Every little moment with you feels like a dream I don\u2019t
+    want to wake from. I could sit beside you for hours, just listening, just watching.
+    You make ordinary days feel like something magical. When I look at you, it\u2019s
+    like everything else fades away. I want to know every thought you have, every
+    feeling, every heartbeat. I really, truly like you... more than words can ever
+    say."
   m_CurrentSpeach: 
-  m_PhressedSpeach: 
+  m_PhressedSpeach: []
+  m_FinishedSpeaking: 1
+  CurrentWordIndex: 0
+  CurrentCharacterIndex: 0
+  m_CurrentWorldStartTime: 0
+  m_SpeachPeriod: 0.25
+--- !u!114 &1242315988984777050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65849829221209886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f289b53144541bf4b92e04611334ad7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Humanoid: {fileID: 7875884265792848210}
+  m_BodyCode:
+    LeftArmLength: 0.75
+    RightArmLength: 0.75
+    LeftLegLength: 1.15
+    RightLegLength: 1.15
+    HipRadious: 0.3
+  m_SupportJoints:
+    HeadCenter: {fileID: 1785697518212587615}
+    LeftCheek: {fileID: 2124305826007359052}
+    RightCheek: {fileID: 4320030099875182896}
+  LeftCheekDetectAngle: {x: 40, y: -35, z: 1}
+  RightCheekDetectAngle: {x: 40, y: 35, z: 1}
 --- !u!1 &69650224360352388
 GameObject:
   m_ObjectHideFlags: 0
@@ -3999,6 +4012,7 @@ Transform:
   - {fileID: 1785697518212587615}
   - {fileID: 2124305826007359052}
   - {fileID: 4320030099875182896}
+  - {fileID: 3291197415780499818}
   m_Father: {fileID: 5225211014657356493}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5437534945974118379
@@ -6173,6 +6187,37 @@ MonoBehaviour:
   m_gravityDir: {x: -0, y: -1, z: 0}
   m_dragForce: 0.05
   m_jointRadius: 0.012496288
+--- !u!1 &5833944941693425830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3291197415780499818}
+  m_Layer: 0
+  m_Name: _look_at_origin_
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3291197415780499818
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5833944941693425830}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.005404278, y: 0.00000021909715, z: 0.000000025113977, w: 0.9999854}
+  m_LocalPosition: {x: -0.000000025810007, y: 0.0600001, z: -0.00000006845221}
+  m_LocalScale: {x: 1, y: 1.0000004, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4820914362650691757}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5838948512686644551
 GameObject:
   m_ObjectHideFlags: 0

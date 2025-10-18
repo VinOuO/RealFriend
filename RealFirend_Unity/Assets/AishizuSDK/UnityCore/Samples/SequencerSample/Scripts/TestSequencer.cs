@@ -22,7 +22,6 @@ public class TestSequencer : MonoBehaviour
     {
         string json = jsonList[0];
         List<aszIAction> actions = aszActionTranslator.TranslateFromJson(json);
-
         m_Sequencer.Stop();
         m_Sequencer.Enqueue(actions);
         m_Sequencer.Play();

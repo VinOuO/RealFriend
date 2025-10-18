@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System;
 using RootMotion.FinalIK;
@@ -47,14 +47,12 @@ namespace Aishizu.VRMBridge
         [SerializeField] Transform m_RightHandTarget;
         [SerializeField] Transform m_LeftFootTarget;
         [SerializeField] Transform m_RightFootTarget;
-        [Header("Debug")]
-        [SerializeField] GameObject de_TouchingTarget;
-        [SerializeField] aszSitable de_SittingTarget;
 
         void OnEnable()
         {
             m_VRMBodyInfo = GetComponent<aszVRMBodyInfo>();
             m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
+            m_VRMAnimationController = GetComponentInChildren<aszVRMAnimationController>();
             m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
             m_FriendSpeachController = GetComponentInChildren<FriendSpeachController>();
             m_BodyStatus = GetComponentInChildren<aszVRMBodyStatus>();
@@ -85,6 +83,10 @@ namespace Aishizu.VRMBridge
 
         public override IEnumerator Execute(aszIUnityAction action)
         {
+            Debug.Log("InININ");
+            var actionName = action.GetType().Name;
+            Debug.Log($"<color=#8888FF>[VRMCharacterController]</color> ▶ Executing <b>{actionName}</b>: {action}");
+
             switch (action)
             {
                 case aszUnityActionWalk walk:
@@ -99,6 +101,14 @@ namespace Aishizu.VRMBridge
                     yield return StartCoroutine(TouchingObject(touch));
                     break;
 
+                case aszUnityActionHold hold:
+                    yield return StartCoroutine(HoldingObject(hold));
+                    break;
+
+                case aszUnityActionSit sit:
+                    yield return StartCoroutine(SittingOnObject(sit));
+                    break;
+
                 case aszUnityActionHug hug:
                     yield return StartCoroutine(HugingObject(hug));
                     break;
@@ -106,18 +116,16 @@ namespace Aishizu.VRMBridge
                 case aszUnityActionKiss kiss:
                     yield return StartCoroutine(KissingObject(kiss));
                     break;
-                case aszUnityActionHold hold:
-                    yield return StartCoroutine(HoldingObject(hold));
-                    break;
-                case aszUnityActionSit sit:
-                    yield return StartCoroutine(SittingOnObject(sit));
-                    break;
 
                 default:
-                    Debug.LogWarning($"[VRMCharacterController] Unknown action type: {action.GetType()}");
-                    break;
+                    Debug.LogWarning($"<color=#FF4444>[VRMCharacterController]</color> ⚠ Unknown action type: {action.GetType()}");
+                    yield break;
             }
+
+            Debug.Log($"<color=#00FFFF>[VRMCharacterController]</color> ✓ Finished <b>{actionName}</b>: {action}");
         }
+
+
 
         #region Walk
         [ContextMenu("WalkToTarget")]
@@ -138,6 +146,8 @@ namespace Aishizu.VRMBridge
 
             while (distance > stopDistance)
             {
+                Debug.Log("Dis: " + distance);
+                Debug.Log("stop: " + stopDistance);
                 WalkToPos(obj.position, stopDistance, ref distance);
                 yield return wait;
             }
@@ -172,6 +182,7 @@ namespace Aishizu.VRMBridge
             Quaternion originalFacing = transform.rotation;
             while (Time.time - startFacingTime < withInDuraction)
             {
+                Debug.Log("dfffd");
                 float currentAngle = angleDiff * FacingTargetCurve.Evaluate((Time.time - startFacingTime) / withInDuraction);
                 transform.rotation = originalFacing * Quaternion.AngleAxis(currentAngle, Vector3.up); ;
                 yield return wait;
@@ -182,18 +193,7 @@ namespace Aishizu.VRMBridge
         #region Reach
         private IEnumerator ReachingObject(aszUnityActionReach reach)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
-            float startReachingTime = Time.time;
-            IKEffector effector = reach.Hand != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
-            IKMappingLimb mapping = reach.Hand != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftArmMapping : m_FullBodyBipedIK.solver.rightArmMapping;
-            effector.VRMSetTarget(reach.TargetObject.transform, m_FullBodyBipedIK);
-            while ((Time.time - startReachingTime) / ReachingDuraction < 1)
-            {
-                mapping.weight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
-                effector.positionWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
-                effector.rotationWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
-                yield return wait;
-            }
+            yield return ReachingObject(reach.TargetObject.transform, reach.Hand);
         }
 
         private IEnumerator ReachingObject(Transform obj, HumanBodyBones usingJoint)
