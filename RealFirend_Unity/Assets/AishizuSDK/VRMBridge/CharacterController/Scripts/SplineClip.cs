@@ -4,7 +4,7 @@ using RootMotion.FinalIK;
 using UnityEngine.Splines;
 using UniHumanoid;
 using System.Collections.Generic;
-using Aishizu.UnityCore;
+using Aishizu.Native;
 
 namespace Aishizu.VRMBridge
 {

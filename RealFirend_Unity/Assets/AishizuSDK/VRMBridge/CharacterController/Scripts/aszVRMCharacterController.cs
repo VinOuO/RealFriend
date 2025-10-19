@@ -3,11 +3,13 @@ using System.Collections;
 using System;
 using RootMotion.FinalIK;
 using Aishizu.UnityCore;
-using Aishizu.UnityCore.Actions;
+using Aishizu.UnityCore.Speach;
+using Aishizu.VRMBridge.Actions;
+using Aishizu.Native;
 
 namespace Aishizu.VRMBridge
 {
-    public class aszVRMCharacterController : aszCharacterController
+    public class aszVRMCharacterController : aszCharacter
     {
         /// <summary>
         /// The usual moving speed of friend
@@ -81,62 +83,17 @@ namespace Aishizu.VRMBridge
             m_VRMAnimationController.TravelingSpeed = FinalMovingSpeed;
         }
 
-        public override IEnumerator Execute(aszIUnityAction action)
-        {
-            Debug.Log("InININ");
-            var actionName = action.GetType().Name;
-            Debug.Log($"<color=#8888FF>[VRMCharacterController]</color> ▶ Executing <b>{actionName}</b>: {action}");
-
-            switch (action)
-            {
-                case aszUnityActionWalk walk:
-                    yield return StartCoroutine(WalkingToObject(walk));
-                    break;
-
-                case aszUnityActionReach reach:
-                    yield return StartCoroutine(ReachingObject(reach));
-                    break;
-
-                case aszUnityActionTouch touch:
-                    yield return StartCoroutine(TouchingObject(touch));
-                    break;
-
-                case aszUnityActionHold hold:
-                    yield return StartCoroutine(HoldingObject(hold));
-                    break;
-
-                case aszUnityActionSit sit:
-                    yield return StartCoroutine(SittingOnObject(sit));
-                    break;
-
-                case aszUnityActionHug hug:
-                    yield return StartCoroutine(HugingObject(hug));
-                    break;
-
-                case aszUnityActionKiss kiss:
-                    yield return StartCoroutine(KissingObject(kiss));
-                    break;
-
-                default:
-                    Debug.LogWarning($"<color=#FF4444>[VRMCharacterController]</color> ⚠ Unknown action type: {action.GetType()}");
-                    yield break;
-            }
-
-            Debug.Log($"<color=#00FFFF>[VRMCharacterController]</color> ✓ Finished <b>{actionName}</b>: {action}");
-        }
-
-
 
         #region Walk
-        [ContextMenu("WalkToTarget")]
-        public void WalkToTarget()
+        public void WalkToTarget(aszVRMWalk walk)
         {
-            StartCoroutine(WalkingToPosition(Vector3.zero, 0.5f));
+            StartCoroutine(WalkingToObject(walk));
         }
 
-        private IEnumerator WalkingToObject(aszUnityActionWalk walk)
+        private IEnumerator WalkingToObject(aszVRMWalk walk)
         {
-            yield return StartCoroutine(WalkingToObject(walk.TargetObject.transform, walk.StopDistance));
+            yield return StartCoroutine(WalkingToObject(walk.Walkable.transform, walk.StopDistance));
+            walk.SetFinish(Result.Success);
         }
 
         private IEnumerator WalkingToObject(Transform obj, float stopDistance)
@@ -191,9 +148,15 @@ namespace Aishizu.VRMBridge
         }
         #endregion
         #region Reach
-        private IEnumerator ReachingObject(aszUnityActionReach reach)
+        public void ReachObject(aszVRMReach reach)
         {
-            yield return ReachingObject(reach.TargetObject.transform, reach.Hand);
+            StartCoroutine(ReachingObject(reach));
+        }
+
+        private IEnumerator ReachingObject(aszVRMReach reach)
+        {
+            yield return StartCoroutine(ReachingObject(reach.Reachable.transform, reach.Hand));
+            reach.SetFinish(Result.Success);
         }
 
         private IEnumerator ReachingObject(Transform obj, HumanBodyBones usingJoint)
@@ -213,10 +176,16 @@ namespace Aishizu.VRMBridge
         }
         #endregion
         #region Touch
-        private IEnumerator TouchingObject(aszUnityActionTouch touch)
+
+        public void TouchObject(aszVRMTouch touch)
         {
-            yield return StartCoroutine(WalkingToObject(touch.TargetObject.transform, (touch.Hand != HumanBodyBones.RightHand ? m_VRMBodyInfo.GetBodyCode.LeftArmLength : m_VRMBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
-            yield return StartCoroutine(ReachingObject(touch.TargetObject.transform, touch.Hand));
+            StartCoroutine(TouchingObject(touch));
+        }
+
+        private IEnumerator TouchingObject(aszVRMTouch touch)
+        {
+            yield return StartCoroutine(TouchingObject(touch.Touchable.transform, touch.Hand));
+            touch.SetFinish(Result.Success);
         }
 
         private IEnumerator TouchingObject(Transform obj, HumanBodyBones usingJoint)
@@ -226,6 +195,7 @@ namespace Aishizu.VRMBridge
         }
         #endregion
         #region Sit
+
         private IEnumerator SitingElevatingToHeight(float targetHeight, float withInDuraction, Transform hip)
         {
             YieldInstruction wait = new WaitForEndOfFrame();
@@ -239,83 +209,73 @@ namespace Aishizu.VRMBridge
             transform.position = transform.position + Vector3.up * (targetHeight - hip.position.y);
         }
 
-        private IEnumerator SittingOnObject(aszUnityActionSit sitObj)
+        public void SitOnObject(aszVRMSit sit)
         {
-            aszSitable sitable = sitObj.TargetObject.GetComponentInChildren<aszSitable>();
-            if (sitable)
-            {
-                yield return StartCoroutine(SittingOnObject(sitable));
-            }
+            StartCoroutine(SittingOnObject(sit));
 
         }
 
-        private IEnumerator SittingOnObject(aszSitable sitObj)
+        private IEnumerator SittingOnObject(aszVRMSit sit)
         {
-            yield return StartCoroutine(WalkingToObject(sitObj.transform, 0.05f));
-            yield return StartCoroutine(Facing(sitObj.transform.position + sitObj.transform.forward, 1f));
+            yield return StartCoroutine(WalkingToObject(sit.Sitable.transform, 0.05f));
+            yield return StartCoroutine(Facing(sit.Sitable.transform.position + sit.Sitable.transform.forward, 1f));
             m_VRMAnimationController.GetAnimator.SetTrigger("TriggerSit");
-            yield return StartCoroutine(SitingElevatingToHeight(sitObj.SitPose.position.y + m_VRMBodyInfo.GetBodyCode.HipRadious, 3f, m_VRMBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
+            yield return StartCoroutine(SitingElevatingToHeight(sit.Sitable.SitPose.position.y + m_VRMBodyInfo.GetBodyCode.HipRadious, 3f, m_VRMBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
+            sit.SetFinish(Result.Success);
         }
         #endregion
         #region Kiss
-        private IEnumerator KissingObject(aszUnityActionKiss kiss)
+        public void KissObject(aszVRMKiss kiss)
         {
-            yield return StartCoroutine(KissingObject(kiss.TargetObject.transform));
+            StartCoroutine(KissingObject(kiss));
         }
 
-        private IEnumerator KissingObject(Transform kissObj)
+        private IEnumerator KissingObject(aszVRMKiss kiss)
         {
             YieldInstruction wait = new WaitForEndOfFrame();
             EnableTippingToes(true);
             m_FBBIKHeadEffector.positionWeight = 0;
-            m_FBBIKHeadEffector.VRMSetTarget(kissObj.transform);
-            yield return StartCoroutine(WalkingToObject(kissObj, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+            m_FBBIKHeadEffector.VRMSetTarget(kiss.Kissable.transform);
+            yield return StartCoroutine(WalkingToObject(kiss.Kissable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
             float startKissingTime = Time.time;
             while ((Time.time - startKissingTime) / KissingDuraction < 0.8f && m_BodyStatus.IsGrounded(aszVRMBodyStatus.GroundedPart.Tipping))
             {
                 m_FBBIKHeadEffector.positionWeight = KissingTowardTargetCurve.Evaluate((Time.time - startKissingTime) / KissingDuraction);
                 yield return wait;
             }
+            kiss.SetFinish(Result.Success);
         }
         #endregion
         #region Hold
-        [ContextMenu("HoldObject")]
-        private IEnumerator HoldingObject(aszUnityActionHold hold)
+        public void HoldObject(aszVRMHold hold)
         {
-            aszHoldable holdable = hold.TargetObject.GetComponentInChildren<aszHoldable>();
-            if (holdable)
-            {
-                yield return StartCoroutine(HoldingObject(holdable));
-            }
+            StartCoroutine(HoldingObject(hold));
         }
 
-        private IEnumerator HoldingObject(aszHoldable holdObj)
+        private IEnumerator HoldingObject(aszVRMHold hold)
         {
             YieldInstruction wait = new WaitForEndOfFrame();
-            yield return StartCoroutine(WalkingToObject(holdObj.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+            yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
             bool leftHandReached = false, rightHandReached = false;
-            StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[0], HumanBodyBones.LeftHand), () => leftHandReached = true));
-            StartCoroutine(CoroutineWithCallback(ReachingObject(holdObj.HoldTrans[1], HumanBodyBones.RightHand), () => rightHandReached = true));
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand), () => leftHandReached = true));
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
-            m_BodyStatus.HoldingObj = holdObj;
+            m_BodyStatus.HoldingObj = hold.Holdable;
+            hold.SetFinish(Result.Success);
         }
         #endregion
         #region Hug
-        IEnumerator HugingObject(aszUnityActionHug hug)
+        public void HugObject(aszVRMHug hug)
         {
-            aszHugable hugable = hug.TargetObject.GetComponentInChildren<aszHugable>();
-            if (hugable)
-            {
-                yield return StartCoroutine(HugingObject(hugable));
-            }
+            StartCoroutine(HugingObject(hug));
         }
 
-        IEnumerator HugingObject(aszHugable hugObj)
+        IEnumerator HugingObject(aszVRMHug hug)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
-            yield return StartCoroutine(WalkingToObject(hugObj.transform, hugObj.HugableDistance));
+            yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
             m_VRMAnimationController.PlayHug();
-            m_BodyStatus.HugingObj = hugObj;
+            m_BodyStatus.HugingObj = hug.Hugable;
+            hug.SetFinish(Result.Success);
         }
         #endregion
         #region TipToes

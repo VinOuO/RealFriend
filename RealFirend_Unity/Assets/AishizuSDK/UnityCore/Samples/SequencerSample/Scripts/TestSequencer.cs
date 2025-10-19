@@ -20,10 +20,12 @@ public class TestSequencer : MonoBehaviour
     [ContextMenu("PlaySequencer")]
     void PlaySequencer()
     {
+        /*
         string json = jsonList[0];
-        List<aszIAction> actions = aszActionTranslator.TranslateFromJson(json);
+        List<aszIAction> actions = aszActionManager.TranslateActionFromJson(json);
         m_Sequencer.Stop();
         m_Sequencer.Enqueue(actions);
         m_Sequencer.Play();
+        */
     }
 }

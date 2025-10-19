@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Aishizu.UnityCore;
+using Aishizu.Native;
 using RootMotion.FinalIK;
 using UniVRM10;
 

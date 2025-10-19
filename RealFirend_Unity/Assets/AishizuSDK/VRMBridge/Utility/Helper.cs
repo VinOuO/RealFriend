@@ -4,6 +4,7 @@ using UniHumanoid;
 using RootMotion.FinalIK;
 using UniVRM10;
 using Aishizu.UnityCore;
+using Aishizu.Native;
 
 namespace Aishizu.VRMBridge
 {
@@ -117,6 +118,10 @@ namespace Aishizu.VRMBridge
             if (self.RightCheek)
             {
                 UnityEngine.Object.DestroyImmediate(self.RightCheek.gameObject);
+            }
+            if (self.Mouth)
+            {
+                UnityEngine.Object.DestroyImmediate(self.Mouth.gameObject);
             }
             self = null;
         }

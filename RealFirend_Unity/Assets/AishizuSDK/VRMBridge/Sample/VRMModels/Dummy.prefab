@@ -1790,6 +1790,37 @@ MonoBehaviour:
   m_gravityDir: {x: -0, y: -1, z: 0}
   m_dragForce: 0.4
   m_jointRadius: 0.0020023743
+--- !u!1 &2009920597524638301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7683211092227004084}
+  m_Layer: 0
+  m_Name: Mouth
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7683211092227004084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009920597524638301}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1.0000004, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3369958409481127452}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2060378402995919441
 GameObject:
   m_ObjectHideFlags: 0
@@ -3266,8 +3297,10 @@ MonoBehaviour:
     HeadCenter: {fileID: 1394324659200977398}
     LeftCheek: {fileID: 7334144251993270848}
     RightCheek: {fileID: 3434038302169416251}
-  LeftCheekDetectAngle: {x: 40, y: -35, z: 1}
-  RightCheekDetectAngle: {x: 40, y: 35, z: 1}
+    Mouth: {fileID: 7683211092227004084}
+  LeftCheekDetectAngle: {x: 50, y: -50, z: 1}
+  RightCheekDetectAngle: {x: 50, y: 50, z: 1}
+  MouthDetectAngle: {x: 50, y: 0, z: 0}
 --- !u!1 &3500810533085207331
 GameObject:
   m_ObjectHideFlags: 0
@@ -3634,6 +3667,7 @@ Transform:
   - {fileID: 1394324659200977398}
   - {fileID: 7334144251993270848}
   - {fileID: 3434038302169416251}
+  - {fileID: 7683211092227004084}
   m_Father: {fileID: 7234668138459903242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5838951009100418609
@@ -3665,7 +3699,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b71745503dee1a84ab6ebac36b5e5764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InteractTransform: {fileID: 0}
+  InteractTransform: {fileID: 3369958409481127452}
   m_holdTrans:
   - {fileID: 7334144251993270848}
   - {fileID: 3434038302169416251}
@@ -3681,7 +3715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978743c0384538540bbd6ff8beedd02b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BodyInfo: {fileID: 0}
+  m_BodyInfo: {fileID: 3192846602432657646}
   m_Holdable: {fileID: 7457451101541821217}
 --- !u!1 &3898626215186812185
 GameObject:

@@ -5,8 +5,8 @@ namespace Aishizu.Native.Sequencer
 {
     public interface aszISequencer
     {
-        void Enqueue(aszIAction action);
-        void Enqueue(IEnumerable<aszIAction> actions);
+        void Enqueue(aszAction action);
+        void Enqueue(IEnumerable<aszAction> actions);
         void Play();
         void Pause(bool isPaused);
         void Stop();

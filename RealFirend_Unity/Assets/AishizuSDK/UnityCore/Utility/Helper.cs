@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using static Aishizu.UnityCore.AIMediator;
+using Aishizu.Native;
 
 namespace Aishizu.UnityCore
 {

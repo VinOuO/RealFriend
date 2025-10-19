@@ -2,6 +2,7 @@ using UnityEngine;
 using UniHumanoid;
 using UniVRM10;
 using Aishizu.UnityCore;
+using Aishizu.Native;
 
 namespace Aishizu.VRMBridge
 {
@@ -18,6 +19,7 @@ namespace Aishizu.VRMBridge
         [Header("Debug")]
         public Vector3 LeftCheekDetectAngle;
         public Vector3 RightCheekDetectAngle;
+        public Vector3 MouthDetectAngle;
 
         private void OnEnable()
         {
@@ -66,7 +68,6 @@ namespace Aishizu.VRMBridge
         }
         Result SetSupportJoints()
         {
-            Debug.Log("SetSupportJoints");
             #region GetReferences
             if (!m_Humanoid)
             {
@@ -178,7 +179,44 @@ namespace Aishizu.VRMBridge
                 return Result.Failed;
             }
             #endregion
-
+            #region SetMouthPosition
+            Vector3 mouthCastFrom = m_SupportJoints.HeadCenter.position + GetDetectDirection(MouthDetectAngle, m_SupportJoints.HeadCenter);
+            tmpRay = new Ray(mouthCastFrom, m_SupportJoints.HeadCenter.position - mouthCastFrom);
+            hits = Physics.RaycastAll(ray: tmpRay,
+                                      maxDistance: 10f,
+                                      layerMask: ~LayerMask.NameToLayer("Face"));
+            if (hits.Length > 0)
+            {
+   
+                bool set = false;
+                foreach (RaycastHit hit in hits)
+                {
+                    if (gameObject.IsParentOf(hit.collider.gameObject))
+                    {
+                        m_SupportJoints.Mouth.position = hit.point;
+                        Vector3 up = hit.normal;
+                        Vector3 forward = transform.right;
+                        if (forward == Vector3.zero)
+                        {
+                            forward = Vector3.Cross(up, Vector3.forward);
+                        }
+                        m_SupportJoints.Mouth.rotation = Quaternion.LookRotation(-forward.normalized, up);
+                        set = true;
+                        break;
+                    }
+                }
+                if (!set)
+                {
+                    Debug.LogError("Didn't hit face");
+                    return Result.Failed;
+                }
+            }
+            else
+            {
+                Debug.LogError("Didn't hit anything");
+                return Result.Failed;
+            }
+            #endregion
 
             return Result.Success;
         }
@@ -219,6 +257,7 @@ namespace Aishizu.VRMBridge
                 Gizmos.color = Color.cyan;
                 Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + GetDetectDirection(LeftCheekDetectAngle, m_SupportJoints.HeadCenter));
                 Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + GetDetectDirection(RightCheekDetectAngle, m_SupportJoints.HeadCenter));
+                Gizmos.DrawLine(m_SupportJoints.HeadCenter.position, m_SupportJoints.HeadCenter.position + GetDetectDirection(MouthDetectAngle, m_SupportJoints.HeadCenter));
             }
         }
 
@@ -229,21 +268,26 @@ namespace Aishizu.VRMBridge
             public Transform HeadCenter;
             public Transform LeftCheek;
             public Transform RightCheek;
+            public Transform Mouth;
 
             public SupportJoints(Transform head)
             {
                 HeadCenter = new GameObject("HeadCenter").transform;
                 LeftCheek = new GameObject("LeftCheek").transform;
                 RightCheek = new GameObject("RightCheek").transform;
+                Mouth = new GameObject("Mouth").transform;
                 HeadCenter.parent = head;
                 LeftCheek.parent = head;
                 RightCheek.parent = head;
+                Mouth.parent = head;
                 HeadCenter.position = head.position;
                 LeftCheek.position = head.position;
                 RightCheek.position = head.position;
+                Mouth.position = head.position;
                 HeadCenter.rotation = head.rotation;
                 LeftCheek.rotation = head.rotation;
                 RightCheek.rotation = head.rotation;
+                Mouth.rotation = head.rotation;
             }
         }
     }
