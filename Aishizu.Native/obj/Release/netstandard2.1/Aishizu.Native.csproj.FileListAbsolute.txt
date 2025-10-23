@@ -1,0 +1,17 @@
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\Aishizu.Native.deps.json
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\Aishizu.Native.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\Aishizu.Native.pdb
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\Microsoft.Bcl.AsyncInterfaces.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Buffers.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Memory.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Numerics.Vectors.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Runtime.CompilerServices.Unsafe.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Text.Encodings.Web.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Text.Json.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\netstandard2.1\System.Threading.Tasks.Extensions.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\netstandard2.1\Aishizu.Native.csproj.AssemblyReference.cache
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\netstandard2.1\Aishizu.Native.GeneratedMSBuildEditorConfig.editorconfig
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\netstandard2.1\Aishizu.Native.csproj.CoreCompileInputs.cache
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\netstandard2.1\Aishizu.Native.csproj.CopyComplete
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\netstandard2.1\Aishizu.Native.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\netstandard2.1\Aishizu.Native.pdb

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Use an older System.Text.Json compatible with netstandard2.1 -->
+    <PackageReference Include="System.Text.Json" Version="6.0.9" />
+  </ItemGroup>
+
+  <Target Name="CopyToUnityPlugins" AfterTargets="Build">
+    <Copy
+      SourceFiles="$(OutputPath)\Aishizu.Native.dll"
+      DestinationFolder="V:\Work\Projects\RealFriend\Unity\Assets\AishizuSDK\Plugins"
+      SkipUnchangedFiles="true" />
+  </Target>
+</Project>

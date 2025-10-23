@@ -12,7 +12,7 @@ namespace Aishizu.VRMBridge.Actions
         private aszHugable m_Hugable; public aszHugable Hugable => m_Hugable;
         protected override void OnStart()
         {
-            if (aszInterableManager.Instance.GetInterable(TargetId, out aszInteractable target) != Result.Success)
+            if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 SetFinish(Result.Failed);
                 return;
@@ -23,12 +23,12 @@ namespace Aishizu.VRMBridge.Actions
                 return;
             }
             m_Hugable = hugable;
-            if (aszActorManager.Instance.GetActor(ActorId, out aszCharacter actor) != Result.Success)
+            if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
                 SetFinish(Result.Failed);
                 return;
             }
-            if (actor is not aszVRMCharacterController aszVRMActor)
+            if (actor is not aszVRMCharacter aszVRMActor)
             {
                 SetFinish(Result.Failed);
                 return;

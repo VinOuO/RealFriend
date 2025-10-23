@@ -1,0 +1,9 @@
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\net7.0\Aishizu.Native.deps.json
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\net7.0\Aishizu.Native.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\bin\Release\net7.0\Aishizu.Native.pdb
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\net7.0\Aishizu.Native.GeneratedMSBuildEditorConfig.editorconfig
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\net7.0\Aishizu.Native.csproj.CoreCompileInputs.cache
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\net7.0\Aishizu.Native.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\net7.0\refint\Aishizu.Native.dll
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\net7.0\Aishizu.Native.pdb
+V:\Work\Projects\RealFriend\Aishizu.Native\obj\Release\net7.0\ref\Aishizu.Native.dll
