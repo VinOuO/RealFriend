@@ -9,7 +9,6 @@ namespace Aishizu.Native.Actions
         private readonly Dictionary<string, Type> m_ActionTypes = new();
         private readonly Dictionary<string, string> m_JsonSchemas = new();
 
-        // Developer manually registers actions
         public void RegisterAction<T>() where T : aszIAction, new()
         {
             T instance = new T();
@@ -21,19 +20,18 @@ namespace Aishizu.Native.Actions
                 return;
             }
 
-            m_ActionTypes[actionName] = typeof(T);
-            m_JsonSchemas[actionName] = instance.ToJson();
-
-            Console.WriteLine($"[aszActionService] Registered action: {actionName}");
+            m_ActionTypes.Add(actionName, typeof(T));
+            m_JsonSchemas.Add(actionName, instance.ToJson());
+            aszLogger.WriteLine($"[aszActionService] Instance HashCode: {GetHashCode()} Count: {m_JsonSchemas.Count}");
+            aszLogger.WriteLine($"[aszActionService] Registered action: {actionName}");
+            aszLogger.WriteLine($"[aszActionService] Action Json: {m_JsonSchemas[actionName]}");
         }
 
-        // Get schema list for LLM (as dictionary)
         public Dictionary<string, string> GetActionSchemas()
         {
             return m_JsonSchemas;
         }
 
-        // ✅ New function: Get schema list as serialized JSON string
         public string GetActionSchemasAsJson()
         {
             JsonSerializerOptions options = new JsonSerializerOptions
@@ -41,16 +39,20 @@ namespace Aishizu.Native.Actions
                 WriteIndented = true,
                 IncludeFields = true
             };
-
+            aszLogger.WriteLine($"PPAP");
+            aszLogger.WriteLine($"[aszActionService] Instance HashCode: {GetHashCode()} Count: {m_JsonSchemas.Count}");
+            foreach (string s in m_JsonSchemas.Values)
+            {
+                aszLogger.WriteLine($"[aszActionService] Action Json: {s}");
+            }
             return JsonSerializer.Serialize(m_JsonSchemas, options);
         }
 
-        // Parse LLM JSON → Unity action
         public aszIAction JsonToAction(string actionName, string json)
         {
             if (!m_ActionTypes.TryGetValue(actionName, out Type type))
             {
-                Console.WriteLine($"[aszActionService] Unknown action type: {actionName}");
+                aszLogger.WriteLine($"[aszActionService] Unknown action type: {actionName}");
                 return null;
             }
 
@@ -62,12 +64,6 @@ namespace Aishizu.Native.Actions
 
             aszIAction instance = (aszIAction)JsonSerializer.Deserialize(json, type, options);
             return instance;
-        }
-
-        // Optional: serialize Unity action → JSON
-        public string ActionToJson(aszIAction action)
-        {
-            return action.ToJson();
         }
     }
 }

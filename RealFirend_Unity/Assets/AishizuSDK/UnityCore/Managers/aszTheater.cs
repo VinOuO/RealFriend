@@ -17,6 +17,11 @@ namespace Aishizu.UnityCore
 
         private void OnEnable()
         {
+            Init();
+        }
+
+        private void Init()
+        {
             Instance = this;
             m_ActorManager = GetComponent<aszActorManager>();
             m_InterableManager = GetComponent<aszInterableManager>();
@@ -25,6 +30,7 @@ namespace Aishizu.UnityCore
         [ContextMenu("InitializeMediator")]
         public void InitializeMediator()
         {
+            Init();
             m_AIMediator = new aszAIMediator();
             m_AIMediator.Endpoint = "http://localhost:1234/v1/chat/completions";
             m_AIMediator.Model = "Mythomax L2 13B";
@@ -46,15 +52,13 @@ namespace Aishizu.UnityCore
         public void RegisterAction<T>() where T : aszAction, new()
         {
             m_AIMediator.ActionService.RegisterAction<T>();
-            Debug.Log("Register Action: " + nameof(T));
+            Debug.Log("Register Action: " + typeof(T).Name);
         }
 
         [ContextMenu("TestPrompt")]
         public void de_TestPrompt()
         {
-            InitializeMediator();
             TestSendPrompt("HelloWorld");
-            Debug.Log(m_AIMediator.InitSystemPrompt());
         }
 
         public async void TestSendPrompt(string input)

@@ -38,7 +38,7 @@ namespace Aishizu.Native.Services
         /// <summary>
         /// Generates the system prompt that provides the AI with contextual data.
         /// </summary>
-        public string InitSystemPrompt()
+        private string InitSystemPrompt()
         {
             var prompt = new StringBuilder();
             prompt.AppendLine("You are an AI that controls character behavior.");
@@ -63,7 +63,7 @@ namespace Aishizu.Native.Services
         public async Task<string> SendPromptAsync(string userPrompt)
         {
             string systemPrompt = InitSystemPrompt();
-
+            aszLogger.WriteLine("SystemPrompt: \n" + systemPrompt);
             var requestData = new
             {
                 model = Model,
@@ -95,7 +95,7 @@ namespace Aishizu.Native.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[AIMediator] Error: {ex.Message}");
+                aszLogger.WriteLine($"[AIMediator] Error: {ex.Message}");
                 return string.Empty;
             }
         }

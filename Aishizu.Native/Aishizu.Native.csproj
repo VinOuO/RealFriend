@@ -12,10 +12,17 @@
     <PackageReference Include="System.Text.Json" Version="6.0.9" />
   </ItemGroup>
 
-  <Target Name="CopyToUnityPlugins" AfterTargets="Build">
-    <Copy
-      SourceFiles="$(OutputPath)\Aishizu.Native.dll"
-      DestinationFolder="V:\Work\Projects\RealFriend\Unity\Assets\AishizuSDK\Plugins"
-      SkipUnchangedFiles="true" />
-  </Target>
+<Target Name="CopyToUnityPlugins" AfterTargets="AfterBuild">
+  <ItemGroup>
+    <PluginFiles Include="$(TargetDir)Aishizu.Native.dll" />
+  </ItemGroup>
+
+  <Copy
+    SourceFiles="@(PluginFiles)"
+    DestinationFolder="V:\Work\Projects\RealFriend\RealFirend_Unity\Assets\AishizuSDK\Plugins"
+    OverwriteReadOnlyFiles="true"
+    SkipUnchangedFiles="false" />
+	<Message Text="Copy Aishizu.Native.dll to Unity Plugins..." Importance="High" />
+</Target>
+
 </Project>

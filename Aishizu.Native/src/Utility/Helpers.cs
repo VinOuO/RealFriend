@@ -11,7 +11,8 @@ namespace Aishizu.Native
             {
                 WriteIndented = true,
                 IncludeFields = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Converters = { new JsonStringEnumConverter() }
             };
             return JsonSerializer.Serialize(obj, options);
         }
