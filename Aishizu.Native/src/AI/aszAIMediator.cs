@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Aishizu.Native.Services
 {
@@ -13,11 +14,14 @@ namespace Aishizu.Native.Services
         private readonly aszActorService m_ActorService; public aszActorService ActorService => m_ActorService;
         private readonly aszActionService m_ActionService; public aszActionService ActionService => m_ActionService;
         private readonly aszTargetService m_TargetService; public aszTargetService TargetService => m_TargetService;
+        private aszSequence m_CurrentSequence;
+
 
         public string Endpoint { get; set; } = "http://localhost:1234/v1/chat/completions";
         public string Model { get; set; } = "gpt-4o-mini";
         public float Temperature { get; set; } = 0.65f;
-
+        private bool m_IsDescribing = false;
+        public bool DebugMode = true;
         public aszAIMediator()
         {
             m_ActorService = new aszActorService();
@@ -60,19 +64,34 @@ namespace Aishizu.Native.Services
         /// <summary>
         /// Sends a user prompt + world context to the AI endpoint and retrieves a structured response.
         /// </summary>
-        public async Task<string> SendPromptAsync(string userPrompt)
+        private async Task<PromptResult> SendPromptAsync(string userPrompt = "", string systemPrompt = "")
         {
-            string systemPrompt = InitSystemPrompt();
+            if(userPrompt == "" && systemPrompt == "")
+            {
+                return new PromptResult(false, "", "");
+            }
+
             aszLogger.WriteLine("SystemPrompt: \n" + systemPrompt);
             var requestData = new
             {
                 model = Model,
                 temperature = Temperature,
-                messages = new[]
-                {
-                    new { role = "system", content = systemPrompt },
-                    new { role = "user", content = userPrompt }
-                }
+                messages =
+                userPrompt != "" && systemPrompt != "" ?    new[] 
+                                                            {
+                                                                new { role = "system", Content = systemPrompt},
+                                                                new { role = "user", Content = userPrompt}
+                                                            }
+                : userPrompt != "" ?                        new[]
+                                                            {
+                                                                new { role = "user", Content = userPrompt}
+                                                            }
+                :                                           new[]
+                                                            {
+                                                                new { role = "system", Content = systemPrompt},
+                                                            }
+
+
             };
 
             string jsonPayload = JsonSerializer.Serialize(requestData, new JsonSerializerOptions
@@ -91,13 +110,119 @@ namespace Aishizu.Native.Services
                 response.EnsureSuccessStatusCode();
 
                 string responseText = await response.Content.ReadAsStringAsync();
-                return responseText;
+                return new PromptResult(true, responseText, "");
             }
             catch (Exception ex)
             {
                 aszLogger.WriteLine($"[AIMediator] Error: {ex.Message}");
-                return string.Empty;
+                return new PromptResult(false, "", ex.Message);
             }
         }
+
+
+        #region LifeCycle
+        public async Task<Result> SetUpScene()
+        {
+            PromptResult result = await SendPromptAsync(systemPrompt: InitSystemPrompt());
+            return result.IsValid ? Result.Success : Result.Failed;
+        }
+
+        string mockData = @"
+                            {
+                              ""Actors"": [
+                                { ""Id"": 0, ""Name"": ""Friend1"", ""Description"": ""The main VRM character"" }
+                              ],
+                              ""Targets"": [
+                                { ""Id"": 0, ""Name"": ""Hugable"" },
+                                { ""Id"": 1, ""Name"": ""Cube"" },
+                                { ""Id"": 2, ""Name"": ""Mouth"" },
+                                { ""Id"": 3, ""Name"": ""HeadCenter"" }
+                              ],
+                              ""Actions"": [
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 0,
+                                  ""ActionName"": ""VRMHug"",
+                                  ""IsValid"": true,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 3,
+                                  ""ActionName"": ""VRMTouch"",
+                                  ""IsValid"": true,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 1,
+                                  ""ActionName"": ""VRMSit"",
+                                  ""IsValid"": true,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                }
+                              ]
+                            }";
+
+
+        public async Task<Result> DescribeCurrentScene()
+        {
+            if (m_IsDescribing)
+            {
+                aszLogger.WriteLine("[AIMediator] DescribeCurrentScene skipped — already running.");
+                return Result.Failed;
+            }
+            m_IsDescribing = true;
+            try
+            {
+                PromptResult result = await SendPromptAsync(systemPrompt: "");
+                if (DebugMode)
+                {
+                    result = new PromptResult(true, mockData, "");
+                }
+                if (result.IsValid)
+                {
+                    if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success)
+                    {
+                        m_CurrentSequence = new aszSequence(actionList);
+                        m_CurrentSequence.Start();
+                        return Result.Success;
+                    }
+                    else
+                    {
+                        return Result.Failed;
+                    }
+                }
+                return result.IsValid ? Result.Success : Result.Failed;
+            }
+            finally
+            {
+                m_IsDescribing = false;
+            }
+        }
+
+        /// <summary>
+        /// The update of runtime
+        /// </summary>
+        /// <param name="deltaTime">how long did it past since last tick</param>
+        public LifeStatus Tick(float deltaTime)
+        {
+            if(m_CurrentSequence == null)
+            {
+                return LifeStatus.WaitingForSceneUpdate;
+            }
+            if (m_CurrentSequence.IsRunning)
+            {
+                m_CurrentSequence.Tick(deltaTime);
+                return LifeStatus.RunningSequence;
+            }
+            else
+            {
+                return LifeStatus.WaitingForSceneUpdate;
+            }
+        }
+        #endregion
     }
 }

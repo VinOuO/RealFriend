@@ -62,6 +62,7 @@ GameObject:
   - component: {fileID: 7875884265792848210}
   - component: {fileID: 1853204428574182196}
   - component: {fileID: 7388103850060295581}
+  - component: {fileID: 8224341849487727620}
   - component: {fileID: 2007694752574727070}
   - component: {fileID: 7593734572911384496}
   - component: {fileID: 6624074019169316508}
@@ -535,6 +536,152 @@ MonoBehaviour:
   DrawLookAtGizmo: 1
   LookAtTarget: {fileID: 0}
   LookAtTargetType: 0
+--- !u!114 &8224341849487727620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65849829221209886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a7e9633e082a5b4aa0b5e0d47f1b3c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NormalMovingSpeed: 1
+  FinalMovingSpeed: 1
+  MovingSpeedTowardTargetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.23703134
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  FacingTargetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.23703134
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SittingElevateCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  ReachingDuraction: 0.1
+  ReachingTowardTargetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.23703134
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  KissingDuraction: 0.1
+  KissingTowardTargetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.23703134
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_VRMAnimationController: {fileID: 0}
+  m_VRMBodyInfo: {fileID: 0}
+  m_FullBodyBipedIK: {fileID: 0}
+  m_FBBIKHeadEffector: {fileID: 0}
+  m_FriendSpeachController: {fileID: 0}
+  m_BodyStatus: {fileID: 0}
+  m_LeftHandTarget: {fileID: 0}
+  m_RightHandTarget: {fileID: 0}
+  m_LeftFootTarget: {fileID: 0}
+  m_RightFootTarget: {fileID: 0}
 --- !u!114 &2007694752574727070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,9 +773,9 @@ MonoBehaviour:
     LeftCheek: {fileID: 2888828095389196164}
     RightCheek: {fileID: 5281822331722240191}
     Mouth: {fileID: 1168977535563653680}
-  LeftCheekDetectAngle: {x: 50, y: -50, z: 1}
-  RightCheekDetectAngle: {x: 50, y: 50, z: 1}
-  MouthDetectAngle: {x: 50, y: 0, z: 1}
+  LeftCheekDetectAngle: {x: 41, y: -30, z: 1}
+  RightCheekDetectAngle: {x: 41, y: 30, z: 1}
+  MouthDetectAngle: {x: 41, y: 0, z: 1}
 --- !u!1 &69650224360352388
 GameObject:
   m_ObjectHideFlags: 0

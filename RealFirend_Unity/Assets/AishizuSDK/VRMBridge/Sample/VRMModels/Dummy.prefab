@@ -3286,7 +3286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f289b53144541bf4b92e04611334ad7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Humanoid: {fileID: 0}
+  m_Humanoid: {fileID: 7929298755447744483}
   m_BodyCode:
     LeftArmLength: 0.75
     RightArmLength: 0.75
@@ -3300,7 +3300,7 @@ MonoBehaviour:
     Mouth: {fileID: 7683211092227004084}
   LeftCheekDetectAngle: {x: 50, y: -50, z: 1}
   RightCheekDetectAngle: {x: 50, y: 50, z: 1}
-  MouthDetectAngle: {x: 50, y: 0, z: 0}
+  MouthDetectAngle: {x: 50, y: 0, z: 1}
 --- !u!1 &3500810533085207331
 GameObject:
   m_ObjectHideFlags: 0

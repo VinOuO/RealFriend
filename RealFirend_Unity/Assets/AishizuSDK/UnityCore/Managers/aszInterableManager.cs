@@ -18,5 +18,11 @@ namespace Aishizu.UnityCore
             interable = null;
             return Result.Failed;
         }
+
+        public Result AddInterable(aszInteractable interable)
+        {
+            m_InterableList.Add(interable);
+            return Result.Success;
+        }
     }
 }

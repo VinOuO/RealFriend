@@ -276,6 +276,10 @@ namespace Aishizu.VRMBridge
                 LeftCheek = new GameObject("LeftCheek").transform;
                 RightCheek = new GameObject("RightCheek").transform;
                 Mouth = new GameObject("Mouth").transform;
+                aszHoldable headHoldable = HeadCenter.gameObject.AddComponent<aszHoldable>();
+                Mouth.gameObject.AddComponent<aszKissable>();
+                headHoldable.HoldTrans[0] = LeftCheek;
+                headHoldable.HoldTrans[1] = RightCheek;
                 HeadCenter.parent = head;
                 LeftCheek.parent = head;
                 RightCheek.parent = head;

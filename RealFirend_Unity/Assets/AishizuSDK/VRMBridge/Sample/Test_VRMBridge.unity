@@ -300,6 +300,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InterableList:
   - {fileID: 2089527389}
+  - {fileID: 543254294}
+  - {fileID: 543254294}
 --- !u!114 &122238845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,11 +473,6 @@ Transform:
   - {fileID: 1277215367}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &661238869 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 65849829221209886, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-  m_PrefabInstance: {fileID: 2112320673193545688}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &740829206
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,6 +612,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 0.001, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1431225610 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3192846602432657646, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
+  m_PrefabInstance: {fileID: 1080830611111302098}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f289b53144541bf4b92e04611334ad7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1658151701
 GameObject:
   m_ObjectHideFlags: 0
@@ -751,6 +759,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b2cbcdf910f5b41adc94598dd16861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Theater: {fileID: 122238843}
+  m_DummyBodyInfo: {fileID: 1431225610}
 --- !u!114 &2089527389 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7851035203109389449, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
@@ -809,14 +819,6 @@ PrefabInstance:
     - target: {fileID: 727793518701837770, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3192846602432657646, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
-      propertyPath: m_Humanoid
-      value: 
-      objectReference: {fileID: 2112320673193545689}
-    - target: {fileID: 3192846602432657646, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
-      propertyPath: MouthDetectAngle.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3455737048258088323, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
       propertyPath: m_Name
@@ -879,30 +881,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1242315988984777050, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: MouthDetectAngle.x
-      value: 41
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242315988984777050, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: MouthDetectAngle.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242315988984777050, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: LeftCheekDetectAngle.x
-      value: 41
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242315988984777050, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: LeftCheekDetectAngle.y
-      value: -30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242315988984777050, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: RightCheekDetectAngle.x
-      value: 41
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242315988984777050, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: RightCheekDetectAngle.y
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: solver.effectors.Array.data[0].target
       value: 
@@ -910,168 +888,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 65849829221209886, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 2112320673193545698}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
---- !u!114 &2112320673193545689 stripped
+--- !u!114 &2112320673193545698 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7875884265792848210, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
   m_PrefabInstance: {fileID: 2112320673193545688}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 661238869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97a39af5b64ede64e86b92b5bf94a0e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2112320673193545698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 661238869}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a7e9633e082a5b4aa0b5e0d47f1b3c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NormalMovingSpeed: 1
-  FinalMovingSpeed: 1
-  MovingSpeedTowardTargetCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.23703134
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  FacingTargetCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.23703134
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  SittingElevateCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  ReachingDuraction: 0.1
-  ReachingTowardTargetCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.23703134
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  KissingDuraction: 0.1
-  KissingTowardTargetCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.23703134
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_VRMAnimationController: {fileID: 0}
-  m_VRMBodyInfo: {fileID: 0}
-  m_FullBodyBipedIK: {fileID: 0}
-  m_FBBIKHeadEffector: {fileID: 0}
-  m_FriendSpeachController: {fileID: 0}
-  m_BodyStatus: {fileID: 0}
-  m_LeftHandTarget: {fileID: 0}
-  m_RightHandTarget: {fileID: 0}
-  m_LeftFootTarget: {fileID: 0}
-  m_RightFootTarget: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

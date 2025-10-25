@@ -1,5 +1,8 @@
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Collections.Generic;
+using Aishizu.Native.Actions;
+using System;
 
 namespace Aishizu.Native
 {
@@ -16,5 +19,10 @@ namespace Aishizu.Native
             };
             return JsonSerializer.Serialize(obj, options);
         }
+    }
+
+    public static class aszActionExt
+    {
+       
     }
 }

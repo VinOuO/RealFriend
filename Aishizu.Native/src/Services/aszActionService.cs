@@ -47,23 +47,43 @@ namespace Aishizu.Native.Actions
             }
             return JsonSerializer.Serialize(m_JsonSchemas, options);
         }
-
-        public aszIAction JsonToAction(string actionName, string json)
+        public Result JsonToActions(string json, out List<aszAction> result)
         {
-            if (!m_ActionTypes.TryGetValue(actionName, out Type type))
+            using JsonDocument doc = JsonDocument.Parse(json);
+            JsonElement root = doc.RootElement;
+            result = new List<aszAction>();
+            if (!root.TryGetProperty("Actions", out JsonElement actionsArray))
             {
-                aszLogger.WriteLine($"[aszActionService] Unknown action type: {actionName}");
-                return null;
+                return Result.Failed;
             }
 
-            JsonSerializerOptions options = new JsonSerializerOptions
+            foreach (JsonElement actionElement in actionsArray.EnumerateArray())
             {
-                IncludeFields = true,
-                PropertyNameCaseInsensitive = true
-            };
+                string? actionName = actionElement.GetProperty("ActionName").GetString();
+                int actorId = actionElement.GetProperty("ActorId").GetInt32();
+                int targetId = actionElement.GetProperty("TargetId").GetInt32();
 
-            aszIAction instance = (aszIAction)JsonSerializer.Deserialize(json, type, options);
-            return instance;
+                Type actionType = GetRegisteredActionType(actionName == null ? "" : actionName);
+                if (actionType == null)
+                {
+                    aszLogger.WriteLine($"Unknown action: {actionName}");
+                    continue;
+                }
+
+                if (Activator.CreateInstance(actionType) is not aszAction actionInstance)
+                {
+                    continue;
+                }
+                actionInstance.ActorId = actorId;
+                actionInstance.TargetId = targetId;
+                result.Add(actionInstance);
+            }
+            return Result.Success;
+        }
+        public Type GetRegisteredActionType(string actionName)
+        {
+            m_ActionTypes.TryGetValue(actionName, out Type type);
+            return type;
         }
     }
 }

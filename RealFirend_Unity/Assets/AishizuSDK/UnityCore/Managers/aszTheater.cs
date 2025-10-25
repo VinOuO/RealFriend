@@ -1,8 +1,10 @@
 using UnityEngine;
 using Aishizu.Native.Services;
 using Aishizu.Native.Actions;
-using System.Net.Http;
-using System;
+using System.Collections;
+using Aishizu.Native;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Aishizu.UnityCore
 {
@@ -10,27 +12,29 @@ namespace Aishizu.UnityCore
     [RequireComponent(typeof(aszInterableManager))]
     public class aszTheater : MonoBehaviour
     {
+        #region Init
         public static aszTheater Instance;
         private aszAIMediator m_AIMediator; 
         private aszActorManager m_ActorManager; public aszActorManager ActorManager => m_ActorManager;
         private aszInterableManager m_InterableManager; public aszInterableManager InterableManager => m_InterableManager;
+
 
         private void OnEnable()
         {
             Init();
         }
 
+        [ContextMenu("Init")]
         private void Init()
         {
             Instance = this;
             m_ActorManager = GetComponent<aszActorManager>();
             m_InterableManager = GetComponent<aszInterableManager>();
+            InitializeMediator();
         }
 
-        [ContextMenu("InitializeMediator")]
-        public void InitializeMediator()
+        private void InitializeMediator()
         {
-            Init();
             m_AIMediator = new aszAIMediator();
             m_AIMediator.Endpoint = "http://localhost:1234/v1/chat/completions";
             m_AIMediator.Model = "Mythomax L2 13B";
@@ -52,43 +56,36 @@ namespace Aishizu.UnityCore
         public void RegisterAction<T>() where T : aszAction, new()
         {
             m_AIMediator.ActionService.RegisterAction<T>();
-            Debug.Log("Register Action: " + typeof(T).Name);
+            Debug.Log("[AishizuCore] Register Action: " + typeof(T).Name);
+        }
+        #endregion
+
+        public async Task<Result> StartAct()
+        {
+            StartCoroutine(PlayingAct());
+            return await m_AIMediator.SetUpScene();
         }
 
-        [ContextMenu("TestPrompt")]
-        public void de_TestPrompt()
+        public IEnumerator PlayingAct()
         {
-            TestSendPrompt("HelloWorld");
-        }
-
-        public async void TestSendPrompt(string input)
-        {
-            Debug.Log($"[AishizuCore] Sending test prompt: {input}");
-
-            try
+            while (true)
             {
-                // Send a message to the locally running LM Studio server
-                string response = await m_AIMediator.SendPromptAsync(input);
 
-                if (string.IsNullOrEmpty(response))
-                    Debug.LogWarning("[AishizuCore] Empty response from LM Studio.");
-                else
-                    Debug.Log($"[AishizuCore] LLM Response:\n{response}");
-            }
-            catch (HttpRequestException e)
-            {
-                Debug.LogError($"[AishizuCore] HTTP request failed: {e.Message}");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[AishizuCore] Unexpected error: {e}");
+                LifeStatus currentStatus = m_AIMediator.Tick(Time.deltaTime);
+                if(currentStatus == LifeStatus.WaitingForSceneUpdate)
+                {
+                    m_AIMediator.DescribeCurrentScene();
+                }
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
         }
 
-        public async void SendPrompt(string input)
-        {
-            string response = await m_AIMediator.SendPromptAsync(input);
-            Debug.Log($"[AishizuCore] LLM Response: {response}");
-        }
+        #region Action Sequence
+  
+        #endregion
+
+        #region Runtime
+
+        #endregion
     }
 }
