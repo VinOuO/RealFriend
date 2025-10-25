@@ -251,20 +251,24 @@ namespace Aishizu.VRMBridge
             StartCoroutine(HoldingObject(hold, 3f));
         }
 
-        private IEnumerator HoldingObject(aszVRMHold hold, float duraction = -1, bool undo = false)
+        private IEnumerator HoldingObject(aszVRMHold hold, bool undo = false)
         {
             yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
             bool leftHandReached = false, rightHandReached = false;
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
+            m_BodyStatus.HoldingObj = undo ? null : hold.Holdable;
+            hold.SetFinish(Result.Success);
+        }
 
-            if(duraction < 0)
-            {
-                m_BodyStatus.HoldingObj = undo ? null : hold.Holdable;
-                hold.SetFinish(Result.Success);
-                yield break;
-            }
+        private IEnumerator HoldingObject(aszVRMHold hold, float duraction = -1)
+        {
+            yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+            bool leftHandReached = false, rightHandReached = false;
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand), () => leftHandReached = true));
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand), () => rightHandReached = true));
+            yield return new WaitUntil(() => leftHandReached && rightHandReached);
             m_BodyStatus.HoldingObj = hold.Holdable;
             yield return aszUnityCoroutine.WaitForSeconds(duraction);
             bool leftHandUnReached = false, rightHandUnReached = false;
