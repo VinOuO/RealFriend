@@ -60,11 +60,7 @@ namespace Aishizu.Native.Actions
         {
             if (m_State != aszActionState.Running) return;
 
-            OnUpdate(deltaTime, out bool isFinished);
-            if (isFinished)
-            {
-                m_State = aszActionState.Success;
-            }
+            OnUpdate(deltaTime);
         }
 
         // 🔹 Called when the action is forced to stop (optional)
@@ -81,7 +77,7 @@ namespace Aishizu.Native.Actions
 
         // 🔹 Internal abstract hooks for subclass logic
         protected virtual void OnStart() { }
-        protected virtual void OnUpdate(float deltaTime, out bool finishedAction) { finishedAction = false; }
+        protected virtual void OnUpdate(float deltaTime) { }
         protected virtual void OnFinish(Result finishStatus) { }
 
         // 🔹 Helper property

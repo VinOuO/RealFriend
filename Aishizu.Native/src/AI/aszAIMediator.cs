@@ -14,7 +14,7 @@ namespace Aishizu.Native.Services
         private readonly aszActorService m_ActorService; public aszActorService ActorService => m_ActorService;
         private readonly aszActionService m_ActionService; public aszActionService ActionService => m_ActionService;
         private readonly aszTargetService m_TargetService; public aszTargetService TargetService => m_TargetService;
-        private aszSequence m_CurrentSequence;
+        private aszSequence m_CurrentSequence; public aszSequence CurrentSequence => m_CurrentSequence;
 
 
         public string Endpoint { get; set; } = "http://localhost:1234/v1/chat/completions";
@@ -66,6 +66,10 @@ namespace Aishizu.Native.Services
         /// </summary>
         private async Task<PromptResult> SendPromptAsync(string userPrompt = "", string systemPrompt = "")
         {
+            if (DebugMode)
+            {
+                return new PromptResult(true, "DebugMode", "DebugMode");
+            }
             if(userPrompt == "" && systemPrompt == "")
             {
                 return new PromptResult(false, "", "");
@@ -150,7 +154,7 @@ namespace Aishizu.Native.Services
                                 {
                                   ""ActorId"": 0,
                                   ""TargetId"": 3,
-                                  ""ActionName"": ""VRMTouch"",
+                                  ""ActionName"": ""VRMHold"",
                                   ""IsValid"": true,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
@@ -187,7 +191,6 @@ namespace Aishizu.Native.Services
                     if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success)
                     {
                         m_CurrentSequence = new aszSequence(actionList);
-                        m_CurrentSequence.Start();
                         return Result.Success;
                     }
                     else
@@ -200,27 +203,6 @@ namespace Aishizu.Native.Services
             finally
             {
                 m_IsDescribing = false;
-            }
-        }
-
-        /// <summary>
-        /// The update of runtime
-        /// </summary>
-        /// <param name="deltaTime">how long did it past since last tick</param>
-        public LifeStatus Tick(float deltaTime)
-        {
-            if(m_CurrentSequence == null)
-            {
-                return LifeStatus.WaitingForSceneUpdate;
-            }
-            if (m_CurrentSequence.IsRunning)
-            {
-                m_CurrentSequence.Tick(deltaTime);
-                return LifeStatus.RunningSequence;
-            }
-            else
-            {
-                return LifeStatus.WaitingForSceneUpdate;
             }
         }
         #endregion

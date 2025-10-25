@@ -12,6 +12,7 @@ namespace Aishizu.VRMBridge.Actions
         private aszHoldable m_Holdable; public aszHoldable Holdable => m_Holdable;
         protected override void OnStart()
         {
+    
             if(aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 SetFinish(Result.Failed);
@@ -33,7 +34,6 @@ namespace Aishizu.VRMBridge.Actions
                 SetFinish(Result.Failed);
                 return;
             }
-
             aszVRMActor.HoldObject(this);
         }
     }

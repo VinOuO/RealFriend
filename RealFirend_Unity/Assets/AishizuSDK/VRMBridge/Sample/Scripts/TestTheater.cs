@@ -1,6 +1,9 @@
 using Aishizu.UnityCore;
 using Aishizu.VRMBridge.Actions;
 using UnityEngine;
+using System.Collections;
+using Aishizu.Native;
+using System.Threading.Tasks;
 
 namespace Aishizu.VRMBridge
 {
@@ -12,7 +15,28 @@ namespace Aishizu.VRMBridge
         {
             RegisterActions();
             AddInterables();
-            m_Theater.StartAct();
+            StartCoroutine(Test());
+        }
+
+        IEnumerator Test()
+        {
+            Task<Result> setupTask = m_Theater.SetUpStage();
+            yield return new WaitUntil(() => setupTask.IsCompleted);
+            Debug.Log("SetUp: " + setupTask.Result);
+            Result result = setupTask.Result;
+            if (setupTask.Result != Result.Success)
+            {
+                yield break;
+            }
+
+            Task<Result> updateTask = m_Theater.UpdateStage();
+            yield return new WaitUntil(() => updateTask.IsCompleted);
+            Debug.Log("Update: " + updateTask.Result);
+            if (updateTask.Result != Result.Success)
+            {
+                yield break;
+            }
+            yield return m_Theater.PlayingTimeline();
         }
 
         private void AddInterables()

@@ -301,7 +301,6 @@ MonoBehaviour:
   m_InterableList:
   - {fileID: 2089527389}
   - {fileID: 543254294}
-  - {fileID: 543254294}
 --- !u!114 &122238845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -885,6 +884,14 @@ PrefabInstance:
       propertyPath: solver.effectors.Array.data[0].target
       value: 
       objectReference: {fileID: 740829207}
+    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: KissingDuraction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: ReachingDuraction
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -5,6 +5,7 @@ using UnityEngine.Splines;
 using UniHumanoid;
 using System.Collections.Generic;
 using Aishizu.Native;
+using Aishizu.UnityCore;
 
 namespace Aishizu.VRMBridge
 {
@@ -14,11 +15,12 @@ namespace Aishizu.VRMBridge
         [SerializeField] private List<SplineClipSetting> m_SplineClipSettings;
 
         [Header("Init")]
-        [SerializeField] private bool Inited = false;
+        [SerializeField] private bool m_Inited = false;
         [SerializeField] private FullBodyBipedIK m_FullBodyBipedIK;
         [SerializeField] private FBBIKHeadEffector m_FBBIKHeadEffector;
         [SerializeField] private SplineContainer m_SplineContainer;
         [SerializeField] private Humanoid m_Humanoid;
+        private int m_RunningControllers = 0; public bool IsFinished { get { return m_RunningControllers == 0 ? true : false; } }
         public void Init(FullBodyBipedIK bodyIK, FBBIKHeadEffector headEffector, Humanoid humanoid)
         {
             m_FBBIKHeadEffector = headEffector;
@@ -26,13 +28,13 @@ namespace Aishizu.VRMBridge
             m_SplineContainer = GetComponent<SplineContainer>();
             m_Humanoid = humanoid;
             transform.parent = humanoid.GetBoneTransform(HumanBodyBones.Hips).parent;
-            Inited = true;
+            m_Inited = true;
         }
 
         [ContextMenu("Play")]
         public Result Play()
         {
-            if (!Inited)
+            if (!m_Inited)
             {
                 return Result.Failed;
             }
@@ -54,11 +56,29 @@ namespace Aishizu.VRMBridge
 
             return Result.Success;
         }
+
+        private List<IKEffector> influencedIKEffectors = new List<IKEffector>();
+        private List<FBBIKHeadEffector> influencedHeadEffectors = new List<FBBIKHeadEffector>();
+
+        public void Stop()
+        {
+            foreach(IKEffector ik in influencedIKEffectors)
+            {
+                ik.positionWeight = 0;
+                ik.rotationWeight = 0;
+            }
+
+            foreach (FBBIKHeadEffector head in influencedHeadEffectors)
+            {
+                head.positionWeight = 0;
+                head.rotationWeight = 0;
+            }
+        }
+
         [SerializeField] Pose parentPose;
         private IEnumerator PlayingController(SplineClipSetting clipSetting, int controllerIndex)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
-
+            m_RunningControllers++;
             if (GetEffector(clipSetting.Controllers[controllerIndex].TargetEffector, out IKEffector targetEffector, out FBBIKHeadEffector targetHeadEffector) == Result.Success)
             {
                 bool isHeadEffectorController = targetHeadEffector == null ? false : true;
@@ -71,10 +91,12 @@ namespace Aishizu.VRMBridge
                     targetHeadEffector.transform.SetParent(tmpEffectorTarget.transform);
                     targetHeadEffector.transform.localPosition = Vector3.zero;
                     targetHeadEffector.transform.localRotation = Quaternion.identity;
+                    influencedHeadEffectors.Add(targetHeadEffector);
                 }
                 else
                 {
                     targetEffector.target = tmpEffectorTarget.transform;
+                    influencedIKEffectors.Add(targetEffector);
                 }
 
                 float startPlayingTime = Time.time;
@@ -120,16 +142,17 @@ namespace Aishizu.VRMBridge
                     #endregion
                     tmpEffectorTarget.transform.position = worldPose.position;
                     tmpEffectorTarget.transform.rotation = worldPose.rotation;
-                    yield return wait;
+                    yield return aszUnityCoroutine.WaitForEndOfFrame;
                 }
             }
+            m_RunningControllers--;
         }
 
         private Result GetEffector(SplineClipSetting.Effector effector, out IKEffector returnEffector, out FBBIKHeadEffector returnHeadEffector)
         {
             returnEffector = null;
             returnHeadEffector = null;
-            if (!Inited)
+            if (!m_Inited)
             {
                 return Result.Failed;
             }

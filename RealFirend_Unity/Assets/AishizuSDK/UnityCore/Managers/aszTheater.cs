@@ -12,6 +12,8 @@ namespace Aishizu.UnityCore
     [RequireComponent(typeof(aszInterableManager))]
     public class aszTheater : MonoBehaviour
     {
+        public List<aszAction> de_Sequence;
+
         #region Init
         public static aszTheater Instance;
         private aszAIMediator m_AIMediator; 
@@ -60,32 +62,28 @@ namespace Aishizu.UnityCore
         }
         #endregion
 
-        public async Task<Result> StartAct()
+        public async Task<Result> SetUpStage()
         {
-            StartCoroutine(PlayingAct());
             return await m_AIMediator.SetUpScene();
         }
 
-        public IEnumerator PlayingAct()
+        public async Task<Result> UpdateStage()
         {
-            while (true)
-            {
+            return await m_AIMediator.DescribeCurrentScene();
+        }
 
-                LifeStatus currentStatus = m_AIMediator.Tick(Time.deltaTime);
-                if(currentStatus == LifeStatus.WaitingForSceneUpdate)
-                {
-                    m_AIMediator.DescribeCurrentScene();
-                }
+        public IEnumerator PlayingTimeline()
+        {
+            foreach(aszAction action in m_AIMediator.CurrentSequence.ActionList)
+            {
+                Debug.Log(action.ToString());
+            }
+            m_AIMediator.CurrentSequence.Start();
+            while (!m_AIMediator.CurrentSequence.IsFinished)
+            {
+                m_AIMediator.CurrentSequence.Tick(Time.deltaTime);
                 yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
         }
-
-        #region Action Sequence
-  
-        #endregion
-
-        #region Runtime
-
-        #endregion
     }
 }

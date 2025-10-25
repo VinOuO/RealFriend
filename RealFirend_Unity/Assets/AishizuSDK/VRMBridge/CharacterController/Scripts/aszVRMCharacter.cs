@@ -103,8 +103,6 @@ namespace Aishizu.VRMBridge
 
             while (distance > stopDistance)
             {
-                Debug.Log("Dis: " + distance);
-                Debug.Log("stop: " + stopDistance);
                 WalkToPos(obj.position, stopDistance, ref distance);
                 yield return wait;
             }
@@ -139,7 +137,6 @@ namespace Aishizu.VRMBridge
             Quaternion originalFacing = transform.rotation;
             while (Time.time - startFacingTime < withInDuraction)
             {
-                Debug.Log("dfffd");
                 float currentAngle = angleDiff * FacingTargetCurve.Evaluate((Time.time - startFacingTime) / withInDuraction);
                 transform.rotation = originalFacing * Quaternion.AngleAxis(currentAngle, Vector3.up); ;
                 yield return wait;
@@ -159,19 +156,21 @@ namespace Aishizu.VRMBridge
             reach.SetFinish(Result.Success);
         }
 
-        private IEnumerator ReachingObject(Transform obj, HumanBodyBones usingJoint)
+        private IEnumerator ReachingObject(Transform obj, HumanBodyBones usingJoint, bool undo = false)
         {
             YieldInstruction wait = new WaitForEndOfFrame();
             float startReachingTime = Time.time;
             IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
             IKMappingLimb mapping = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftArmMapping : m_FullBodyBipedIK.solver.rightArmMapping;
             effector.VRMSetTarget(obj, m_FullBodyBipedIK);
-            while ((Time.time - startReachingTime) / ReachingDuraction < 1)
+            float progress = (Time.time - startReachingTime) / ReachingDuraction;
+            while (progress < 1)
             {
-                mapping.weight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
-                effector.positionWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
-                effector.rotationWeight = ReachingTowardTargetCurve.Evaluate((Time.time - startReachingTime) / ReachingDuraction);
+                mapping.weight = ReachingTowardTargetCurve.Evaluate(undo ? 1 - progress : progress);
+                effector.positionWeight = ReachingTowardTargetCurve.Evaluate(undo ? 1 - progress : progress);
+                effector.rotationWeight = ReachingTowardTargetCurve.Evaluate(undo ? 1 - progress : progress);
                 yield return wait;
+                progress = (Time.time - startReachingTime) / ReachingDuraction;
             }
         }
         #endregion
@@ -249,18 +248,30 @@ namespace Aishizu.VRMBridge
         #region Hold
         public void HoldObject(aszVRMHold hold)
         {
-            StartCoroutine(HoldingObject(hold));
+            StartCoroutine(HoldingObject(hold, 3f));
         }
 
-        private IEnumerator HoldingObject(aszVRMHold hold)
+        private IEnumerator HoldingObject(aszVRMHold hold, float duraction = -1, bool undo = false)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
             yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
             bool leftHandReached = false, rightHandReached = false;
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand), () => leftHandReached = true));
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand), () => rightHandReached = true));
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
+
+            if(duraction < 0)
+            {
+                m_BodyStatus.HoldingObj = undo ? null : hold.Holdable;
+                hold.SetFinish(Result.Success);
+                yield break;
+            }
             m_BodyStatus.HoldingObj = hold.Holdable;
+            yield return aszUnityCoroutine.WaitForSeconds(duraction);
+            bool leftHandUnReached = false, rightHandUnReached = false;
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, true), () => leftHandUnReached = true));
+            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, true), () => rightHandUnReached = true));
+            yield return new WaitUntil(() => leftHandUnReached && rightHandUnReached);
+            m_BodyStatus.HoldingObj = null;
             hold.SetFinish(Result.Success);
         }
         #endregion
@@ -273,8 +284,8 @@ namespace Aishizu.VRMBridge
         IEnumerator HugingObject(aszVRMHug hug)
         {
             yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
-            m_VRMAnimationController.PlayHug();
             m_BodyStatus.HugingObj = hug.Hugable;
+            yield return StartCoroutine(m_VRMAnimationController.PlayingHug());
             hug.SetFinish(Result.Success);
         }
         #endregion

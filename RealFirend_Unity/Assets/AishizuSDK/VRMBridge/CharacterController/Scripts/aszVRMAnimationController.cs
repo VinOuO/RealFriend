@@ -4,6 +4,7 @@ using Aishizu.UnityCore;
 using Aishizu.Native;
 using RootMotion.FinalIK;
 using UniVRM10;
+using static UnityEngine.GUI;
 
 namespace Aishizu.VRMBridge
 {
@@ -28,6 +29,7 @@ namespace Aishizu.VRMBridge
             m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
             m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
             m_VRMInstance = GetComponentInChildren<Vrm10Instance>();
+            m_BodyInfo = GetComponentInChildren<aszVRMBodyInfo>();
         }
 
         private void Update()
@@ -90,12 +92,20 @@ namespace Aishizu.VRMBridge
             m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression2.ToVRMExpressionKey(), expressionBlend.Weight2);
         }
 
-        [ContextMenu("PlayHugAnim")]
-        public void PlayHug()
+        public IEnumerator PlayingHug()
         {
             SplineClip clip = Instantiate(m_HugClip).GetComponent<SplineClip>();
             clip.Init(m_FullBodyBipedIK, m_FBBIKHeadEffector, m_BodyInfo.GetHumanoid);
-            clip.Play();
+            if(clip.Play() == Result.Failed)
+            {
+                yield break;
+            }
+            while (!clip.IsFinished)
+            {
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
+            }
+            yield return aszUnityCoroutine.WaitForSeconds(2f);
+            clip.Stop();
         }
     }
 }
