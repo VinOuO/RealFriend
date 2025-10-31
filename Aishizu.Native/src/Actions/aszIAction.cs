@@ -26,6 +26,7 @@ namespace Aishizu.Native.Actions
         private int m_TargetId = -1;
         private string m_ActionName = "";
         private aszActionState m_State = aszActionState.Idle;
+        private bool m_Undo = false;
 
         public int ActorId
         {
@@ -43,6 +44,12 @@ namespace Aishizu.Native.Actions
         {
             get => m_ActionName;
             set => m_ActionName = value;
+        }
+
+        public bool Undo
+        {
+            get => m_Undo;
+            set => m_Undo = value;
         }
 
         public bool IsValid { get; protected set; } = false;

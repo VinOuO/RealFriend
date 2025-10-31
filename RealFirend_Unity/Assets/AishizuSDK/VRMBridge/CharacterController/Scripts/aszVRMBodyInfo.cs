@@ -57,8 +57,6 @@ namespace Aishizu.VRMBridge
                                                        (m_Humanoid.GetJointPosition(HumanBodyBones.LeftUpperLeg) + m_Humanoid.GetJointPosition(HumanBodyBones.RightUpperLeg)) / 2.0f);
                 m_BodyCode.HipRadious *= 1.2f;
             }
-
-
         }
 
         [ContextMenu("SetSupportJoints")]
@@ -125,7 +123,7 @@ namespace Aishizu.VRMBridge
                         {
                             forward = Vector3.Cross(up, Vector3.forward);
                         }
-                        m_SupportJoints.LeftCheek.rotation = Quaternion.LookRotation(-forward.normalized, up);
+                        m_SupportJoints.LeftCheek.rotation = Quaternion.LookRotation(forward.normalized, up);
                         set = true;
                         break;
                     }
@@ -162,7 +160,7 @@ namespace Aishizu.VRMBridge
                         {
                             forward = Vector3.Cross(up, Vector3.forward);
                         }
-                        m_SupportJoints.RightCheek.rotation = Quaternion.LookRotation(-forward.normalized, up);
+                        m_SupportJoints.RightCheek.rotation = Quaternion.LookRotation(forward.normalized, up);
                         set = true;
                         break;
                     }
@@ -180,6 +178,7 @@ namespace Aishizu.VRMBridge
             }
             #endregion
             #region SetMouthPosition
+            faceCollider.convex = true;
             Vector3 mouthCastFrom = m_SupportJoints.HeadCenter.position + GetDetectDirection(MouthDetectAngle, m_SupportJoints.HeadCenter);
             tmpRay = new Ray(mouthCastFrom, m_SupportJoints.HeadCenter.position - mouthCastFrom);
             hits = Physics.RaycastAll(ray: tmpRay,
@@ -194,13 +193,13 @@ namespace Aishizu.VRMBridge
                     if (gameObject.IsParentOf(hit.collider.gameObject))
                     {
                         m_SupportJoints.Mouth.position = hit.point;
-                        Vector3 up = hit.normal;
-                        Vector3 forward = transform.right;
-                        if (forward == Vector3.zero)
+                        Vector3 forward = hit.normal;
+                        Vector3 up = Vector3.Cross(forward, m_SupportJoints.Mouth.right);
+                        if (up == Vector3.zero)
                         {
-                            forward = Vector3.Cross(up, Vector3.forward);
+                            up = Vector3.Cross(forward, Vector3.forward);
                         }
-                        m_SupportJoints.Mouth.rotation = Quaternion.LookRotation(-forward.normalized, up);
+                        m_SupportJoints.Mouth.rotation = Quaternion.LookRotation(forward, up.normalized);
                         set = true;
                         break;
                     }
@@ -216,6 +215,7 @@ namespace Aishizu.VRMBridge
                 Debug.LogError("Didn't hit anything");
                 return Result.Failed;
             }
+            faceCollider.convex = false;
             #endregion
 
             return Result.Success;

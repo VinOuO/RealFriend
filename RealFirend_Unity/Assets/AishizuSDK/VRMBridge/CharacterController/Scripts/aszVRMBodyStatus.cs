@@ -9,11 +9,12 @@ namespace Aishizu.VRMBridge
         [SerializeField] private aszVRMFootController m_LeftBodyFootStatus, m_RightBodyFootStatus;
         [SerializeField] private aszVRMBodyToesController m_LeftBodyToesStatus, m_RightBodyToesStatus;
 
-        [Header("Status")]
-        [SerializeField] private aszHoldable m_HoldingObj; public aszHoldable HoldingObj { get { return m_HoldingObj; } set { m_HoldingObj = value; } }
-        [SerializeField] private aszHugable m_HugingObj; public aszHugable HugingObj { get { return m_HugingObj; } set { m_HugingObj = value; } }
-        public bool IsHolding { get { return m_HoldingObj == null ? false : true; } }
-        public bool IsHuging { get { return m_HugingObj == null ? false : true; } }
+        //[Header("Status")]
+        //[SerializeField] private aszHoldable m_HoldingObj; public aszHoldable HoldingObj { get { return m_HoldingObj; } set { m_HoldingObj = value; } }
+        //[SerializeField] private aszKissable m_KissingObj; public aszKissable KissingObj { get { return m_KissingObj; } set { m_KissingObj = value; } }
+        //[SerializeField] private aszHugable m_HugingObj; public aszHugable HugingObj { get { return m_HugingObj; } set { m_HugingObj = value; } }
+        //public bool IsHolding { get { return m_HoldingObj == null ? false : true; } }
+        //public bool IsHuging { get { return m_HugingObj == null ? false : true; } }
         private void OnEnable()
         {
             m_BodyInfo = GetComponent<aszVRMBodyInfo>();

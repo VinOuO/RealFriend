@@ -34,7 +34,7 @@ namespace Aishizu.VRMBridge.Actions
                 return;
             }
 
-            aszVRMActor.KissObject(this);
+            aszVRMActor.KissObject(this, undo: Undo);
         }
     }
 }

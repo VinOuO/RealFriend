@@ -32,7 +32,7 @@ namespace Aishizu.VRMBridge
         }
 
         [ContextMenu("Play")]
-        public Result Play()
+        public Result Play(bool reverse = false)
         {
             if (!m_Inited)
             {
@@ -50,7 +50,7 @@ namespace Aishizu.VRMBridge
                     {
                         continue;
                     }
-                    StartCoroutine(PlayingController(clipSetting, i));
+                    StartCoroutine(PlayingController(clipSetting, i, reverse));
                 }
             }
 
@@ -76,7 +76,7 @@ namespace Aishizu.VRMBridge
         }
 
         [SerializeField] Pose parentPose;
-        private IEnumerator PlayingController(SplineClipSetting clipSetting, int controllerIndex)
+        private IEnumerator PlayingController(SplineClipSetting clipSetting, int controllerIndex, bool reverse = false)
         {
             m_RunningControllers++;
             if (GetEffector(clipSetting.Controllers[controllerIndex].TargetEffector, out IKEffector targetEffector, out FBBIKHeadEffector targetHeadEffector) == Result.Success)
@@ -101,22 +101,25 @@ namespace Aishizu.VRMBridge
 
                 float startPlayingTime = Time.time;
                 float playingProgress = 0f;
-                while (playingProgress < 0.98f)
+                while (playingProgress < 1f)
                 {
                     playingProgress = (Time.time - startPlayingTime) / clipSetting.Duration * clipSetting.Speed;
+                    float actualProgress = reverse ? 1 - playingProgress : playingProgress;
 
+                    // InverseLerp between 0~0.1f to have a fading in effect at the beginning
                     if (isHeadEffectorController)
                     {
-                        targetHeadEffector.positionWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
-                        targetHeadEffector.rotationWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
+                        targetHeadEffector.SetBendWeight(Mathf.InverseLerp(0, 0.1f, actualProgress) * 0.8f);
+                        targetHeadEffector.positionWeight = Mathf.InverseLerp(0, 0.1f, actualProgress);
+                        targetHeadEffector.rotationWeight = Mathf.InverseLerp(0, 0.1f, actualProgress);
                     }
                     else
                     {
-                        targetEffector.positionWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
-                        targetEffector.rotationWeight = Mathf.InverseLerp(0, 0.1f, playingProgress);
+                        targetEffector.positionWeight = Mathf.InverseLerp(0, 0.1f, actualProgress);
+                        targetEffector.rotationWeight = Mathf.InverseLerp(0, 0.1f, actualProgress);
                     }
 
-                    float clipProgress = clipSetting.Curve.Evaluate((Time.time - startPlayingTime) / clipSetting.Duration * clipSetting.Speed);
+                    float clipProgress = clipSetting.Curve.Evaluate(actualProgress);
                     int usinSplineIndex = clipSetting.Controllers[controllerIndex].UsingSplineIndex;
                     #region Get local space pose
                     Pose localPose = new Pose();
@@ -143,6 +146,17 @@ namespace Aishizu.VRMBridge
                     tmpEffectorTarget.transform.position = worldPose.position;
                     tmpEffectorTarget.transform.rotation = worldPose.rotation;
                     yield return aszUnityCoroutine.WaitForEndOfFrame;
+                }
+                if (isHeadEffectorController)
+                {
+                    targetHeadEffector.positionWeight = reverse ? 0 : 1;
+                    targetHeadEffector.rotationWeight = reverse ? 0 : 1;
+                    targetHeadEffector.SetBendWeight(reverse ? 0 : 0.8f);
+                }
+                else
+                {
+                    targetEffector.positionWeight = reverse ? 0 : 1;
+                    targetEffector.rotationWeight = reverse ? 0 : 1;
                 }
             }
             m_RunningControllers--;

@@ -145,17 +145,11 @@ namespace Aishizu.Native.Services
                               ""Actions"": [
                                 {
                                   ""ActorId"": 0,
-                                  ""TargetId"": 0,
-                                  ""ActionName"": ""VRMHug"",
+                                  ""TargetId"": 1,
+                                  ""ActionName"": ""VRMSit"",
+                                  ""PPAP"": 23,
                                   ""IsValid"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 3,
-                                  ""ActionName"": ""VRMHold"",
-                                  ""IsValid"": true,
+                                  ""Undo"": false,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
                                 },
@@ -164,6 +158,62 @@ namespace Aishizu.Native.Services
                                   ""TargetId"": 1,
                                   ""ActionName"": ""VRMSit"",
                                   ""IsValid"": true,
+                                  ""PPAP"": 24,
+                                  ""Undo"": true,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 0,
+                                  ""ActionName"": ""VRMHug"",
+                                  ""IsValid"": true,
+                                  ""Undo"": false,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 0,
+                                  ""ActionName"": ""VRMHug"",
+                                  ""IsValid"": true,
+                                  ""Undo"": true,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 3,
+                                  ""ActionName"": ""VRMHold"",
+                                  ""IsValid"": true,
+                                  ""Undo"": false,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 2,
+                                  ""ActionName"": ""VRMKiss"",
+                                  ""IsValid"": true,
+                                  ""Undo"": false,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 2,
+                                  ""ActionName"": ""VRMKiss"",
+                                  ""IsValid"": true,
+                                  ""Undo"": true,
+                                  ""State"": ""Idle"",
+                                  ""IsFinished"": false
+                                },
+                                {
+                                  ""ActorId"": 0,
+                                  ""TargetId"": 3,
+                                  ""ActionName"": ""VRMHold"",
+                                  ""IsValid"": true,
+                                  ""Undo"": true,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
                                 }

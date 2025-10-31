@@ -6,6 +6,7 @@ using Aishizu.UnityCore;
 using Aishizu.UnityCore.Speach;
 using Aishizu.VRMBridge.Actions;
 using Aishizu.Native;
+using static SplineClipSetting;
 
 namespace Aishizu.VRMBridge
 {
@@ -98,25 +99,23 @@ namespace Aishizu.VRMBridge
 
         private IEnumerator WalkingToObject(Transform obj, float stopDistance)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
-            float distance = Vector3.Distance(obj.transform.position.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
+            yield return StartCoroutine(WalkingToPosition(obj.position, stopDistance));
+        }
+
+        private IEnumerator WalkingInFrontOfObject(Transform obj, float frontDistance, float stopDistance, Transform lookAtObj = null)
+        {
+            yield return StartCoroutine(WalkingToPosition(obj.position + obj.forward * frontDistance, stopDistance));
+            yield return StartCoroutine(Face(obj.position, 0.2f));
+        }
+
+        private IEnumerator WalkingToPosition(Vector3 pos, float stopDistance)
+        {
+            float distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
 
             while (distance > stopDistance)
             {
-                WalkToPos(obj.position, stopDistance, ref distance);
-                yield return wait;
-            }
-            FinalMovingSpeed = 0;
-        }
-        private IEnumerator WalkingToPosition(Vector3 pos, float distanceThreshold)
-        {
-            YieldInstruction wait = new WaitForEndOfFrame();
-            float distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
-
-            while (distance > distanceThreshold)
-            {
-                WalkToPos(pos, distanceThreshold, ref distance);
-                yield return wait;
+                WalkToPos(pos, stopDistance, ref distance);
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
             FinalMovingSpeed = 0;
         }
@@ -124,24 +123,41 @@ namespace Aishizu.VRMBridge
         {
             transform.LookAt(pos.ToLevelPosition(transform), Vector3.up);
             FinalMovingSpeed = NormalMovingSpeed * MovingSpeedTowardTargetCurve.Evaluate(distance - (distanceThreshold * 0.75f));
-            transform.Translate((pos.ToLevelPosition(transform) - transform.position.ToLevelPosition(transform)).normalized * Time.deltaTime * FinalMovingSpeed);
+            transform.position += (pos.ToLevelPosition(transform) - transform.position.ToLevelPosition(transform)).normalized * Time.deltaTime * FinalMovingSpeed;
             distance = Vector3.Distance(pos.ToLevelPosition(transform), transform.position.ToLevelPosition(transform));
         }
         #endregion
         #region Facing
-        private IEnumerator Facing(Vector3 pos, float withInDuraction)
+        private IEnumerator Face(Vector3 pos, float withInDuraction)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
             float angleDiff = Vector3.SignedAngle(transform.forward, (pos - transform.position).normalized, Vector3.up);
             float startFacingTime = Time.time;
-            Quaternion originalFacing = transform.rotation;
+            Quaternion originalRotation = transform.rotation;
             while (Time.time - startFacingTime < withInDuraction)
             {
                 float currentAngle = angleDiff * FacingTargetCurve.Evaluate((Time.time - startFacingTime) / withInDuraction);
-                transform.rotation = originalFacing * Quaternion.AngleAxis(currentAngle, Vector3.up); ;
-                yield return wait;
+                transform.rotation = originalRotation * Quaternion.AngleAxis(currentAngle, Vector3.up); ;
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
             transform.LookAt(pos.ToLevelPosition(transform), Vector3.up);
+        }
+
+        #endregion
+        #region LookAt
+        private IEnumerator LookingAtObject(Transform target)
+        {
+            while (true)
+            {
+                LookAtObject(target);
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
+            }
+        }
+
+        private void LookAtObject(Transform target)
+        {
+            m_FBBIKHeadEffector.rotationWeight = target ? 1f : 0f;
+            m_FBBIKHeadEffector.SetBendWeight(target ? 0.8f : 0f);
+            m_FBBIKHeadEffector.transform.rotation = Quaternion.LookRotation((target.position - m_VRMBodyInfo.GetSupportJoints.HeadCenter.position).normalized, m_VRMBodyInfo.GetSupportJoints.HeadCenter.up);
         }
         #endregion
         #region Reach
@@ -158,20 +174,22 @@ namespace Aishizu.VRMBridge
 
         private IEnumerator ReachingObject(Transform obj, HumanBodyBones usingJoint, bool undo = false)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
             float startReachingTime = Time.time;
             IKEffector effector = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftHandEffector : m_FullBodyBipedIK.solver.rightHandEffector;
             IKMappingLimb mapping = usingJoint != HumanBodyBones.RightHand ? m_FullBodyBipedIK.solver.leftArmMapping : m_FullBodyBipedIK.solver.rightArmMapping;
             effector.VRMSetTarget(obj, m_FullBodyBipedIK);
-            float progress = (Time.time - startReachingTime) / ReachingDuraction;
+            float progress = 0;
             while (progress < 1)
             {
                 mapping.weight = ReachingTowardTargetCurve.Evaluate(undo ? 1 - progress : progress);
                 effector.positionWeight = ReachingTowardTargetCurve.Evaluate(undo ? 1 - progress : progress);
                 effector.rotationWeight = ReachingTowardTargetCurve.Evaluate(undo ? 1 - progress : progress);
-                yield return wait;
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
                 progress = (Time.time - startReachingTime) / ReachingDuraction;
             }
+
+            effector.positionWeight = undo ? 0 : 1;
+            effector.rotationWeight = undo ? 0 : 1;
         }
         #endregion
         #region Touch
@@ -194,113 +212,144 @@ namespace Aishizu.VRMBridge
         }
         #endregion
         #region Sit
-
-        private IEnumerator SitingElevatingToHeight(float targetHeight, float withInDuraction, Transform hip)
+        public void SitOnObject(aszVRMSit sit, bool undo)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
-            float startElevatingTime = Time.time;
-            Vector3 originalPos = transform.position;
-            while ((Time.time - startElevatingTime) < withInDuraction)
+            StartCoroutine(SittingOnObject(sit, undo: undo));
+        }
+
+        private IEnumerator SittingOnObject(aszVRMSit sit, float duraction)
+        {
+            yield return StartCoroutine(SittingOnObject(sit, setFinish: false, undo: false));
+            yield return aszUnityCoroutine.WaitForSeconds(duraction);
+            yield return StartCoroutine(SittingOnObject(sit, setFinish: true, undo: true));
+        }
+
+        private IEnumerator SittingOnObject(aszVRMSit sit, bool setFinish = true, bool undo = false)
+        {
+            if (undo)
             {
-                transform.position = transform.position + Vector3.up * (targetHeight - hip.position.y) * SittingElevateCurve.Evaluate((Time.time - startElevatingTime) / withInDuraction);
-                yield return wait;
+                yield return StartCoroutine(WalkingToPosition(sit.Sitable.transform.position + sit.Sitable.transform.forward * sit.Sitable.Edge, 0.05f));
             }
-            transform.position = transform.position + Vector3.up * (targetHeight - hip.position.y);
-        }
-
-        public void SitOnObject(aszVRMSit sit)
-        {
-            StartCoroutine(SittingOnObject(sit));
-
-        }
-
-        private IEnumerator SittingOnObject(aszVRMSit sit)
-        {
-            yield return StartCoroutine(WalkingToObject(sit.Sitable.transform, 0.05f));
-            yield return StartCoroutine(Facing(sit.Sitable.transform.position + sit.Sitable.transform.forward, 1f));
+            else
+            {
+                yield return StartCoroutine(WalkingToObject(sit.Sitable.transform, 0.05f));
+                yield return StartCoroutine(Face(sit.Sitable.transform.position + sit.Sitable.transform.forward, 1f));
+            }
             m_VRMAnimationController.GetAnimator.SetTrigger("TriggerSit");
             yield return StartCoroutine(SitingElevatingToHeight(sit.Sitable.SitPose.position.y + m_VRMBodyInfo.GetBodyCode.HipRadious, 3f, m_VRMBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
-            sit.SetFinish(Result.Success);
+            if (setFinish)
+            {
+                sit.SetFinish(Result.Success);
+            }
+        }
+
+        private Vector3 originalSitPos;
+        private IEnumerator SitingElevatingToHeight(float targetHeight, float withInDuraction, Transform hip, bool undo = false)
+        {
+            float startElevatingTime = Time.time;
+            if (!undo)
+            {
+                originalSitPos = transform.position;
+            }
+            float progress = 0;
+            while (progress < 1)
+            {
+                transform.position = originalSitPos + Vector3.up * (targetHeight - hip.position.y) * SittingElevateCurve.Evaluate(undo ? (1 - progress) : progress);
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
+                progress = (Time.time - startElevatingTime) / withInDuraction;
+            }
+
+            transform.position = undo ? originalSitPos : originalSitPos + Vector3.up * (targetHeight - hip.position.y);
         }
         #endregion
         #region Kiss
-        public void KissObject(aszVRMKiss kiss)
+        public void KissObject(aszVRMKiss kiss, bool undo)
         {
-            StartCoroutine(KissingObject(kiss));
+            StartCoroutine(KissingObject(kiss, undo: undo));
         }
-
-        private IEnumerator KissingObject(aszVRMKiss kiss)
+        private IEnumerator KissingObject(aszVRMKiss kiss, bool setFinish = true, bool undo = false)
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
-            EnableTippingToes(true);
-            m_FBBIKHeadEffector.positionWeight = 0;
-            m_FBBIKHeadEffector.VRMSetTarget(kiss.Kissable.transform);
-            yield return StartCoroutine(WalkingToObject(kiss.Kissable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
-            float startKissingTime = Time.time;
-            while ((Time.time - startKissingTime) / KissingDuraction < 0.8f && m_BodyStatus.IsGrounded(aszVRMBodyStatus.GroundedPart.Tipping))
+            if (!undo)
             {
-                m_FBBIKHeadEffector.positionWeight = KissingTowardTargetCurve.Evaluate((Time.time - startKissingTime) / KissingDuraction);
-                yield return wait;
+                m_FBBIKHeadEffector.positionWeight = 0;
+                m_FBBIKHeadEffector.rotationWeight = 0;
+                m_FBBIKHeadEffector.VRMSetTarget(kiss.Kissable.transform);
+                yield return StartCoroutine(WalkingToObject(kiss.Kissable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
             }
-            kiss.SetFinish(Result.Success);
+            float startKissingTime = Time.time;
+            float progress = 0;
+            while (progress < 1)
+            {
+                m_FBBIKHeadEffector.positionWeight = KissingTowardTargetCurve.Evaluate(undo ? (1 - progress) : progress);
+                m_FBBIKHeadEffector.rotationWeight = KissingTowardTargetCurve.Evaluate(undo ? (1 - progress) : progress);
+                m_FBBIKHeadEffector.SetBendWeight(Mathf.InverseLerp(0, 0.1f, undo ? (1 - progress) : progress) * 0.8f);
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
+                progress = (Time.time - startKissingTime) / KissingDuraction;
+            }
+            m_FBBIKHeadEffector.positionWeight = undo ? 0 : 1;
+            m_FBBIKHeadEffector.rotationWeight = undo ? 0 : 1;
+            m_FBBIKHeadEffector.SetBendWeight(undo ? 0 : 0.8f);
+            if (setFinish)
+            {
+                kiss.SetFinish(Result.Success);
+            }
         }
         #endregion
         #region Hold
-        public void HoldObject(aszVRMHold hold)
+        public void HoldObject(aszVRMHold hold, bool undo)
         {
-            StartCoroutine(HoldingObject(hold, 3f));
+            StartCoroutine(HoldingObject(hold, undo: undo));
         }
 
         private IEnumerator HoldingObject(aszVRMHold hold, bool undo = false)
         {
-            yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+            if (!undo)
+            {
+                yield return StartCoroutine(WalkingInFrontOfObject(hold.Holdable.transform, 1f, 0.1f));
+                yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
+            }
             bool leftHandReached = false, rightHandReached = false;
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
-            m_BodyStatus.HoldingObj = undo ? null : hold.Holdable;
-            hold.SetFinish(Result.Success);
-        }
-
-        private IEnumerator HoldingObject(aszVRMHold hold, float duraction = -1)
-        {
-            yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
-            bool leftHandReached = false, rightHandReached = false;
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand), () => leftHandReached = true));
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand), () => rightHandReached = true));
-            yield return new WaitUntil(() => leftHandReached && rightHandReached);
-            m_BodyStatus.HoldingObj = hold.Holdable;
-            yield return aszUnityCoroutine.WaitForSeconds(duraction);
-            bool leftHandUnReached = false, rightHandUnReached = false;
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, true), () => leftHandUnReached = true));
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, true), () => rightHandUnReached = true));
-            yield return new WaitUntil(() => leftHandUnReached && rightHandUnReached);
-            m_BodyStatus.HoldingObj = null;
             hold.SetFinish(Result.Success);
         }
         #endregion
         #region Hug
-        public void HugObject(aszVRMHug hug)
+        public void HugObject(aszVRMHug hug, bool undo)
         {
-            StartCoroutine(HugingObject(hug));
+            StartCoroutine(HugingObject(hug, undo: undo));
         }
 
-        IEnumerator HugingObject(aszVRMHug hug)
+        IEnumerator HugingObject(aszVRMHug hug, bool undo)
         {
-            yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
-            m_BodyStatus.HugingObj = hug.Hugable;
-            yield return StartCoroutine(m_VRMAnimationController.PlayingHug());
+            if (!undo)
+            {
+                if (hug.Hugable.GetVRMBodyInfo(out aszVRMBodyInfo bodyInfo) == Result.Success)
+                {
+                    yield return StartCoroutine(WalkingInFrontOfObject(hug.Hugable.transform, 1f, 0.1f, lookAtObj: bodyInfo.GetSupportJoints.HeadCenter));
+                }
+                else
+                {
+                    yield return StartCoroutine(WalkingInFrontOfObject(hug.Hugable.transform, 1f, 0.1f));
+                }
+                yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
+            }
+            yield return StartCoroutine(m_VRMAnimationController.PlayingHug(reverse: undo));
             hug.SetFinish(Result.Success);
         }
         #endregion
         #region TipToes
         private bool EnableTipping = false;
+        private Quaternion[] footOriginalRotations = new Quaternion[2];
         private void EnableTippingToes(bool enable)
         {
             if (enable)
             {
                 m_FullBodyBipedIK.solver.leftFootEffector.rotationWeight = 1f;
                 m_FullBodyBipedIK.solver.rightFootEffector.rotationWeight = 1f;
+                footOriginalRotations[0] = m_RightFootTarget.localRotation;
+                footOriginalRotations[1] = m_LeftFootTarget.localRotation;
                 m_LeftFootTarget.localRotation = Quaternion.identity;
                 m_RightFootTarget.localRotation = Quaternion.identity;
             }
@@ -308,12 +357,13 @@ namespace Aishizu.VRMBridge
             {
                 m_FullBodyBipedIK.solver.leftFootEffector.rotationWeight = 0f;
                 m_FullBodyBipedIK.solver.rightFootEffector.rotationWeight = 0f;
+                m_LeftFootTarget.localRotation = footOriginalRotations[1];
+                m_RightFootTarget.localRotation = footOriginalRotations[0];
             }
             EnableTipping = enable;
         }
         IEnumerator TippingToes()
         {
-            YieldInstruction wait = new WaitForEndOfFrame();
             while (true)
             {
                 if (EnableTipping)
@@ -344,7 +394,7 @@ namespace Aishizu.VRMBridge
                         }
                     }
                 }
-                yield return wait;
+                yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
         }
         #endregion
@@ -363,26 +413,12 @@ namespace Aishizu.VRMBridge
             {
                 if (m_FriendSpeachController.GetCurrentMouthShape(out MouthShape mouthShape) == Result.Success)
                 {
-                    Debug.Log("Exp1: " + mouthShape.Vowel1);
-                    Debug.Log("Exp2: " + mouthShape.Vowel2);
                     m_VRMAnimationController.SetFacialExpressionBlend(mouthShape.ToFacialBlend());
-                }
-                else
-                {
-                    Debug.Log("Failed");
                 }
                 yield return wait;
             }
         }
         #endregion
-
-
-
-
-
-
-
-
         public IEnumerator CoroutineWithCallback(IEnumerator targetCoroutine, Action onComplete)
         {
             yield return StartCoroutine(targetCoroutine);

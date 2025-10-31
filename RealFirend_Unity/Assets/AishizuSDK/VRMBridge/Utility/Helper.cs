@@ -31,6 +31,37 @@ namespace Aishizu.VRMBridge
         }
     }
 
+    public static class aszInteractableExt
+    {
+        public static bool IsVRMCharacter(this aszInteractable self)
+        {
+            if (self.InteractTransform.GetComponent<aszVRMBodyInfo>())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static Result GetVRMBodyInfo(this aszInteractable self, out aszVRMBodyInfo result)
+        {
+            result = self.InteractTransform.GetComponent<aszVRMBodyInfo>();
+            if (result)
+            {
+                return Result.Success;
+            }
+            return Result.Failed;
+        }
+    }
+
+    public static class aszHeadEffectorExt
+    {
+        public static void SetBendWeight(this FBBIKHeadEffector self, float weight)
+        {
+            self.bendWeight = weight;
+            self.CCDWeight = weight;
+        }
+    }
+
     public static class IKEffectorExt
     {
         public static Quaternion RotationOffset(this IKEffector self, Vector3 upAxis, FullBodyBipedIK m_FullBodyBipedIK)

@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc40f620a9bcacc4c8bd12a15627831f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InteractTransform: {fileID: 740829207}
+  m_InteractTransform: {fileID: 0}
   m_Edge: 0
   m_SitPose: {fileID: 740829207}
 --- !u!1 &636659768
@@ -622,6 +622,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f289b53144541bf4b92e04611334ad7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1431225611 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 727793518701837770, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
+  m_PrefabInstance: {fileID: 1080830611111302098}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1658151701
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +784,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 701155073201999750, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 727793518701837770, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.48
@@ -823,6 +832,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dummy
       objectReference: {fileID: 0}
+    - target: {fileID: 6833723628478504973, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7851035203109389449, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
+      propertyPath: m_HugableDistance
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7851035203109389449, guid: 72f3817ec3374d049bb55652fa5955d3, type: 3}
+      propertyPath: m_InteractTransform
+      value: 
+      objectReference: {fileID: 1431225611}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -880,6 +901,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 791126072652052462, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: CCDWeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 791126072652052462, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: bendWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: solver.effectors.Array.data[0].target
       value: 
@@ -891,6 +920,18 @@ PrefabInstance:
     - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: ReachingDuraction
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: FacingTargetCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: KissingTowardTargetCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: ReachingTowardTargetCurve.m_Curve.Array.data[0].value
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

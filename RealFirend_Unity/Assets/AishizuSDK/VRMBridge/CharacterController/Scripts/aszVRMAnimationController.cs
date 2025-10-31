@@ -4,7 +4,6 @@ using Aishizu.UnityCore;
 using Aishizu.Native;
 using RootMotion.FinalIK;
 using UniVRM10;
-using static UnityEngine.GUI;
 
 namespace Aishizu.VRMBridge
 {
@@ -92,11 +91,11 @@ namespace Aishizu.VRMBridge
             m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression2.ToVRMExpressionKey(), expressionBlend.Weight2);
         }
 
-        public IEnumerator PlayingHug()
+        public IEnumerator PlayingHug(bool reverse = false)
         {
             SplineClip clip = Instantiate(m_HugClip).GetComponent<SplineClip>();
             clip.Init(m_FullBodyBipedIK, m_FBBIKHeadEffector, m_BodyInfo.GetHumanoid);
-            if(clip.Play() == Result.Failed)
+            if(clip.Play(reverse: reverse) == Result.Failed)
             {
                 yield break;
             }
@@ -104,8 +103,10 @@ namespace Aishizu.VRMBridge
             {
                 yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
-            yield return aszUnityCoroutine.WaitForSeconds(2f);
-            clip.Stop();
+            if (reverse)
+            {
+                clip.Stop();
+            }
         }
     }
 }

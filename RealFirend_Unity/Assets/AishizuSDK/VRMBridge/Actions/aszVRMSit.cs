@@ -10,8 +10,10 @@ namespace Aishizu.VRMBridge.Actions
         public override string ToString() => $"SitAction(TargetId={TargetId})";
         private aszSitable m_Sitable; public aszSitable Sitable => m_Sitable;
 
+        public int PPAP { get; set; }
         protected override void OnStart()
         {
+            Debug.Log("Sit PPAP:" + PPAP);
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 SetFinish(Result.Failed);
@@ -34,7 +36,7 @@ namespace Aishizu.VRMBridge.Actions
                 return;
             }
 
-            aszVRMActor.SitOnObject(this);
+            aszVRMActor.SitOnObject(this, undo: Undo);
         }
     }
 }

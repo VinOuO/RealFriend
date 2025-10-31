@@ -47,6 +47,47 @@ namespace Aishizu.Native.Actions
             }
             return JsonSerializer.Serialize(m_JsonSchemas, options);
         }
+
+
+        public Result JsonToActions(string json, out List<aszAction> result)
+        {
+            result = new List<aszAction>();
+
+            using JsonDocument doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("Actions", out JsonElement actionsArray))
+                return Result.Failed;
+
+            foreach (JsonElement actionElement in actionsArray.EnumerateArray())
+            {
+                string actionName = actionElement.GetProperty("ActionName").GetString();
+                Type actionType = GetRegisteredActionType(actionName);
+
+                if (actionType == null)
+                {
+                    aszLogger.WriteLine($"Unknown action: {actionName}");
+                    continue;
+                }
+
+                try
+                {
+                    // ✅ 關鍵：直接用 JsonSerializer.Deserialize() 轉成 actionType
+                    aszAction action = (aszAction)JsonSerializer.Deserialize(
+                        actionElement.GetRawText(),
+                        actionType,
+                        new JsonSerializerOptions { IncludeFields = true }
+                    );
+                    result.Add(action);
+                }
+                catch (Exception ex)
+                {
+                    aszLogger.WriteLine($"Failed to deserialize {actionName}: {ex.Message}");
+                }
+            }
+
+            return result.Count > 0 ? Result.Success : Result.Failed;
+        }
+
+        /*
         public Result JsonToActions(string json, out List<aszAction> result)
         {
             using JsonDocument doc = JsonDocument.Parse(json);
@@ -62,6 +103,7 @@ namespace Aishizu.Native.Actions
                 string? actionName = actionElement.GetProperty("ActionName").GetString();
                 int actorId = actionElement.GetProperty("ActorId").GetInt32();
                 int targetId = actionElement.GetProperty("TargetId").GetInt32();
+                bool undo = actionElement.GetProperty("Undo").GetBoolean();
 
                 Type actionType = GetRegisteredActionType(actionName == null ? "" : actionName);
                 if (actionType == null)
@@ -76,10 +118,12 @@ namespace Aishizu.Native.Actions
                 }
                 actionInstance.ActorId = actorId;
                 actionInstance.TargetId = targetId;
+                actionInstance.Undo = undo;
                 result.Add(actionInstance);
             }
             return Result.Success;
         }
+        */
         public Type GetRegisteredActionType(string actionName)
         {
             m_ActionTypes.TryGetValue(actionName, out Type type);

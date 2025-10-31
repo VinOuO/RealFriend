@@ -34,7 +34,7 @@ namespace Aishizu.VRMBridge.Actions
                 SetFinish(Result.Failed);
                 return;
             }
-            aszVRMActor.HoldObject(this);
+            aszVRMActor.HoldObject(this, undo: Undo);
         }
     }
 }
