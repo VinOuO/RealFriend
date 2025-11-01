@@ -14,22 +14,26 @@ namespace Aishizu.VRMBridge.Actions
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
+                Debug.Log("1");
                 SetState(aszActionState.Failed);
                 return;
             }
             if (target is not aszHugable hugable)
             {
+                Debug.Log("2");
                 SetState(aszActionState.Failed);
                 return;
             }
             m_Hugable = hugable;
             if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
+                Debug.Log("3");
                 SetState(aszActionState.Failed);
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
+                Debug.Log("4");
                 SetState(aszActionState.Failed);
                 return;
             }

@@ -28,16 +28,7 @@ namespace Aishizu.Native.Services
             m_ActorService = new aszActorService();
             m_ActionService = new aszActionService();
             m_TargetService = new aszTargetService();
-        }
-
-        public aszAIMediator(
-            aszActorService actorService,
-            aszActionService actionService,
-            aszTargetService targetService)
-        {
-            m_ActorService = actorService;
-            m_ActionService = actionService;
-            m_TargetService = targetService;
+            m_SequenceService = new aszSequenceService();
         }
 
         /// <summary>
@@ -153,7 +144,7 @@ namespace Aishizu.Native.Services
                                 },
                                 {
                                   ""ActorId"": 0,
-                                  ""TargetId"": 1,
+                                  ""TargetId"": 0,
                                   ""ActionName"": ""VRMHug"",
                                   ""IsValid"": true,
                                   ""State"": ""Idle"",

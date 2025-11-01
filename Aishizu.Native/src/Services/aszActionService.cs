@@ -39,7 +39,6 @@ namespace Aishizu.Native.Actions
                 WriteIndented = true,
                 IncludeFields = true
             };
-            aszLogger.WriteLine($"PPAP");
             aszLogger.WriteLine($"[aszActionService] Instance HashCode: {GetHashCode()} Count: {m_JsonSchemas.Count}");
             foreach (string s in m_JsonSchemas.Values)
             {
@@ -73,7 +72,7 @@ namespace Aishizu.Native.Actions
                     aszAction action = (aszAction)JsonSerializer.Deserialize(
                         actionElement.GetRawText(),
                         actionType,
-                        new JsonSerializerOptions { IncludeFields = true }
+                        aszJsonSettings.DefaultJsonOptions
                     );
                     result.Add(action);
                 }

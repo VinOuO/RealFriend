@@ -146,7 +146,8 @@ namespace Aishizu.Native
                     break;
                 case  aszWait wait:
                     wait.Duration -= deltaTime;
-                    if(wait.Duration < 0)
+                    aszLogger.WriteLine($"[aszSequenceServices] Remainning waitting time: {wait.Duration}");
+                    if (wait.Duration < 0)
                     {
                         NextAction();
                     }
@@ -163,11 +164,15 @@ namespace Aishizu.Native
                 switch (m_Current)
                 {
                     case aszActionBegin actionBegin:
+                        aszLogger.WriteLine($"[aszSequenceServices] Beginning: {m_Actions[actionBegin.actionId].ActionName}");
                         m_Actions[actionBegin.actionId].Start();
                         break;
                     case aszActionEnd actionEnd:
-                        if(m_Actions[actionEnd.actionId].State == aszActionState.Failed)
+                        aszLogger.WriteLine($"[aszSequenceServices] Finishing: {m_Actions[actionEnd.actionId].ActionName}");
+                        m_Actions[actionEnd.actionId].Finish();
+                        if (m_Actions[actionEnd.actionId].State == aszActionState.Failed)
                         {
+                            aszLogger.WriteLine($"[aszSequenceServices]: {m_Actions[actionEnd.actionId].ActionName} skipped finishing due to failed status");
                             NextAction();
                             return;
                         }

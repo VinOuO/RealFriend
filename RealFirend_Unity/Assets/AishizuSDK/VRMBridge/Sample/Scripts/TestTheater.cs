@@ -43,7 +43,6 @@ namespace Aishizu.VRMBridge
         {
             if(m_DummyBodyInfo.GetSupportJoints.Mouth.GetComponent<aszKissable>() == null)
             {
-                Debug.Log("PPAP");
                 return;
             }
             m_Theater.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.Mouth.GetComponent<aszKissable>());

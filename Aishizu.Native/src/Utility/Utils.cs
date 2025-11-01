@@ -1,4 +1,6 @@
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Aishizu.Native
 {
@@ -26,5 +28,17 @@ namespace Aishizu.Native
     {
         RunningSequence,
         WaitingForSceneUpdate,
+    }
+    public static class aszJsonSettings
+    {
+        public static readonly JsonSerializerOptions DefaultJsonOptions = new JsonSerializerOptions
+        {
+            IncludeFields = true,
+            PropertyNameCaseInsensitive = true,
+            Converters =
+        {
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+        }
+        };
     }
 }
