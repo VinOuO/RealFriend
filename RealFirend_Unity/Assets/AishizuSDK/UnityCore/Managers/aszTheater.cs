@@ -74,10 +74,6 @@ namespace Aishizu.UnityCore
 
         public IEnumerator PlayingTimeline()
         {
-            foreach(aszAction action in m_AIMediator.CurrentSequence.ActionList)
-            {
-                Debug.Log(action.ToString());
-            }
             m_AIMediator.CurrentSequence.Start();
             while (!m_AIMediator.CurrentSequence.IsFinished)
             {

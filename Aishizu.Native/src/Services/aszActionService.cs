@@ -70,7 +70,6 @@ namespace Aishizu.Native.Actions
 
                 try
                 {
-                    // ✅ 關鍵：直接用 JsonSerializer.Deserialize() 轉成 actionType
                     aszAction action = (aszAction)JsonSerializer.Deserialize(
                         actionElement.GetRawText(),
                         actionType,
@@ -81,6 +80,7 @@ namespace Aishizu.Native.Actions
                 catch (Exception ex)
                 {
                     aszLogger.WriteLine($"Failed to deserialize {actionName}: {ex.Message}");
+                    aszLogger.WriteLine($"Json: {actionElement.GetRawText()}");
                 }
             }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Aishizu.Native.Events;
 
 namespace Aishizu.Native.Services
 {
@@ -14,7 +15,7 @@ namespace Aishizu.Native.Services
         private readonly aszActorService m_ActorService; public aszActorService ActorService => m_ActorService;
         private readonly aszActionService m_ActionService; public aszActionService ActionService => m_ActionService;
         private readonly aszTargetService m_TargetService; public aszTargetService TargetService => m_TargetService;
-        private aszSequence m_CurrentSequence; public aszSequence CurrentSequence => m_CurrentSequence;
+        private aszSequenceService m_SequenceService; public aszSequenceService CurrentSequence => m_SequenceService;
 
 
         public string Endpoint { get; set; } = "http://localhost:1234/v1/chat/completions";
@@ -130,7 +131,6 @@ namespace Aishizu.Native.Services
             PromptResult result = await SendPromptAsync(systemPrompt: InitSystemPrompt());
             return result.IsValid ? Result.Success : Result.Failed;
         }
-
         string mockData = @"
                             {
                               ""Actors"": [
@@ -147,37 +147,15 @@ namespace Aishizu.Native.Services
                                   ""ActorId"": 0,
                                   ""TargetId"": 1,
                                   ""ActionName"": ""VRMSit"",
-                                  ""PPAP"": 23,
                                   ""IsValid"": true,
-                                  ""Undo"": false,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
                                 },
                                 {
                                   ""ActorId"": 0,
                                   ""TargetId"": 1,
-                                  ""ActionName"": ""VRMSit"",
-                                  ""IsValid"": true,
-                                  ""PPAP"": 24,
-                                  ""Undo"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 0,
                                   ""ActionName"": ""VRMHug"",
                                   ""IsValid"": true,
-                                  ""Undo"": false,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 0,
-                                  ""ActionName"": ""VRMHug"",
-                                  ""IsValid"": true,
-                                  ""Undo"": true,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
                                 },
@@ -186,7 +164,6 @@ namespace Aishizu.Native.Services
                                   ""TargetId"": 3,
                                   ""ActionName"": ""VRMHold"",
                                   ""IsValid"": true,
-                                  ""Undo"": false,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
                                 },
@@ -195,30 +172,25 @@ namespace Aishizu.Native.Services
                                   ""TargetId"": 2,
                                   ""ActionName"": ""VRMKiss"",
                                   ""IsValid"": true,
-                                  ""Undo"": false,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 2,
-                                  ""ActionName"": ""VRMKiss"",
-                                  ""IsValid"": true,
-                                  ""Undo"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 3,
-                                  ""ActionName"": ""VRMHold"",
-                                  ""IsValid"": true,
-                                  ""Undo"": true,
                                   ""State"": ""Idle"",
                                   ""IsFinished"": false
                                 }
+                              ],
+                              ""Events"": [
+                                { ""Type"": ""ActionBegin"", ""ActionId"": 0 },      
+                                { ""Type"": ""Wait"", ""Duration"": 2.0 },           
+                                { ""Type"": ""ActionEnd"", ""ActionId"": 0 },    
+                                { ""Type"": ""ActionBegin"", ""ActionId"": 1 },    
+                                { ""Type"": ""ActionEnd"", ""ActionId"": 1 },         
+                                { ""Type"": ""ActionBegin"", ""ActionId"": 2 },      
+                                { ""Type"": ""Wait"", ""Duration"": 0.5 },           
+                                { ""Type"": ""ActionBegin"", ""ActionId"": 3 },      
+                                { ""Type"": ""Wait"", ""Duration"": 5.0 },           
+                                { ""Type"": ""ActionEnd"", ""ActionId"": 3 },        
+                                { ""Type"": ""ActionEnd"", ""ActionId"": 2 }         
                               ]
                             }";
+
 
 
         public async Task<Result> DescribeCurrentScene()
@@ -238,9 +210,10 @@ namespace Aishizu.Native.Services
                 }
                 if (result.IsValid)
                 {
-                    if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success)
+                    if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success &&
+                       m_SequenceService.JsonToSequence(result.Response, out List<aszIEvent> eventList) == Result.Success)
                     {
-                        m_CurrentSequence = new aszSequence(actionList);
+                        m_SequenceService.Init(actionList, eventList);
                         return Result.Success;
                     }
                     else

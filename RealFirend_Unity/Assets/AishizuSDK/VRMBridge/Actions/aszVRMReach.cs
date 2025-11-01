@@ -13,6 +13,7 @@ namespace Aishizu.VRMBridge.Actions
 
         protected override void OnStart()
         {
+            /*
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 SetFinish(Result.Failed);
@@ -36,6 +37,7 @@ namespace Aishizu.VRMBridge.Actions
             }
 
             aszVRMActor.ReachObject(this);
+            */
         }
     }
 }

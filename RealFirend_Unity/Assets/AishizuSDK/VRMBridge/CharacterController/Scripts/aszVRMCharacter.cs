@@ -6,7 +6,7 @@ using Aishizu.UnityCore;
 using Aishizu.UnityCore.Speach;
 using Aishizu.VRMBridge.Actions;
 using Aishizu.Native;
-using static SplineClipSetting;
+using Aishizu.Native.Actions;
 
 namespace Aishizu.VRMBridge
 {
@@ -86,6 +86,7 @@ namespace Aishizu.VRMBridge
 
 
         #region Walk
+        /*
         public void WalkToTarget(aszVRMWalk walk)
         {
             StartCoroutine(WalkingToObject(walk));
@@ -94,9 +95,9 @@ namespace Aishizu.VRMBridge
         private IEnumerator WalkingToObject(aszVRMWalk walk)
         {
             yield return StartCoroutine(WalkingToObject(walk.Walkable.transform, walk.StopDistance));
-            walk.SetFinish(Result.Success);
+            walk.SetState(aszActionState.);
         }
-
+        */
         private IEnumerator WalkingToObject(Transform obj, float stopDistance)
         {
             yield return StartCoroutine(WalkingToPosition(obj.position, stopDistance));
@@ -161,6 +162,7 @@ namespace Aishizu.VRMBridge
         }
         #endregion
         #region Reach
+        /*
         public void ReachObject(aszVRMReach reach)
         {
             StartCoroutine(ReachingObject(reach));
@@ -169,9 +171,9 @@ namespace Aishizu.VRMBridge
         private IEnumerator ReachingObject(aszVRMReach reach)
         {
             yield return StartCoroutine(ReachingObject(reach.Reachable.transform, reach.Hand));
-            reach.SetFinish(Result.Success);
+            reach.SetState(aszActionState.Running);
         }
-
+        */
         private IEnumerator ReachingObject(Transform obj, HumanBodyBones usingJoint, bool undo = false)
         {
             float startReachingTime = Time.time;
@@ -194,21 +196,21 @@ namespace Aishizu.VRMBridge
         #endregion
         #region Touch
 
-        public void TouchObject(aszVRMTouch touch)
+        public void TouchObject(aszVRMTouch touch, bool undo)
         {
-            StartCoroutine(TouchingObject(touch));
+            StartCoroutine(TouchingObject(touch, undo: undo));
         }
 
-        private IEnumerator TouchingObject(aszVRMTouch touch)
+        private IEnumerator TouchingObject(aszVRMTouch touch, bool undo = false)
         {
-            yield return StartCoroutine(TouchingObject(touch.Touchable.transform, touch.Hand));
-            touch.SetFinish(Result.Success);
+            yield return StartCoroutine(TouchingObject(touch.Touchable.transform, touch.Hand, undo));
+            touch.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
         }
 
-        private IEnumerator TouchingObject(Transform obj, HumanBodyBones usingJoint)
+        private IEnumerator TouchingObject(Transform obj, HumanBodyBones usingJoint, bool undo = false)
         {
             yield return StartCoroutine(WalkingToObject(obj, (usingJoint != HumanBodyBones.RightHand ? m_VRMBodyInfo.GetBodyCode.LeftArmLength : m_VRMBodyInfo.GetBodyCode.RightArmLength) * 0.8f));
-            yield return StartCoroutine(ReachingObject(obj, usingJoint));
+            yield return StartCoroutine(ReachingObject(obj, usingJoint, undo));
         }
         #endregion
         #region Sit
@@ -239,7 +241,7 @@ namespace Aishizu.VRMBridge
             yield return StartCoroutine(SitingElevatingToHeight(sit.Sitable.SitPose.position.y + m_VRMBodyInfo.GetBodyCode.HipRadious, 3f, m_VRMBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
             if (setFinish)
             {
-                sit.SetFinish(Result.Success);
+                sit.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
             }
         }
 
@@ -291,7 +293,7 @@ namespace Aishizu.VRMBridge
             m_FBBIKHeadEffector.SetBendWeight(undo ? 0 : 0.8f);
             if (setFinish)
             {
-                kiss.SetFinish(Result.Success);
+                kiss.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
             }
         }
         #endregion
@@ -312,7 +314,7 @@ namespace Aishizu.VRMBridge
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
-            hold.SetFinish(Result.Success);
+            hold.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
         }
         #endregion
         #region Hug
@@ -336,7 +338,7 @@ namespace Aishizu.VRMBridge
                 yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
             }
             yield return StartCoroutine(m_VRMAnimationController.PlayingHug(reverse: undo));
-            hug.SetFinish(Result.Success);
+            hug.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
         }
         #endregion
         #region TipToes

@@ -14,29 +14,31 @@ namespace Aishizu.VRMBridge.Actions
 
         protected override void OnStart()
         {
+            /*
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
             if (target is not aszWalkable walkable)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
             m_Walkable = walkable;
             if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
 
-            aszVRMActor.WalkToTarget(this);
+            aszVRMActor.WalkToTarget(this, undo: State == aszActionState.Running);
+            */
         }
 
     }

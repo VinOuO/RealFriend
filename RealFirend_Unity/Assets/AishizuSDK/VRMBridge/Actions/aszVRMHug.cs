@@ -14,27 +14,54 @@ namespace Aishizu.VRMBridge.Actions
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
             if (target is not aszHugable hugable)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
             m_Hugable = hugable;
             if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
-                SetFinish(Result.Failed);
+                SetState(aszActionState.Failed);
                 return;
             }
 
-            aszVRMActor.HugObject(this, undo: Undo);
+            aszVRMActor.HugObject(this, undo: State == aszActionState.Running);
+        }
+
+        protected override void OnFinish()
+        {
+            if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
+            {
+                SetState(aszActionState.Failed);
+                return;
+            }
+            if (target is not aszHugable hugable)
+            {
+                SetState(aszActionState.Failed);
+                return;
+            }
+            m_Hugable = hugable;
+            if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
+            {
+                SetState(aszActionState.Failed);
+                return;
+            }
+            if (actor is not aszVRMCharacter aszVRMActor)
+            {
+                SetState(aszActionState.Failed);
+                return;
+            }
+
+            aszVRMActor.HugObject(this, undo: State == aszActionState.Running);
         }
     }
 }
