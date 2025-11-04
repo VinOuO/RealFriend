@@ -23,12 +23,18 @@ namespace Aishizu.Native
             Error = error;
         }
     }
-
-    public enum LifeStatus
+    public enum aszEmotion
     {
-        RunningSequence,
-        WaitingForSceneUpdate,
+        Neutral,
+        Happy,
+        Shy,
+        Sad,
+        Angry,
+        Surprised,
+        Affectionate,
+        Embarrassed
     }
+
     public static class aszJsonSettings
     {
         public static readonly JsonSerializerOptions DefaultJsonOptions = new JsonSerializerOptions

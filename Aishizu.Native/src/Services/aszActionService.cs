@@ -58,7 +58,14 @@ namespace Aishizu.Native.Actions
 
             foreach (JsonElement actionElement in actionsArray.EnumerateArray())
             {
-                string actionName = actionElement.GetProperty("ActionName").GetString();
+                string? actionName = actionElement.GetProperty("ActionName").GetString();
+
+                if (actionName == null)
+                {
+                    aszLogger.WriteLine($"Unknown action name: {actionName}");
+                    continue;
+                }
+
                 Type actionType = GetRegisteredActionType(actionName);
 
                 if (actionType == null)
@@ -69,12 +76,11 @@ namespace Aishizu.Native.Actions
 
                 try
                 {
-                    aszAction action = (aszAction)JsonSerializer.Deserialize(
-                        actionElement.GetRawText(),
-                        actionType,
-                        aszJsonSettings.DefaultJsonOptions
-                    );
-                    result.Add(action);
+                    aszAction? action = (aszAction?)JsonSerializer.Deserialize(actionElement.GetRawText(), actionType, aszJsonSettings.DefaultJsonOptions);
+                    if(action != null)
+                    {
+                        result.Add(action);
+                    }
                 }
                 catch (Exception ex)
                 {

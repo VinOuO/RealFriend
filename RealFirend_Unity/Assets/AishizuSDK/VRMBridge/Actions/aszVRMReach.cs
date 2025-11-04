@@ -5,13 +5,13 @@ using Aishizu.UnityCore;
 
 namespace Aishizu.VRMBridge.Actions
 {
-    public class aszVRMReach : aszAction
+    public class aszVRMReach : aszVRMAction
     {
         public HumanBodyBones Hand { get; }
         public override string ToString() => $"ReachAction(TargetId={TargetId}, Hand={Hand})";
         private aszReachable m_Reachable; public aszReachable Reachable => m_Reachable;
 
-        protected override void OnStart()
+        public override void OnStart()
         {
             /*
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)

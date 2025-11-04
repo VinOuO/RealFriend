@@ -22,7 +22,6 @@ namespace Aishizu.VRMBridge
         {
             Task<Result> setupTask = m_Theater.SetUpStage();
             yield return new WaitUntil(() => setupTask.IsCompleted);
-            Debug.Log("SetUp: " + setupTask.Result);
             Result result = setupTask.Result;
             if (setupTask.Result != Result.Success)
             {
@@ -31,7 +30,6 @@ namespace Aishizu.VRMBridge
 
             Task<Result> updateTask = m_Theater.UpdateStage();
             yield return new WaitUntil(() => updateTask.IsCompleted);
-            Debug.Log("Update: " + updateTask.Result);
             if (updateTask.Result != Result.Success)
             {
                 yield break;

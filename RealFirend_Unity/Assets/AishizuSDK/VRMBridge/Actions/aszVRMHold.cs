@@ -6,12 +6,12 @@ using UnityEditor;
 
 namespace Aishizu.VRMBridge.Actions
 {
-    public class aszVRMHold : aszAction
+    public class aszVRMHold : aszVRMAction
     {
         public override string ToString() => $"HoldAction(TargetId={TargetId})";
 
         private aszHoldable m_Holdable; public aszHoldable Holdable => m_Holdable;
-        protected override void OnStart()
+        public override void OnStart()
         {
     
             if(aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
@@ -38,7 +38,7 @@ namespace Aishizu.VRMBridge.Actions
             aszVRMActor.HoldObject(this, undo: State == aszActionState.Running);
         }
 
-        protected override void OnFinish()
+        public override void OnFinish()
         {
 
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)

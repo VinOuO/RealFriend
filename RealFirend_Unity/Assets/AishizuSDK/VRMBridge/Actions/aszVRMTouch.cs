@@ -5,14 +5,14 @@ using Aishizu.Native;
 
 namespace Aishizu.VRMBridge.Actions 
 { 
-    public class aszVRMTouch : aszAction
+    public class aszVRMTouch : aszVRMAction
     {
         public HumanBodyBones Hand { get; }
 
         public override string ToString() => $"TouchAction(TargetId={TargetId}, Hand={Hand})";
         private aszTouchable m_Touchable; public aszTouchable Touchable => m_Touchable;
 
-        protected override void OnStart()
+        public override void OnStart()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {

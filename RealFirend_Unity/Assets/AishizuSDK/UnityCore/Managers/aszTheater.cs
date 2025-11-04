@@ -5,6 +5,9 @@ using System.Collections;
 using Aishizu.Native;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
+using UnityEngine.Events;
+using Aishizu.Native.Events;
 
 namespace Aishizu.UnityCore
 {
@@ -12,7 +15,15 @@ namespace Aishizu.UnityCore
     [RequireComponent(typeof(aszInterableManager))]
     public class aszTheater : MonoBehaviour
     {
-        public List<aszAction> de_Sequence;
+        [Header("DeveloperSettings")]
+        [Tooltip("The events will be trigger when an aszAction is started.\r\nThis can be used to call the actual performance and init functions of your action.")]
+        [SerializeField] UnityEvent<aszAction> OnActionStart;
+        [Tooltip("The events will be trigger when an aszAction is updated.")]
+        [SerializeField] UnityEvent<aszAction> OnActionUpdate;
+        [Tooltip("The events will be trigger when an aszAction is finished.\r\nThis can be useful when you wish to clean up the performance of an action.")]
+        [SerializeField] UnityEvent<aszAction> OnActionEnd;
+        [Tooltip("The events will be trigger when the enmotion of any character is changed.")]
+        [SerializeField] UnityEvent<aszEmotionChange> OnEnmotionChange;
 
         #region Init
         public static aszTheater Instance;
@@ -33,6 +44,10 @@ namespace Aishizu.UnityCore
             m_ActorManager = GetComponent<aszActorManager>();
             m_InterableManager = GetComponent<aszInterableManager>();
             InitializeMediator();
+            m_AIMediator.SequenceService.OnActionStart += InvockUnityEvent_OnActionStart;
+            m_AIMediator.SequenceService.OnActionUpdate += InvockUnityEvent_OnActionUpdate;
+            m_AIMediator.SequenceService.OnActionFinish += InvockUnityEvent_OnActionFinish;
+            m_AIMediator.SequenceService.OnEmotionChange += InvockUnityEvent_OnActionFinish;
         }
 
         private void InitializeMediator()
@@ -52,13 +67,47 @@ namespace Aishizu.UnityCore
                 m_AIMediator.TargetService.RegisterTarget(i, m_InterableManager.InterableList[i].name);
             }
             #endregion
+
             Debug.Log("[AishizuCore] Mediator and services initialized.");
         }
-
+        #endregion
+        #region Registeration
         public void RegisterAction<T>() where T : aszAction, new()
         {
             m_AIMediator.ActionService.RegisterAction<T>();
             Debug.Log("[AishizuCore] Register Action: " + typeof(T).Name);
+        }
+
+        public void RegisterOnActionStartEvent(Action<aszAction> action)
+        {
+            m_AIMediator.SequenceService.OnActionStart += action;
+        }
+
+        public void RegisterOnActionUpdateEvent(Action<aszAction> action)
+        {
+            m_AIMediator.SequenceService.OnActionUpdate += action;
+        }
+
+        public void RegisterOnActionFinishEvent(Action<aszAction> action)
+        {
+            m_AIMediator.SequenceService.OnActionFinish += action;
+        }
+
+        public void InvockUnityEvent_OnActionStart(aszAction action)
+        {
+            OnActionStart.Invoke(action);
+        }
+        public void InvockUnityEvent_OnActionUpdate(aszAction action)
+        {
+            OnActionUpdate.Invoke(action);
+        }
+        public void InvockUnityEvent_OnActionFinish(aszAction action)
+        {
+            OnActionEnd.Invoke(action);
+        }
+        public void InvockUnityEvent_OnActionFinish(aszEmotionChange emotionChange)
+        {
+            OnEnmotionChange.Invoke(emotionChange);
         }
         #endregion
 
@@ -74,10 +123,10 @@ namespace Aishizu.UnityCore
 
         public IEnumerator PlayingTimeline()
         {
-            m_AIMediator.CurrentSequence.Start();
-            while (!m_AIMediator.CurrentSequence.IsFinished)
+            m_AIMediator.SequenceService.Start();
+            while (!m_AIMediator.SequenceService.IsFinished)
             {
-                m_AIMediator.CurrentSequence.Tick(Time.deltaTime);
+                m_AIMediator.SequenceService.Tick(Time.deltaTime);
                 yield return aszUnityCoroutine.WaitForEndOfFrame;
             }
         }

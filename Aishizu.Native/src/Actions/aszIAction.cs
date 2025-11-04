@@ -98,38 +98,10 @@ namespace Aishizu.Native.Actions
         }
 
         public bool IsValid { get; protected set; } = false;
-
-        public virtual void Start()
+        public void SetState(aszActionState state)
         {
-            OnStart();
+            m_State = state;
         }
-
-
-        public virtual void Update(float deltaTime)
-        {
-            OnUpdate(deltaTime);
-        }
-
-        public virtual void Finish()
-        {
-            OnFinish();
-        }
-
-        // 🔹 Internal abstract hooks for subclass logic
-        protected virtual void OnStart() { }
-        protected virtual void OnUpdate(float deltaTime) { }
-        protected virtual void OnFinish() { }
-
-        public void SetState(aszActionState newState)
-        {
-            if (State != newState)
-            {
-                aszLogger.WriteLine($"[aszAction] {GetType().Name} state changed: {State} → {newState}");
-                State = newState;
-            }
-        }
-
-
         // 🔹 Helper property
         public bool IsFinished => m_State == aszActionState.Succeed || m_State == aszActionState.Failed;
     }

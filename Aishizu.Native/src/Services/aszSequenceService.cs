@@ -16,6 +16,11 @@ namespace Aishizu.Native
         private bool m_IsPaused; public bool IsPaused => m_IsPaused;
         private bool m_IsFinished; public bool IsFinished => m_IsFinished;
 
+        public event Action<aszAction> OnActionStart = delegate { };
+        public Action<aszAction> OnActionUpdate = delegate { };
+        public Action<aszAction> OnActionFinish = delegate { };
+        public Action<aszEmotionChange> OnEmotionChange = delegate { };
+
         public Result JsonToSequence(string json, out List<aszIEvent> eventList)
         {
             eventList = new List<aszIEvent>();
@@ -53,6 +58,14 @@ namespace Aishizu.Native
                             {
                                 Duration = eventElement.GetProperty("Duration").GetSingle()
                             });
+                            break;
+
+                        case "EmotionChange":
+                            aszEmotionChange? emotionChange = (aszEmotionChange?)JsonSerializer.Deserialize(eventElement, typeof(aszEmotionChange), aszJsonSettings.DefaultJsonOptions);
+                            if (emotionChange != null)
+                            {
+                                eventList.Add(emotionChange); ;
+                            }
                             break;
 
                         default:
@@ -94,7 +107,7 @@ namespace Aishizu.Native
                 return;
             }
             m_IsRunning = true;
-            NextAction();
+            NextEvent();
         }
 
         public void Kill()
@@ -127,35 +140,39 @@ namespace Aishizu.Native
             switch (m_Current)
             {
                 case aszActionBegin actionBegin:
-                    m_Actions[actionBegin.actionId].Update(deltaTime);
-                    if(m_Actions[actionBegin.actionId].State == aszActionState.Running)
+                    OnActionUpdate(m_Actions[actionBegin.actionId]);
+                    if (m_Actions[actionBegin.actionId].State == aszActionState.Running)
                     {
-                        NextAction();
+                        NextEvent();
                     }
                     if (m_Actions[actionBegin.actionId].IsFinished)
                     {
-                        NextAction();
+                        NextEvent();
                     }
                     break;
-                case aszActionEnd asctionEnd:
-                    m_Actions[asctionEnd.actionId].Update(deltaTime);
-                    if (m_Actions[asctionEnd.actionId].IsFinished)
+                case aszActionEnd actionEnd:
+                    OnActionUpdate(m_Actions[actionEnd.actionId]);
+                    if (m_Actions[actionEnd.actionId].IsFinished)
                     {
-                        NextAction();
+                        NextEvent();
                     }
+                    break;
+                case aszEmotionChange emotionChange:
+                    OnEmotionChange(emotionChange);
+                    NextEvent();
                     break;
                 case  aszWait wait:
                     wait.Duration -= deltaTime;
                     aszLogger.WriteLine($"[aszSequenceServices] Remainning waitting time: {wait.Duration}");
                     if (wait.Duration < 0)
                     {
-                        NextAction();
+                        NextEvent();
                     }
                     break;
             }
         }
 
-        private void NextAction()
+        private void NextEvent()
         {
             if (m_Sequence.Count > 0)
             {
@@ -165,15 +182,15 @@ namespace Aishizu.Native
                 {
                     case aszActionBegin actionBegin:
                         aszLogger.WriteLine($"[aszSequenceServices] Beginning: {m_Actions[actionBegin.actionId].ActionName}");
-                        m_Actions[actionBegin.actionId].Start();
+                        OnActionStart(m_Actions[actionBegin.actionId]);
                         break;
                     case aszActionEnd actionEnd:
                         aszLogger.WriteLine($"[aszSequenceServices] Finishing: {m_Actions[actionEnd.actionId].ActionName}");
-                        m_Actions[actionEnd.actionId].Finish();
+                        OnActionFinish(m_Actions[actionEnd.actionId]);
                         if (m_Actions[actionEnd.actionId].State == aszActionState.Failed)
                         {
                             aszLogger.WriteLine($"[aszSequenceServices]: {m_Actions[actionEnd.actionId].ActionName} skipped finishing due to failed status");
-                            NextAction();
+                            NextEvent();
                             return;
                         }
                         break;

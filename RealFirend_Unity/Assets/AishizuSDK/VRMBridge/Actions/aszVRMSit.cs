@@ -6,11 +6,11 @@ using UnityEditor;
 
 namespace Aishizu.VRMBridge.Actions
 {
-    public class aszVRMSit : aszAction
+    public class aszVRMSit : aszVRMAction
     {
         public override string ToString() => $"SitAction(TargetId={TargetId})";
         private aszSitable m_Sitable; public aszSitable Sitable => m_Sitable;
-        protected override void OnStart()
+        public override void OnStart()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
@@ -36,7 +36,7 @@ namespace Aishizu.VRMBridge.Actions
             aszVRMActor.SitOnObject(this, undo: State == aszActionState.Running);
         }
 
-        protected override void OnFinish()
+        public override void OnFinish()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {

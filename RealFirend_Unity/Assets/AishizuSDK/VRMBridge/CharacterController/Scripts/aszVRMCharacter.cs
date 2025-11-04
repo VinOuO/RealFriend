@@ -84,7 +84,6 @@ namespace Aishizu.VRMBridge
             m_VRMAnimationController.TravelingSpeed = FinalMovingSpeed;
         }
 
-
         #region Walk
         /*
         public void WalkToTarget(aszVRMWalk walk)

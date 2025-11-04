@@ -15,7 +15,7 @@ namespace Aishizu.Native.Services
         private readonly aszActorService m_ActorService; public aszActorService ActorService => m_ActorService;
         private readonly aszActionService m_ActionService; public aszActionService ActionService => m_ActionService;
         private readonly aszTargetService m_TargetService; public aszTargetService TargetService => m_TargetService;
-        private aszSequenceService m_SequenceService; public aszSequenceService CurrentSequence => m_SequenceService;
+        private aszSequenceService m_SequenceService; public aszSequenceService SequenceService => m_SequenceService;
 
 
         public string Endpoint { get; set; } = "http://localhost:1234/v1/chat/completions";
@@ -168,10 +168,12 @@ namespace Aishizu.Native.Services
                                 }
                               ],
                               ""Events"": [
+                                { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Neutral"", ""Duration"": 1.5 },
                                 { ""Type"": ""ActionBegin"", ""ActionId"": 0 },      
                                 { ""Type"": ""Wait"", ""Duration"": 2.0 },           
                                 { ""Type"": ""ActionEnd"", ""ActionId"": 0 },    
                                 { ""Type"": ""ActionBegin"", ""ActionId"": 1 },    
+                                { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Happy"", ""Duration"": 3 },
                                 { ""Type"": ""ActionEnd"", ""ActionId"": 1 },         
                                 { ""Type"": ""ActionBegin"", ""ActionId"": 2 },      
                                 { ""Type"": ""Wait"", ""Duration"": 0.5 },           

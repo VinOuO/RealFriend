@@ -5,12 +5,12 @@ using Aishizu.UnityCore;
 
 namespace Aishizu.VRMBridge.Actions
 {
-    public class aszVRMHug : aszAction
+    public class aszVRMHug : aszVRMAction
     {
         public override string ToString() => $"HugAction(TargetId={TargetId})";
 
         private aszHugable m_Hugable; public aszHugable Hugable => m_Hugable;
-        protected override void OnStart()
+        public override void OnStart()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
@@ -41,7 +41,7 @@ namespace Aishizu.VRMBridge.Actions
             aszVRMActor.HugObject(this, undo: State == aszActionState.Running);
         }
 
-        protected override void OnFinish()
+        public override void OnFinish()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {

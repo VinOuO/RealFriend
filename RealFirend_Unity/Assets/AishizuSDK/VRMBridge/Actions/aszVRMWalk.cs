@@ -5,14 +5,14 @@ using Aishizu.Native;
 
 namespace Aishizu.VRMBridge.Actions
 {
-    public class aszVRMWalk : aszAction
+    public class aszVRMWalk : aszVRMAction
     {
         /// <summary>Distance threshold to stop walking (meters).</summary>
         public float StopDistance { get; }
         public override string ToString() => $"WalkAction(TargetId={TargetId}, StopDistance={StopDistance})";
         private aszWalkable m_Walkable; public aszWalkable Walkable => m_Walkable;
 
-        protected override void OnStart()
+        public override void OnStart()
         {
             /*
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)

@@ -5,12 +5,12 @@ using Aishizu.UnityCore;
 
 namespace Aishizu.VRMBridge.Actions
 {
-    public class aszVRMKiss : aszAction
+    public class aszVRMKiss : aszVRMAction
     {
         public override string ToString() => $"KissAction(TargetId={TargetId})";
 
         private aszKissable m_Kissable; public aszKissable Kissable => m_Kissable;
-        protected override void OnStart()
+        public override void OnStart()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
@@ -37,7 +37,7 @@ namespace Aishizu.VRMBridge.Actions
             aszVRMActor.KissObject(this, undo: State == aszActionState.Running);
         }
 
-        protected override void OnFinish()
+        public override void OnFinish()
         {
             if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
