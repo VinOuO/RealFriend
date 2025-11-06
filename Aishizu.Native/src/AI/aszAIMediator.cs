@@ -123,68 +123,111 @@ namespace Aishizu.Native.Services
             return result.IsValid ? Result.Success : Result.Failed;
         }
         string mockData = @"
-                            {
-                              ""Actors"": [
-                                { ""Id"": 0, ""Name"": ""Friend1"", ""Description"": ""The main VRM character"" }
-                              ],
-                              ""Targets"": [
-                                { ""Id"": 0, ""Name"": ""Hugable"" },
-                                { ""Id"": 1, ""Name"": ""Cube"" },
-                                { ""Id"": 2, ""Name"": ""Mouth"" },
-                                { ""Id"": 3, ""Name"": ""HeadCenter"" }
-                              ],
-                              ""Actions"": [
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 1,
-                                  ""ActionName"": ""VRMSit"",
-                                  ""IsValid"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 0,
-                                  ""ActionName"": ""VRMHug"",
-                                  ""IsValid"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 3,
-                                  ""ActionName"": ""VRMHold"",
-                                  ""IsValid"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                },
-                                {
-                                  ""ActorId"": 0,
-                                  ""TargetId"": 2,
-                                  ""ActionName"": ""VRMKiss"",
-                                  ""IsValid"": true,
-                                  ""State"": ""Idle"",
-                                  ""IsFinished"": false
-                                }
-                              ],
-                              ""Events"": [
-                                { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Neutral"", ""Duration"": 1.5 },
-                                { ""Type"": ""ActionBegin"", ""ActionId"": 0 },      
-                                { ""Type"": ""Wait"", ""Duration"": 2.0 },           
-                                { ""Type"": ""ActionEnd"", ""ActionId"": 0 },    
-                                { ""Type"": ""ActionBegin"", ""ActionId"": 1 },    
-                                { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Happy"", ""Duration"": 3 },
-                                { ""Type"": ""ActionEnd"", ""ActionId"": 1 },         
-                                { ""Type"": ""ActionBegin"", ""ActionId"": 2 },      
-                                { ""Type"": ""Wait"", ""Duration"": 0.5 },           
-                                { ""Type"": ""ActionBegin"", ""ActionId"": 3 },      
-                                { ""Type"": ""Wait"", ""Duration"": 5.0 },           
-                                { ""Type"": ""ActionEnd"", ""ActionId"": 3 },        
-                                { ""Type"": ""ActionEnd"", ""ActionId"": 2 }         
-                              ]
-                            }";
+{
+  ""Actors"": [
+    { ""Id"": 0, ""Name"": ""Friend1"", ""Description"": ""The main VRM character"" }
+  ],
+  ""Targets"": [
+    { ""Id"": 0, ""Name"": ""Hugable"" },
+    { ""Id"": 1, ""Name"": ""Cube"" },
+    { ""Id"": 2, ""Name"": ""Mouth"" },
+    { ""Id"": 3, ""Name"": ""HeadCenter"" }
+  ],
+  ""Actions"": [
+    {
+      ""ActorId"": 0,
+      ""TargetId"": 1,
+      ""ActionName"": ""VRMSit"",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    },
+    {
+      ""ActorId"": 0,
+      ""TargetId"": 0,
+      ""ActionName"": ""VRMHug"",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    },
+    {
+      ""ActorId"": 0,
+      ""TargetId"": 3,
+      ""ActionName"": ""VRMHold"",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    },
+    {
+      ""ActorId"": 0,
+      ""TargetId"": 2,
+      ""ActionName"": ""VRMKiss"",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    },
+    {
+      ""ActorId"": 0,
+      ""TargetId"": -1,
+      ""ActionName"": ""Dialogue"",
+      ""Text"": ""Hey, I missed you."",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    },
+    {
+      ""ActorId"": 0,
+      ""TargetId"": -1,
+      ""ActionName"": ""Dialogue"",
+      ""Text"": ""You're warm... stay like this for a bit."",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    },
+    {
+      ""ActorId"": 0,
+      ""TargetId"": -1,
+      ""ActionName"": ""Dialogue"",
+      ""Text"": ""Heh... that was nice."",
+      ""IsValid"": true,
+      ""State"": ""Idle"",
+      ""IsFinished"": false
+    }
+  ],
+  ""Events"": [
+    { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Natural"", ""Duration"": 1.5 },
 
+    { ""Type"": ""ActionBegin"", ""ActionId"": 4 },
+    { ""Type"": ""Wait"", ""Duration"": 3.0 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 4 },
 
+    { ""Type"": ""ActionBegin"", ""ActionId"": 1 },
+    { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Happy"", ""Duration"": 2.5 },
+    { ""Type"": ""Wait"", ""Duration"": 2.5 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 1 },
+
+    { ""Type"": ""ActionBegin"", ""ActionId"": 5 },
+    { ""Type"": ""Wait"", ""Duration"": 3.5 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 5 },
+
+    { ""Type"": ""ActionBegin"", ""ActionId"": 2 },
+    { ""Type"": ""Wait"", ""Duration"": 1.0 },
+    { ""Type"": ""ActionBegin"", ""ActionId"": 3 },
+    { ""Type"": ""Wait"", ""Duration"": 5.0 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 3 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 2 },
+
+    { ""Type"": ""ActionBegin"", ""ActionId"": 6 },
+    { ""Type"": ""Wait"", ""Duration"": 2.0 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 6 },
+
+    { ""Type"": ""ActionBegin"", ""ActionId"": 0 },
+    { ""Type"": ""Wait"", ""Duration"": 2.0 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 0 },
+
+    { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Natural"", ""Duration"": 1.5 }
+  ]
+}";
 
         public async Task<Result> DescribeCurrentScene()
         {

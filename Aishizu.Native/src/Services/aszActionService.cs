@@ -9,6 +9,13 @@ namespace Aishizu.Native.Actions
         private readonly Dictionary<string, Type> m_ActionTypes = new();
         private readonly Dictionary<string, string> m_JsonSchemas = new();
 
+        public aszActionService()
+        {
+            #region Register default actions
+            RegisterAction<aszDialogue>();
+            #endregion
+        }
+
         public void RegisterAction<T>() where T : aszIAction, new()
         {
             T instance = new T();

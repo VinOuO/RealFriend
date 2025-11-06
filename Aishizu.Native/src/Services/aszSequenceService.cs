@@ -16,9 +16,18 @@ namespace Aishizu.Native
         private bool m_IsPaused; public bool IsPaused => m_IsPaused;
         private bool m_IsFinished; public bool IsFinished => m_IsFinished;
 
+        /// <summary>
+        /// To inform the developer the AI want to start an action
+        /// </summary>
         public event Action<aszAction> OnActionStart = delegate { };
-        public Action<aszAction> OnActionUpdate = delegate { };
-        public Action<aszAction> OnActionFinish = delegate { };
+        /// <summary>
+        /// To inform the developer the AI want to keep running an action
+        /// </summary>
+        public Action<aszAction, float> OnActionUpdate = delegate { };
+        /// <summary>
+        /// To inform the developer the AI want to end an action
+        /// </summary>
+        public Action<aszAction> OnActionEnd = delegate { };
         public Action<aszEmotionChange> OnEmotionChange = delegate { };
 
         public Result JsonToSequence(string json, out List<aszIEvent> eventList)
@@ -33,14 +42,19 @@ namespace Aishizu.Native
                     return Result.Failed;
                 }
 
-                foreach (var eventElement in eventsArray.EnumerateArray())
+                foreach (JsonElement eventElement in eventsArray.EnumerateArray())
                 {
-                    string type = eventElement.GetProperty("Type").GetString();
+                    string? type = eventElement.GetProperty("Type").GetString();
+                    if(type == null)
+                    {
+                        aszLogger.WriteLine($"[aszActionService] null event type");
+                        continue;
+                    }
 
                     switch (type)
                     {
                         case "ActionBegin":
-                            eventList.Add(new aszActionBegin
+                            eventList.Add(new aszActionStart
                             {
                                 actionId = eventElement.GetProperty("ActionId").GetInt32()
                             });
@@ -67,7 +81,6 @@ namespace Aishizu.Native
                                 eventList.Add(emotionChange); ;
                             }
                             break;
-
                         default:
                             aszLogger.WriteLine($"[aszActionService] Unknown event type: {type}");
                             break;
@@ -139,69 +152,65 @@ namespace Aishizu.Native
 
             switch (m_Current)
             {
-                case aszActionBegin actionBegin:
-                    OnActionUpdate(m_Actions[actionBegin.actionId]);
-                    if (m_Actions[actionBegin.actionId].State == aszActionState.Running)
+                case aszActionStart actionBegin:
+                    if (m_Actions[actionBegin.actionId].State == aszActionState.Running || m_Actions[actionBegin.actionId].IsFinished)
                     {
                         NextEvent();
+                        return;
                     }
-                    if (m_Actions[actionBegin.actionId].IsFinished)
-                    {
-                        NextEvent();
-                    }
-                    break;
+                    OnActionUpdate(m_Actions[actionBegin.actionId], deltaTime);
+                    return;
                 case aszActionEnd actionEnd:
-                    OnActionUpdate(m_Actions[actionEnd.actionId]);
                     if (m_Actions[actionEnd.actionId].IsFinished)
                     {
                         NextEvent();
+                        return;
                     }
-                    break;
-                case aszEmotionChange emotionChange:
-                    OnEmotionChange(emotionChange);
-                    NextEvent();
-                    break;
+                    OnActionUpdate(m_Actions[actionEnd.actionId], deltaTime);
+                    return;
                 case  aszWait wait:
                     wait.Duration -= deltaTime;
                     aszLogger.WriteLine($"[aszSequenceServices] Remainning waitting time: {wait.Duration}");
                     if (wait.Duration < 0)
                     {
                         NextEvent();
+                        return;
                     }
-                    break;
+                    return;
             }
         }
 
         private void NextEvent()
         {
-            if (m_Sequence.Count > 0)
-            {
-                m_Current = m_Sequence.Dequeue();
-
-                switch (m_Current)
-                {
-                    case aszActionBegin actionBegin:
-                        aszLogger.WriteLine($"[aszSequenceServices] Beginning: {m_Actions[actionBegin.actionId].ActionName}");
-                        OnActionStart(m_Actions[actionBegin.actionId]);
-                        break;
-                    case aszActionEnd actionEnd:
-                        aszLogger.WriteLine($"[aszSequenceServices] Finishing: {m_Actions[actionEnd.actionId].ActionName}");
-                        OnActionFinish(m_Actions[actionEnd.actionId]);
-                        if (m_Actions[actionEnd.actionId].State == aszActionState.Failed)
-                        {
-                            aszLogger.WriteLine($"[aszSequenceServices]: {m_Actions[actionEnd.actionId].ActionName} skipped finishing due to failed status");
-                            NextEvent();
-                            return;
-                        }
-                        break;
-                }
-            }
-            else
+            if (m_Sequence.Count <= 0)
             {
                 m_IsRunning = false;
                 m_Current = null;
                 m_IsFinished = true;
+                return;
             }
+            m_Current = m_Sequence.Dequeue();
+            switch (m_Current)
+            {
+                case aszActionStart actionBegin:
+                    aszLogger.WriteLine($"[aszSequenceServices] Beginning: {m_Actions[actionBegin.actionId].ActionName}");
+                    OnActionStart(m_Actions[actionBegin.actionId]);
+                    return;
+                case aszActionEnd actionEnd:
+                    if (m_Actions[actionEnd.actionId].State == aszActionState.Failed)
+                    {
+                        aszLogger.WriteLine($"[aszSequenceServices]: {m_Actions[actionEnd.actionId].ActionName} skipped finishing due to failed status");
+                        return;
+                    }
+                    aszLogger.WriteLine($"[aszSequenceServices] Finishing: {m_Actions[actionEnd.actionId].ActionName}");
+                    OnActionEnd(m_Actions[actionEnd.actionId]);
+                    return;
+                case aszEmotionChange emotionChange:
+                    OnEmotionChange(emotionChange);
+                    NextEvent();
+                    return;
+            }
+
         }
     }
 }

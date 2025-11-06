@@ -25,14 +25,18 @@ namespace Aishizu.Native
     }
     public enum aszEmotion
     {
-        Neutral,
-        Happy,
-        Shy,
-        Sad,
-        Angry,
-        Surprised,
-        Affectionate,
-        Embarrassed
+        Natural = 1 << 0,
+        Angry = 1 << 1,
+        Happy = 1 << 2,
+        Sad = 1 << 3,
+        Surprised = 1 << 4,
+    }
+
+    public enum aszSpeed
+    {
+        Slow,
+        Normal,
+        Fast,
     }
 
     public static class aszJsonSettings

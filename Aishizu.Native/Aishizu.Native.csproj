@@ -19,7 +19,7 @@
 
   <Copy
     SourceFiles="@(PluginFiles)"
-    DestinationFolder="V:\Work\Projects\RealFriend\RealFirend_Unity\Assets\AishizuSDK\Plugins"
+    DestinationFolder="V:\Work\Projects\RealFriend\RealFriend_Unity\Assets\AishizuSDK\Plugins"
     OverwriteReadOnlyFiles="true"
     SkipUnchangedFiles="false" />
 	<Message Text="Copy Aishizu.Native.dll to Unity Plugins..." Importance="High" />

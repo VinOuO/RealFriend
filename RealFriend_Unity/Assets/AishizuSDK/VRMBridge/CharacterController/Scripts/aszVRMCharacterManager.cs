@@ -19,7 +19,7 @@ namespace Aishizu.VRMBridge
             vrmAction.OnStart();
         }
 
-        public void FinishAction(aszAction action)
+        public void EndAction(aszAction action)
         {
             if (action is not aszVRMAction vrmAction)
             {
@@ -33,6 +33,17 @@ namespace Aishizu.VRMBridge
         {
             aszTheater.Instance.ActorManager.GetActor(emotionChange.ActorId, out aszActor actor);
             Debug.Log($"Character: {actor.name} is {emotionChange.Emotion} for {emotionChange.Duration} sec");
+        }
+
+        public void de_Dialogue(aszAction action)
+        {
+            if(action is not aszDialogue dialogue)
+            {
+                return;
+            }
+            aszTheater.Instance.ActorManager.GetActor(dialogue.ActorId, out aszActor actor);
+            Debug.Log($"{actor.name}:  {dialogue.Text}");
+            dialogue.SetState(aszActionState.Succeed);
         }
     }
 }

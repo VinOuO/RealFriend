@@ -46,8 +46,8 @@ namespace Aishizu.UnityCore
             InitializeMediator();
             m_AIMediator.SequenceService.OnActionStart += InvockUnityEvent_OnActionStart;
             m_AIMediator.SequenceService.OnActionUpdate += InvockUnityEvent_OnActionUpdate;
-            m_AIMediator.SequenceService.OnActionFinish += InvockUnityEvent_OnActionFinish;
-            m_AIMediator.SequenceService.OnEmotionChange += InvockUnityEvent_OnActionFinish;
+            m_AIMediator.SequenceService.OnActionEnd += InvockUnityEvent_OnActionEnd;
+            m_AIMediator.SequenceService.OnEmotionChange += InvockUnityEvent_OnEmotionChange;
         }
 
         private void InitializeMediator()
@@ -72,45 +72,32 @@ namespace Aishizu.UnityCore
         }
         #endregion
         #region Registeration
+        #region ActionType
         public void RegisterAction<T>() where T : aszAction, new()
         {
             m_AIMediator.ActionService.RegisterAction<T>();
             Debug.Log("[AishizuCore] Register Action: " + typeof(T).Name);
         }
-
-        public void RegisterOnActionStartEvent(Action<aszAction> action)
-        {
-            m_AIMediator.SequenceService.OnActionStart += action;
-        }
-
-        public void RegisterOnActionUpdateEvent(Action<aszAction> action)
-        {
-            m_AIMediator.SequenceService.OnActionUpdate += action;
-        }
-
-        public void RegisterOnActionFinishEvent(Action<aszAction> action)
-        {
-            m_AIMediator.SequenceService.OnActionFinish += action;
-        }
-
+        #endregion
+        #region Unity Action Event
         public void InvockUnityEvent_OnActionStart(aszAction action)
         {
             OnActionStart.Invoke(action);
         }
-        public void InvockUnityEvent_OnActionUpdate(aszAction action)
+        public void InvockUnityEvent_OnActionUpdate(aszAction action, float deltaTime)
         {
             OnActionUpdate.Invoke(action);
         }
-        public void InvockUnityEvent_OnActionFinish(aszAction action)
+        public void InvockUnityEvent_OnActionEnd(aszAction action)
         {
             OnActionEnd.Invoke(action);
         }
-        public void InvockUnityEvent_OnActionFinish(aszEmotionChange emotionChange)
+        public void InvockUnityEvent_OnEmotionChange(aszEmotionChange emotionChange)
         {
             OnEnmotionChange.Invoke(emotionChange);
         }
         #endregion
-
+        #endregion
         public async Task<Result> SetUpStage()
         {
             return await m_AIMediator.SetUpScene();
@@ -123,6 +110,7 @@ namespace Aishizu.UnityCore
 
         public IEnumerator PlayingTimeline()
         {
+            Debug.Log(@"[aszTheater] Start Sequence");
             m_AIMediator.SequenceService.Start();
             while (!m_AIMediator.SequenceService.IsFinished)
             {
