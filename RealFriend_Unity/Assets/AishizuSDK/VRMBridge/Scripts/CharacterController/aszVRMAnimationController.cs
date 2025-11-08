@@ -60,9 +60,17 @@ namespace Aishizu.VRMBridge
             SetFacialExpression(de_Expression, de_ExpressionWeight);
         }
 
-        public void CleanExpression()
+        public void CleanAllExpression()
         {
-            m_VRMInstance.Runtime.Expression.CleanExpression();
+            m_VRMInstance.Runtime.Expression.CleanAllExpression();
+        }
+        public void CleanEmotionExpression()
+        {
+            m_VRMInstance.Runtime.Expression.CleanEmotionExpression();
+        }
+        public void CleanVowelExpression()
+        {
+            m_VRMInstance.Runtime.Expression.CleanVowelExpression();
         }
 
         public void SetFacialExpression(FacialExpression expression, float weight)
@@ -70,25 +78,12 @@ namespace Aishizu.VRMBridge
             m_VRMInstance.Runtime.Expression.SetWeight(expression.ToVRMExpressionKey(), weight);
         }
 
-        public void SetFacialExpression(FacialExpression expression)
-        {
-            m_VRMInstance.Runtime.Expression.CleanExpression();
-            if (expression.ExtractExpression(out FacialExpression resultExpression) == Result.Success)
-            {
-                m_VRMInstance.Runtime.Expression.SetWeight(resultExpression.ToVRMExpressionKey(), 1f);
-            }
-
-            if (expression.ExtractVowel(out FacialExpression resultVowel) == Result.Success)
-            {
-                m_VRMInstance.Runtime.Expression.SetWeight(resultVowel.ToVRMExpressionKey(), 1f);
-            }
-        }
-
+        [Range(0.1f, 5f)]
+        public float FacialExpressionAmplifier = 1.0f;
         public void SetFacialExpressionBlend(FacialBlend expressionBlend)
         {
-            m_VRMInstance.Runtime.Expression.CleanExpression();
-            m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression1.ToVRMExpressionKey(), expressionBlend.Weight1);
-            m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression2.ToVRMExpressionKey(), expressionBlend.Weight2);
+            m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression1.ToVRMExpressionKey(), expressionBlend.Weight1 * FacialExpressionAmplifier);
+            m_VRMInstance.Runtime.Expression.SetWeight(expressionBlend.Expression2.ToVRMExpressionKey(), expressionBlend.Weight2 * FacialExpressionAmplifier);
         }
 
         public IEnumerator PlayingHug(bool reverse = false)

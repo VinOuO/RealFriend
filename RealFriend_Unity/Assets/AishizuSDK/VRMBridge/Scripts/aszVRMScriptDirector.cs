@@ -44,6 +44,10 @@ namespace Aishizu.VRMBridge
                                     if (aszScriptManager.Instance.ActorManager.GetActor(dialogue.ActorId, out aszActor actorD) == Result.Success)
                                     {
                                         Debug.Log($"[VRMDirector] Character [{actorD.name}] says: {dialogue.Text}");
+                                        if(actorD is aszVRMCharacter vrmCharacter)
+                                        {
+                                            vrmCharacter.Speak(dialogue.Text);
+                                        }
                                     }
                                 }
                             }
@@ -81,6 +85,11 @@ namespace Aishizu.VRMBridge
                             if (aszScriptManager.Instance.ActorManager.GetActor(emotionChange.ActorId, out aszActor actorE) == Result.Success)
                             {
                                 Debug.Log($"[VRMDirector] Character [{actorE.name}] feels: {emotionChange.Emotion}");
+                                if(actorE is aszVRMCharacter vrmCharacter)
+                                {
+                                    vrmCharacter.VRMAnimationController.CleanEmotionExpression();
+                                    vrmCharacter.VRMAnimationController.SetFacialExpression(emotionChange.Emotion.ToFacialExpression(), 1f);
+                                }
                             }
                             continue;
                     }

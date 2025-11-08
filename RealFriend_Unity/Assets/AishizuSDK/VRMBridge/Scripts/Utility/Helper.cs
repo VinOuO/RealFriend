@@ -160,11 +160,41 @@ namespace Aishizu.VRMBridge
 
     public static class Vrm10RuntimeExpressionExt
     {
-        public static void CleanExpression(this Vrm10RuntimeExpression self)
+        public static void CleanAllExpression(this Vrm10RuntimeExpression self)
         {
             foreach (ExpressionKey key in self.ExpressionKeys)
             {
                 self.SetWeight(key, 0);
+            }
+        }
+
+        public static void CleanEmotionExpression(this Vrm10RuntimeExpression self)
+        {
+            foreach (ExpressionKey key in self.ExpressionKeys)
+            {
+                if (key.Equals(ExpressionKey.Neutral)   ||
+                    key.Equals(ExpressionKey.Happy)     ||
+                    key.Equals(ExpressionKey.Sad)       ||
+                    key.Equals(ExpressionKey.Angry)     ||
+                    key.Equals(ExpressionKey.Surprised) )
+                {
+                    self.SetWeight(key, 0);
+                }
+            }
+        }
+
+        public static void CleanVowelExpression(this Vrm10RuntimeExpression self)
+        {
+            foreach (ExpressionKey key in self.ExpressionKeys)
+            {
+                if(key.Equals(ExpressionKey.Aa) ||
+                   key.Equals(ExpressionKey.Ee) ||
+                   key.Equals(ExpressionKey.Ih) ||
+                   key.Equals(ExpressionKey.Oh) ||
+                   key.Equals(ExpressionKey.Ou) )
+                {
+                    self.SetWeight(key, 0);
+                }
             }
         }
     }
@@ -184,6 +214,8 @@ namespace Aishizu.VRMBridge
                     return ExpressionKey.Angry;
                 case FacialExpression.Surprised:
                     return ExpressionKey.Surprised;
+                case FacialExpression.Relaxed:
+                    return ExpressionKey.Relaxed;
 
                 case FacialExpression.A:
                     return ExpressionKey.Aa;
@@ -197,6 +229,27 @@ namespace Aishizu.VRMBridge
                     return ExpressionKey.Ou;
             }
             return ExpressionKey.Neutral;
+        }
+    }
+
+    public static class aszEmotionExt
+    {
+        public static FacialExpression ToFacialExpression(this aszEmotion self)
+        {
+            switch (self)
+            {
+                case aszEmotion.Natural:
+                    return FacialExpression.Natural;
+                case aszEmotion.Happy:
+                    return FacialExpression.Happy;
+                case aszEmotion.Sad:
+                    return FacialExpression.Sad;
+                case aszEmotion.Angry:
+                    return FacialExpression.Angry;
+                case aszEmotion.Surprised:
+                    return FacialExpression.Surprised;
+            }
+            return FacialExpression.Natural;
         }
     }
 }

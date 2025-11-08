@@ -914,37 +914,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 791126072652052462, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: CCDWeight
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 791126072652052462, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: bendWeight
-      value: 0
+    - target: {fileID: 2007694752574727070, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: FacialExpressionAmplifier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5537571954703598928, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
       propertyPath: solver.effectors.Array.data[0].target
       value: 
       objectReference: {fileID: 740829207}
-    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: KissingDuraction
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: ReachingDuraction
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: FacingTargetCurve.m_Curve.Array.data[0].value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: KissingTowardTargetCurve.m_Curve.Array.data[0].value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8224341849487727620, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
-      propertyPath: ReachingTowardTargetCurve.m_Curve.Array.data[0].value
-      value: 0
+    - target: {fileID: 6624074019169316508, guid: a85e0ff60393a294382f851a58321dd1, type: 3}
+      propertyPath: m_InputSpeach
+      value: Hey, I missed you.
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

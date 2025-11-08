@@ -6,7 +6,6 @@ using Aishizu.UnityCore;
 using Aishizu.UnityCore.Speach;
 using Aishizu.VRMBridge.Actions;
 using Aishizu.Native;
-using Aishizu.Native.Events;
 
 namespace Aishizu.VRMBridge
 {
@@ -39,7 +38,7 @@ namespace Aishizu.VRMBridge
         [SerializeField] AnimationCurve KissingTowardTargetCurve;
 
         [Header("Configeration")]
-        [SerializeField] aszVRMAnimationController m_VRMAnimationController;
+        [SerializeField] aszVRMAnimationController m_VRMAnimationController; public aszVRMAnimationController VRMAnimationController => m_VRMAnimationController;
         [SerializeField] aszVRMBodyInfo m_VRMBodyInfo;
         [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
         [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
@@ -386,10 +385,14 @@ namespace Aishizu.VRMBridge
         }
         #endregion
         #region Speak
-        [ContextMenu("Speak")]
+        [ContextMenu("de_Speak")]
         public void Speak()
         {
-            m_FriendSpeachController.Speak();
+            Speak("Hey, I missed you.");
+        }
+        public void Speak(string text)
+        {
+            m_FriendSpeachController.Speak(text);
             StartCoroutine(LipSyncing());
         }
 
@@ -400,10 +403,12 @@ namespace Aishizu.VRMBridge
             {
                 if (m_FriendSpeachController.GetCurrentMouthShape(out MouthShape mouthShape) == Result.Success)
                 {
+                    m_VRMAnimationController.CleanVowelExpression();
                     m_VRMAnimationController.SetFacialExpressionBlend(mouthShape.ToFacialBlend());
                 }
                 yield return wait;
             }
+            m_VRMAnimationController.SetFacialExpressionBlend(FacialBlend.Default);
         }
         #endregion
         public IEnumerator CoroutineWithCallback(IEnumerator targetCoroutine, Action onComplete)

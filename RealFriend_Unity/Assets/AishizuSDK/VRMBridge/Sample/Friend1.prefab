@@ -579,7 +579,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.23703134
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -622,13 +622,13 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  ReachingDuraction: 0.1
+  ReachingDuraction: 2
   ReachingTowardTargetCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.23703134
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -647,13 +647,13 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  KissingDuraction: 0.1
+  KissingDuraction: 2
   KissingTowardTargetCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.23703134
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -703,6 +703,7 @@ MonoBehaviour:
   m_HugClip: {fileID: 5841725091121027642, guid: dd7cc23cea527c94fa2ae97c0fa29152, type: 3}
   de_Expression: 0
   de_ExpressionWeight: 0
+  FacialExpressionAmplifier: 3.41
 --- !u!114 &7593734572911384496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,8 +721,6 @@ MonoBehaviour:
   m_RightBodyFootStatus: {fileID: 0}
   m_LeftBodyToesStatus: {fileID: 0}
   m_RightBodyToesStatus: {fileID: 0}
-  m_HoldingObj: {fileID: 0}
-  m_HugingObj: {fileID: 0}
 --- !u!114 &6624074019169316508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -734,16 +733,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ee303b332eb714aa87e5625e84344d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InputSpeach: "I never imagined I\u2019d meet someone like you. The way your eyes
-    sparkle when you laugh, how your voice softens when you say my name \u2014 it
-    all makes my heart race. Every little moment with you feels like a dream I don\u2019t
-    want to wake from. I could sit beside you for hours, just listening, just watching.
-    You make ordinary days feel like something magical. When I look at you, it\u2019s
-    like everything else fades away. I want to know every thought you have, every
-    feeling, every heartbeat. I really, truly like you... more than words can ever
-    say."
+  m_InputSpeach: Hey, I missed you.
   m_CurrentSpeach: 
-  m_PhressedSpeach: []
+  m_ProcessedSpeach: []
   m_FinishedSpeaking: 1
   CurrentWordIndex: 0
   CurrentCharacterIndex: 0
@@ -2123,7 +2115,7 @@ MonoBehaviour:
   rotationWeight: 0
   bodyClampWeight: 0.5
   headClampWeight: 0.5
-  bendWeight: 0.8
+  bendWeight: 0
   bendBones:
   - transform: {fileID: 2133039418762462527}
     weight: 1
@@ -2131,7 +2123,7 @@ MonoBehaviour:
     weight: 1
   - transform: {fileID: 5225211014657356493}
     weight: 1
-  CCDWeight: 0
+  CCDWeight: 0.5
   roll: 0
   damper: 500
   CCDBones:

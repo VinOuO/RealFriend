@@ -11,6 +11,7 @@ namespace Aishizu.UnityCore
         Happy = 1 << 2,
         Sad = 1 << 3,
         Surprised = 1 << 4,
+        Relaxed = 1 << 5,
 
         //---Vowel
         NoVowel = 1 << 10,
