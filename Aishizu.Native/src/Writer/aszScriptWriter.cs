@@ -1,15 +1,56 @@
-﻿using Aishizu.Native.Actions;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Aishizu.Native.Events;
+using Aishizu.Native.Actions;
+using Aishizu.Native.Services;
 
-namespace Aishizu.Native.Services
+namespace Aishizu.Native
 {
-    public class aszAIMediator
+    public class aszScript
+    {
+        private List<aszAction> m_ActionPool = new List<aszAction>(); 
+        private Queue<aszIEvent> m_Sequence = new();
+        public bool IsFinished => m_Sequence.Count <= 0;
+
+        public aszScript(List<aszAction> actionPool, Queue<aszIEvent> sequence) 
+        {
+            m_ActionPool = actionPool;
+            m_Sequence = sequence;
+        }
+
+        public Result NextEvent(out aszIEvent? nextEvent)
+        {
+            if(m_Sequence.Count > 0)
+            {
+                nextEvent = m_Sequence.Dequeue();
+                aszLogger.WriteLine($"[aszScript] Dequeued event: {nextEvent.ToJson()}");
+                return Result.Success;
+            }
+            else
+            {
+                nextEvent = null;
+                return Result.Failed;
+            }
+        }
+
+        public Result GetAction(int actionId, out aszAction? action)
+        {
+            if(actionId >= 0 && actionId < m_ActionPool.Count)
+            {
+                action = m_ActionPool[actionId];
+                return Result.Success;
+            }
+            action = null;
+            aszLogger.WriteLine($"[aszScript] actionId is out of actionPool's range, current actionPool count: {m_ActionPool.Count}");
+            return Result.Failed;   
+        } 
+    }
+
+    public class aszScriptWriter
     {
         private readonly HttpClient m_httpClient = new();
         private readonly aszActorService m_ActorService; public aszActorService ActorService => m_ActorService;
@@ -23,7 +64,7 @@ namespace Aishizu.Native.Services
         public float Temperature { get; set; } = 0.65f;
         private bool m_IsDescribing = false;
         public bool DebugMode = true;
-        public aszAIMediator()
+        public aszScriptWriter()
         {
             m_ActorService = new aszActorService();
             m_ActionService = new aszActionService();
@@ -110,13 +151,11 @@ namespace Aishizu.Native.Services
             }
             catch (Exception ex)
             {
-                aszLogger.WriteLine($"[AIMediator] Error: {ex.Message}");
+                aszLogger.WriteLine($"[aszScriptWriter] Error: {ex.Message}");
                 return new PromptResult(false, "", ex.Message);
             }
         }
-
-
-        #region LifeCycle
+        #region CallFlow
         public async Task<Result> SetUpScene()
         {
             PromptResult result = await SendPromptAsync(systemPrompt: InitSystemPrompt());
@@ -228,12 +267,11 @@ namespace Aishizu.Native.Services
     { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Natural"", ""Duration"": 1.5 }
   ]
 }";
-
         public async Task<Result> DescribeCurrentScene()
         {
             if (m_IsDescribing)
             {
-                aszLogger.WriteLine("[AIMediator] DescribeCurrentScene skipped — already running.");
+                aszLogger.WriteLine("[aszScriptWriter] DescribeCurrentScene skipped — already running.");
                 return Result.Failed;
             }
             m_IsDescribing = true;
@@ -249,11 +287,13 @@ namespace Aishizu.Native.Services
                     if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success &&
                        m_SequenceService.JsonToSequence(result.Response, out List<aszIEvent> eventList) == Result.Success)
                     {
-                        m_SequenceService.Init(actionList, eventList);
+                        m_SequenceService.GenerateSequence(actionList, eventList);
+                        aszLogger.WriteLine("[aszScriptWriter] DescribeCurrentScene Success.");
                         return Result.Success;
                     }
                     else
                     {
+                        aszLogger.WriteLine("[aszScriptWriter] DescribeCurrentScene Failed.");
                         return Result.Failed;
                     }
                 }
@@ -265,5 +305,11 @@ namespace Aishizu.Native.Services
             }
         }
         #endregion
+
+        public aszScript GetScript()
+        {
+            aszScript script = new aszScript(m_SequenceService.Actions, m_SequenceService.Sequence);
+            return script;
+        }
     }
 }

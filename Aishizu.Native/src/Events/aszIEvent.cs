@@ -13,5 +13,11 @@ namespace Aishizu.Native.Events
 
     public interface aszIEvent
     {
+        string Name { get; set; }
+    }
+
+    public abstract class aszEvent: aszIEvent
+    {
+        public string Name { get; set; } = string.Empty;
     }
 }

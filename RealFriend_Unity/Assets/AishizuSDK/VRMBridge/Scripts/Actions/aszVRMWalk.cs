@@ -1,8 +1,3 @@
-using UnityEngine;
-using Aishizu.Native.Actions;
-using Aishizu.UnityCore;
-using Aishizu.Native;
-
 namespace Aishizu.VRMBridge.Actions
 {
     public class aszVRMWalk : aszVRMAction

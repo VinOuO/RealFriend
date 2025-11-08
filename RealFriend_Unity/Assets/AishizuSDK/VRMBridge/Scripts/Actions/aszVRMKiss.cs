@@ -1,5 +1,3 @@
-using UnityEngine;
-using Aishizu.Native.Actions;
 using Aishizu.Native;
 using Aishizu.UnityCore;
 
@@ -12,56 +10,48 @@ namespace Aishizu.VRMBridge.Actions
         private aszKissable m_Kissable; public aszKissable Kissable => m_Kissable;
         public override void OnStart()
         {
-            if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
+            if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
             if (target is not aszKissable kissable)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
             m_Kissable = kissable;
-            if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
+            if (aszScriptManager.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
 
-            aszVRMActor.KissObject(this, undo: State == aszActionState.Running);
+            aszVRMActor.KissObject(this, undo: false);
         }
 
-        public override void OnFinish()
+        public override void OnEnd()
         {
-            if (aszTheater.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
+            if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
             if (target is not aszKissable kissable)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
             m_Kissable = kissable;
-            if (aszTheater.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
+            if (aszScriptManager.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
-                SetState(aszActionState.Failed);
                 return;
             }
 
-            aszVRMActor.KissObject(this, undo: State == aszActionState.Running);
+            aszVRMActor.KissObject(this, undo: true);
         }
     }
 }

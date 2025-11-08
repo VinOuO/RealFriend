@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Aishizu.VRMBridge
 {
-    public class TestTheater : MonoBehaviour
+    public class VRMBridge_Sample : MonoBehaviour
     {
-        [SerializeField] private aszTheater m_Theater;
+        [SerializeField] private aszScriptManager m_ScriptManager;
         [SerializeField] private aszVRMBodyInfo m_DummyBodyInfo;
         private void Start()
         {
@@ -20,7 +20,7 @@ namespace Aishizu.VRMBridge
 
         IEnumerator Test()
         {
-            Task<Result> setupTask = m_Theater.SetUpStage();
+            Task<Result> setupTask = m_ScriptManager.SetUpStage();
             yield return new WaitUntil(() => setupTask.IsCompleted);
             Result result = setupTask.Result;
             if (setupTask.Result != Result.Success)
@@ -29,14 +29,14 @@ namespace Aishizu.VRMBridge
                 yield break;
             }
 
-            Task<Result> updateTask = m_Theater.UpdateStage();
+            Task<Result> updateTask = m_ScriptManager.UpdateStage();
             yield return new WaitUntil(() => updateTask.IsCompleted);
             if (updateTask.Result != Result.Success)
             {
                 Debug.Log("Fail UpdateStage");
                 yield break;
             }
-            yield return m_Theater.PlayingTimeline();
+            yield return StartCoroutine(aszVRMScriptDirector.Instance.RunningScript(m_ScriptManager.GetScript())) ;
         }
 
         private void AddInterables()
@@ -45,20 +45,21 @@ namespace Aishizu.VRMBridge
             {
                 return;
             }
-            m_Theater.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.Mouth.GetComponent<aszKissable>());
-            m_Theater.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.HeadCenter.GetComponent<aszHoldable>());
+            m_ScriptManager.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.Mouth.GetComponent<aszKissable>());
+            m_ScriptManager.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.HeadCenter.GetComponent<aszHoldable>());
         }
 
         [ContextMenu("RegisterActions")]
         private void RegisterActions()
         {
-            m_Theater.RegisterAction<aszVRMHold>();
-            m_Theater.RegisterAction<aszVRMHug>();
-            m_Theater.RegisterAction<aszVRMKiss>();
-            m_Theater.RegisterAction<aszVRMReach>();
-            m_Theater.RegisterAction<aszVRMSit>();
-            m_Theater.RegisterAction<aszVRMTouch>();
-            m_Theater.RegisterAction<aszVRMWalk>();
+            Debug.Log(m_ScriptManager == null ? "null" : "not null");
+            m_ScriptManager.RegisterAction<aszVRMHold>();
+            m_ScriptManager.RegisterAction<aszVRMHug>();
+            m_ScriptManager.RegisterAction<aszVRMKiss>();
+            m_ScriptManager.RegisterAction<aszVRMReach>();
+            m_ScriptManager.RegisterAction<aszVRMSit>();
+            m_ScriptManager.RegisterAction<aszVRMTouch>();
+            m_ScriptManager.RegisterAction<aszVRMWalk>();
         }
     }
 }

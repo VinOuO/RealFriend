@@ -5,8 +5,12 @@ using System.Text;
 
 namespace Aishizu.Native.Events
 {
-    public class aszWait : aszIEvent
+    public class aszWait : aszEvent
     {
         public float Duration { get; set; }
+        public aszWait() 
+        {
+            Name = "Wait";
+        }
     }
 }

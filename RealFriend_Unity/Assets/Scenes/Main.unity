@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 122238843}
   - component: {fileID: 122238845}
   - component: {fileID: 122238844}
-  - component: {fileID: 122238846}
+  - component: {fileID: 122238847}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -287,66 +287,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7137cb239a71f4a87ec6456f0122ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnActionStart:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 122238846}
-        m_TargetAssemblyTypeName: Aishizu.VRMBridge.aszVRMCharacterManager, Aishizu.VRMBridge
-        m_MethodName: StartAction
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 122238846}
-        m_TargetAssemblyTypeName: Aishizu.VRMBridge.aszVRMCharacterManager, Aishizu.VRMBridge
-        m_MethodName: de_Dialogue
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnActionUpdate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnActionEnd:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 122238846}
-        m_TargetAssemblyTypeName: Aishizu.VRMBridge.aszVRMCharacterManager, Aishizu.VRMBridge
-        m_MethodName: EndAction
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnEnmotionChange:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 122238846}
-        m_TargetAssemblyTypeName: Aishizu.VRMBridge.aszVRMCharacterManager, Aishizu.VRMBridge
-        m_MethodName: de_Emotion
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &122238844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ActorList:
   - {fileID: 2112320673193545698}
---- !u!114 &122238846
+--- !u!114 &122238847
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -385,7 +325,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 122238841}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 070d60619fc6b894786823b232949df6, type: 3}
+  m_Script: {fileID: 11500000, guid: 0713add1aab5de94dad1414a12f8363d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &543254289
@@ -836,7 +776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b2cbcdf910f5b41adc94598dd16861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Theater: {fileID: 122238843}
+  m_ScriptManager: {fileID: 122238843}
   m_DummyBodyInfo: {fileID: 1431225610}
 --- !u!114 &2089527389 stripped
 MonoBehaviour:

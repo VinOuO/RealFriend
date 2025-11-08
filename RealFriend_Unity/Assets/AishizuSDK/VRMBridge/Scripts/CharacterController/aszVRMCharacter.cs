@@ -6,7 +6,7 @@ using Aishizu.UnityCore;
 using Aishizu.UnityCore.Speach;
 using Aishizu.VRMBridge.Actions;
 using Aishizu.Native;
-using Aishizu.Native.Actions;
+using Aishizu.Native.Events;
 
 namespace Aishizu.VRMBridge
 {
@@ -203,7 +203,7 @@ namespace Aishizu.VRMBridge
         private IEnumerator TouchingObject(aszVRMTouch touch, bool undo = false)
         {
             yield return StartCoroutine(TouchingObject(touch.Touchable.transform, touch.Hand, undo));
-            touch.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
+            touch.SetFinished();
         }
 
         private IEnumerator TouchingObject(Transform obj, HumanBodyBones usingJoint, bool undo = false)
@@ -217,14 +217,6 @@ namespace Aishizu.VRMBridge
         {
             StartCoroutine(SittingOnObject(sit, undo: undo));
         }
-
-        private IEnumerator SittingOnObject(aszVRMSit sit, float duraction)
-        {
-            yield return StartCoroutine(SittingOnObject(sit, setFinish: false, undo: false));
-            yield return aszUnityCoroutine.WaitForSeconds(duraction);
-            yield return StartCoroutine(SittingOnObject(sit, setFinish: true, undo: true));
-        }
-
         private IEnumerator SittingOnObject(aszVRMSit sit, bool setFinish = true, bool undo = false)
         {
             if (undo)
@@ -238,10 +230,7 @@ namespace Aishizu.VRMBridge
             }
             m_VRMAnimationController.GetAnimator.SetTrigger("TriggerSit");
             yield return StartCoroutine(SitingElevatingToHeight(sit.Sitable.SitPose.position.y + m_VRMBodyInfo.GetBodyCode.HipRadious, 3f, m_VRMBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
-            if (setFinish)
-            {
-                sit.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
-            }
+            sit.SetFinished(); 
         }
 
         private Vector3 originalSitPos;
@@ -290,10 +279,7 @@ namespace Aishizu.VRMBridge
             m_FBBIKHeadEffector.positionWeight = undo ? 0 : 1;
             m_FBBIKHeadEffector.rotationWeight = undo ? 0 : 1;
             m_FBBIKHeadEffector.SetBendWeight(undo ? 0 : 0.8f);
-            if (setFinish)
-            {
-                kiss.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
-            }
+            kiss.SetFinished();
         }
         #endregion
         #region Hold
@@ -313,7 +299,7 @@ namespace Aishizu.VRMBridge
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
             StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
-            hold.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
+            hold.SetFinished();
         }
         #endregion
         #region Hug
@@ -337,7 +323,7 @@ namespace Aishizu.VRMBridge
                 yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
             }
             yield return StartCoroutine(m_VRMAnimationController.PlayingHug(reverse: undo));
-            hug.SetState(undo ? aszActionState.Succeed : aszActionState.Running);
+            hug.SetFinished();
         }
         #endregion
         #region TipToes

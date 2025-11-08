@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Aishizu.Native.Actions;
 
-namespace Aishizu.Native.Actions
+namespace Aishizu.Native.Services
 {
     public class aszActionService
     {
@@ -16,7 +17,7 @@ namespace Aishizu.Native.Actions
             #endregion
         }
 
-        public void RegisterAction<T>() where T : aszIAction, new()
+        public void RegisterAction<T>() where T : aszAction, new()
         {
             T instance = new T();
             string actionName = typeof(T).Name.Replace("asz", string.Empty);
@@ -69,7 +70,7 @@ namespace Aishizu.Native.Actions
 
                 if (actionName == null)
                 {
-                    aszLogger.WriteLine($"Unknown action name: {actionName}");
+                    aszLogger.WriteLine($"[aszActionService] Unknown action name: {actionName}");
                     continue;
                 }
 
@@ -77,7 +78,7 @@ namespace Aishizu.Native.Actions
 
                 if (actionType == null)
                 {
-                    aszLogger.WriteLine($"Unknown action: {actionName}");
+                    aszLogger.WriteLine($"[aszActionService] Unknown action: {actionName}");
                     continue;
                 }
 
@@ -86,56 +87,21 @@ namespace Aishizu.Native.Actions
                     aszAction? action = (aszAction?)JsonSerializer.Deserialize(actionElement.GetRawText(), actionType, aszJsonSettings.DefaultJsonOptions);
                     if(action != null)
                     {
+                        action.ActionName = actionName;
+                        aszLogger.WriteLine($"[aszActionService] Serializes action: {actionName}");
                         result.Add(action);
                     }
                 }
                 catch (Exception ex)
                 {
-                    aszLogger.WriteLine($"Failed to deserialize {actionName}: {ex.Message}");
-                    aszLogger.WriteLine($"Json: {actionElement.GetRawText()}");
+                    aszLogger.WriteLine($"[aszActionService] Failed to deserialize {actionName}: {ex.Message}");
+                    aszLogger.WriteLine($"[aszActionService] Json: {actionElement.GetRawText()}");
                 }
             }
 
             return result.Count > 0 ? Result.Success : Result.Failed;
         }
 
-        /*
-        public Result JsonToActions(string json, out List<aszAction> result)
-        {
-            using JsonDocument doc = JsonDocument.Parse(json);
-            JsonElement root = doc.RootElement;
-            result = new List<aszAction>();
-            if (!root.TryGetProperty("Actions", out JsonElement actionsArray))
-            {
-                return Result.Failed;
-            }
-
-            foreach (JsonElement actionElement in actionsArray.EnumerateArray())
-            {
-                string? actionName = actionElement.GetProperty("ActionName").GetString();
-                int actorId = actionElement.GetProperty("ActorId").GetInt32();
-                int targetId = actionElement.GetProperty("TargetId").GetInt32();
-                bool undo = actionElement.GetProperty("Undo").GetBoolean();
-
-                Type actionType = GetRegisteredActionType(actionName == null ? "" : actionName);
-                if (actionType == null)
-                {
-                    aszLogger.WriteLine($"Unknown action: {actionName}");
-                    continue;
-                }
-
-                if (Activator.CreateInstance(actionType) is not aszAction actionInstance)
-                {
-                    continue;
-                }
-                actionInstance.ActorId = actorId;
-                actionInstance.TargetId = targetId;
-                actionInstance.Undo = undo;
-                result.Add(actionInstance);
-            }
-            return Result.Success;
-        }
-        */
         public Type GetRegisteredActionType(string actionName)
         {
             m_ActionTypes.TryGetValue(actionName, out Type type);
