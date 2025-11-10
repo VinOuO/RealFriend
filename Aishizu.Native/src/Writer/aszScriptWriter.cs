@@ -242,12 +242,13 @@ namespace Aishizu.Native
 
     { ""Type"": ""ActionBegin"", ""ActionId"": 1 },
     { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Happy"", ""Duration"": 2.5 },
-    { ""Type"": ""Wait"", ""Duration"": 2.5 },
-    { ""Type"": ""ActionEnd"", ""ActionId"": 1 },
+    { ""Type"": ""Wait"", ""Duration"": 1.5 },
 
     { ""Type"": ""ActionBegin"", ""ActionId"": 5 },
     { ""Type"": ""Wait"", ""Duration"": 3.5 },
     { ""Type"": ""ActionEnd"", ""ActionId"": 5 },
+    { ""Type"": ""Wait"", ""Duration"": 1.5 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 1 },
 
     { ""Type"": ""ActionBegin"", ""ActionId"": 2 },
     { ""Type"": ""Wait"", ""Duration"": 1.0 },

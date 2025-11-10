@@ -10,6 +10,7 @@ namespace Aishizu.VRMBridge.Actions
         private aszKissable m_Kissable; public aszKissable Kissable => m_Kissable;
         public override void OnStart()
         {
+            base.OnStart();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 return;
@@ -33,6 +34,7 @@ namespace Aishizu.VRMBridge.Actions
 
         public override void OnEnd()
         {
+            base.OnEnd();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 return;

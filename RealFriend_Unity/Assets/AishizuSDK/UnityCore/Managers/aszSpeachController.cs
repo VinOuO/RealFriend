@@ -15,7 +15,7 @@ namespace Aishizu.UnityCore.Speach
         [SerializeField] private int m_CurrentWordIndex = 0;
         [SerializeField] private int m_CurrentCharacterIndex = 0;
         [SerializeField] private float m_CurrentWorldStartTime = 0;
-        [SerializeField] private float m_SpeachPeriod = 0.1f; public float SpeachPeriod { get { return m_SpeachPeriod; } set { m_SpeachPeriod = value; } }
+        [SerializeField] private float m_SpeachPeriod = 0.03f; public float SpeachPeriod { get { return m_SpeachPeriod; } set { m_SpeachPeriod = value; } }
         private void OnEnable()
         {
 

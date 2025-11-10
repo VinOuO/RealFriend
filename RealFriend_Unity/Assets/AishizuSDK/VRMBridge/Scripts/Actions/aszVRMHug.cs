@@ -11,6 +11,7 @@ namespace Aishizu.VRMBridge.Actions
         private aszHugable m_Hugable; public aszHugable Hugable => m_Hugable;
         public override void OnStart()
         {
+            base.OnStart();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 return;
@@ -26,7 +27,6 @@ namespace Aishizu.VRMBridge.Actions
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
-                Debug.Log("4");
                 return;
             }
 
@@ -35,6 +35,7 @@ namespace Aishizu.VRMBridge.Actions
 
         public override void OnEnd()
         {
+            base.OnEnd();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 return;

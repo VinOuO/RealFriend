@@ -42,7 +42,7 @@ namespace Aishizu.VRMBridge
         [SerializeField] aszVRMBodyInfo m_VRMBodyInfo;
         [SerializeField] FullBodyBipedIK m_FullBodyBipedIK;
         [SerializeField] FBBIKHeadEffector m_FBBIKHeadEffector;
-        [SerializeField] aszSpeachController m_FriendSpeachController;
+        [SerializeField] aszSpeachController m_SpeachController; public aszSpeachController SpeachController => m_SpeachController;
         [SerializeField] aszVRMBodyStatus m_BodyStatus;
         [Header("AutoConfigeration")]
         [SerializeField] Transform m_LeftHandTarget;
@@ -56,7 +56,7 @@ namespace Aishizu.VRMBridge
             m_FullBodyBipedIK = GetComponentInChildren<FullBodyBipedIK>();
             m_VRMAnimationController = GetComponentInChildren<aszVRMAnimationController>();
             m_FBBIKHeadEffector = GetComponentInChildren<FBBIKHeadEffector>();
-            m_FriendSpeachController = GetComponentInChildren<aszSpeachController>();
+            m_SpeachController = GetComponentInChildren<aszSpeachController>();
             m_BodyStatus = GetComponentInChildren<aszVRMBodyStatus>();
             Init();
         }
@@ -202,7 +202,7 @@ namespace Aishizu.VRMBridge
         private IEnumerator TouchingObject(aszVRMTouch touch, bool undo = false)
         {
             yield return StartCoroutine(TouchingObject(touch.Touchable.transform, touch.Hand, undo));
-            touch.SetFinished();
+            touch.ProgressStage();
         }
 
         private IEnumerator TouchingObject(Transform obj, HumanBodyBones usingJoint, bool undo = false)
@@ -229,7 +229,7 @@ namespace Aishizu.VRMBridge
             }
             m_VRMAnimationController.GetAnimator.SetTrigger("TriggerSit");
             yield return StartCoroutine(SitingElevatingToHeight(sit.Sitable.SitPose.position.y + m_VRMBodyInfo.GetBodyCode.HipRadious, 3f, m_VRMBodyInfo.GetHumanoid.GetBoneTransform(HumanBodyBones.Spine)));
-            sit.SetFinished(); 
+            sit.ProgressStage(); 
         }
 
         private Vector3 originalSitPos;
@@ -278,7 +278,7 @@ namespace Aishizu.VRMBridge
             m_FBBIKHeadEffector.positionWeight = undo ? 0 : 1;
             m_FBBIKHeadEffector.rotationWeight = undo ? 0 : 1;
             m_FBBIKHeadEffector.SetBendWeight(undo ? 0 : 0.8f);
-            kiss.SetFinished();
+            kiss.ProgressStage();
         }
         #endregion
         #region Hold
@@ -295,10 +295,10 @@ namespace Aishizu.VRMBridge
                 yield return StartCoroutine(WalkingToObject(hold.Holdable.transform, m_VRMBodyInfo.GetBodyCode.LeftArmLength * 0.8f));
             }
             bool leftHandReached = false, rightHandReached = false;
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
-            StartCoroutine(CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
+            StartCoroutine(this.CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[0], HumanBodyBones.LeftHand, undo), () => leftHandReached = true));
+            StartCoroutine(this.CoroutineWithCallback(ReachingObject(hold.Holdable.HoldTrans[1], HumanBodyBones.RightHand, undo), () => rightHandReached = true));
             yield return new WaitUntil(() => leftHandReached && rightHandReached);
-            hold.SetFinished();
+            hold.ProgressStage();
         }
         #endregion
         #region Hug
@@ -307,7 +307,7 @@ namespace Aishizu.VRMBridge
             StartCoroutine(HugingObject(hug, undo: undo));
         }
 
-        IEnumerator HugingObject(aszVRMHug hug, bool undo)
+        private IEnumerator HugingObject(aszVRMHug hug, bool undo)
         {
             if (!undo)
             {
@@ -322,7 +322,7 @@ namespace Aishizu.VRMBridge
                 yield return StartCoroutine(WalkingToObject(hug.Hugable.transform, hug.Hugable.HugableDistance));
             }
             yield return StartCoroutine(m_VRMAnimationController.PlayingHug(reverse: undo));
-            hug.SetFinished();
+            hug.ProgressStage();
         }
         #endregion
         #region TipToes
@@ -392,16 +392,16 @@ namespace Aishizu.VRMBridge
         }
         public void Speak(string text)
         {
-            m_FriendSpeachController.Speak(text);
+            m_SpeachController.Speak(text);
             StartCoroutine(LipSyncing());
         }
 
         private IEnumerator LipSyncing()
         {
             YieldInstruction wait = new WaitForEndOfFrame();
-            while (!m_FriendSpeachController.FinishedSpeaking)
+            while (!m_SpeachController.FinishedSpeaking)
             {
-                if (m_FriendSpeachController.GetCurrentMouthShape(out MouthShape mouthShape) == Result.Success)
+                if (m_SpeachController.GetCurrentMouthShape(out MouthShape mouthShape) == Result.Success)
                 {
                     m_VRMAnimationController.CleanVowelExpression();
                     m_VRMAnimationController.SetFacialExpressionBlend(mouthShape.ToFacialBlend());
@@ -411,10 +411,5 @@ namespace Aishizu.VRMBridge
             m_VRMAnimationController.SetFacialExpressionBlend(FacialBlend.Default);
         }
         #endregion
-        public IEnumerator CoroutineWithCallback(IEnumerator targetCoroutine, Action onComplete)
-        {
-            yield return StartCoroutine(targetCoroutine);
-            onComplete?.Invoke();
-        }
     }
 }

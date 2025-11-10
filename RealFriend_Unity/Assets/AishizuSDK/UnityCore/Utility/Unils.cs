@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using System;
 
 namespace Aishizu.UnityCore
 {
@@ -11,6 +13,12 @@ namespace Aishizu.UnityCore
         public static readonly WaitForEndOfFrame WaitForEndOfFrame = new WaitForEndOfFrame();
         public static readonly WaitForFixedUpdate WaitForFixedUpdate = new WaitForFixedUpdate();
         private static readonly Dictionary<float, WaitForSeconds> _waits = new();
+
+        public static IEnumerator CoroutineWithCallback(this MonoBehaviour runner, IEnumerator targetCoroutine, Action onComplete)
+        {
+            yield return runner.StartCoroutine(targetCoroutine);
+            onComplete?.Invoke();
+        }
 
         public static WaitForSeconds WaitForSeconds(float seconds)
         {

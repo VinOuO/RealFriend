@@ -9,7 +9,6 @@ namespace Aishizu.VRMBridge
 {
     public class aszVRMAnimationController : MonoBehaviour
     {
-
         public float TravelingSpeed = 0;
 
         [Header("Configeration")]

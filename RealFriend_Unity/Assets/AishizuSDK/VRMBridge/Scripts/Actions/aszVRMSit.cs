@@ -9,6 +9,7 @@ namespace Aishizu.VRMBridge.Actions
         private aszSitable m_Sitable; public aszSitable Sitable => m_Sitable;
         public override void OnStart()
         {
+            base.OnStart();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 return;
@@ -31,6 +32,7 @@ namespace Aishizu.VRMBridge.Actions
 
         public override void OnEnd()
         {
+            base.OnEnd();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
                 return;

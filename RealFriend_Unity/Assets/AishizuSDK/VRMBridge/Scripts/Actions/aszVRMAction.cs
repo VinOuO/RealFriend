@@ -5,19 +5,31 @@ namespace Aishizu.VRMBridge.Actions
 {
     public class aszVRMAction : aszAction
     {
-        public bool IsFinished { get; private set; } = false;
-        public void SetFinished()
+        private aszVRMActionStage m_Stage = aszVRMActionStage.Idling; public aszVRMActionStage Stage => m_Stage;
+        public void ProgressStage()
         {
-            IsFinished = true;
+            if(m_Stage != aszVRMActionStage.Ended)
+            {
+                m_Stage++;
+            }
         }
         public virtual void OnStart()
         {
-            Debug.Log("Start");
+            ProgressStage();
         }
 
         public virtual void OnEnd()
         {
-            Debug.Log("Finish");
+            ProgressStage();
+        }
+
+        public enum aszVRMActionStage
+        {
+            Idling = 1,
+            Starting = 2,
+            Running = 3,
+            Ending = 4,
+            Ended = 5,
         }
     }
 }
