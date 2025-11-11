@@ -42,18 +42,26 @@ public class StageManager : MonoBehaviour
     IEnumerator Acting()
     {
         Task<Result> setupTask = aszScriptManager.Instance.SetUpStage();
+        #region SetUpStage
+        yield return new WaitUntil(() => setupTask.IsCompleted);
+        Result result = setupTask.Result;
+        if (setupTask.Result != Result.Success)
+        {
+            Debug.Log("Fail SetUpStage");
+            yield break;
+        }
+        #endregion
         while (true)
         {
-            #region SetUpStage
-            yield return new WaitUntil(() => setupTask.IsCompleted);
-            Result result = setupTask.Result;
-            if (setupTask.Result != Result.Success)
-            {
-                Debug.Log("Fail SetUpStage");
-                yield break;
-            }
-
-            Task<Result> updateTask = aszScriptManager.Instance.UpdateStage();
+            #region PlayerInput
+            PlayerInputUIController.Instance.StartSevice();
+            yield return new WaitUntil(() => PlayerInputUIController.Instance.FinishedPlayerInput);
+            string playerInput = PlayerInputUIController.Instance.GetPlayerInput();
+            PlayerInputUIController.Instance.EndSevice();
+            Debug.Log(playerInput);
+            #endregion
+            #region UpdateStage
+            Task<Result> updateTask = aszScriptManager.Instance.UpdateStage(playerInput);
             yield return new WaitUntil(() => updateTask.IsCompleted);
             if (updateTask.Result != Result.Success)
             {
@@ -66,13 +74,6 @@ public class StageManager : MonoBehaviour
             ScriptDirector.Instance.RunScript(aszScriptManager.Instance.GetScript(), () => scriptFinished = true);
             #endregion
             yield return new WaitUntil(() => scriptFinished);
-            #region PlayerInput
-            PlayerInputUIController.Instance.StartSevice();
-            yield return new WaitUntil(() => PlayerInputUIController.Instance.FinishedPlayerInput);
-            string playerInput = PlayerInputUIController.Instance.GetPlayerInput();
-            PlayerInputUIController.Instance.EndSevice();
-            Debug.Log(playerInput);
-            #endregion
         }
     }
 

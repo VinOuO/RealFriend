@@ -48,9 +48,9 @@ namespace Aishizu.Native.Services
                 IncludeFields = true
             };
             aszLogger.WriteLine($"[aszActionService] Instance HashCode: {GetHashCode()} Count: {m_JsonSchemas.Count}");
-            foreach (string s in m_JsonSchemas.Values)
+            foreach (string key in m_JsonSchemas.Keys)
             {
-                aszLogger.WriteLine($"[aszActionService] Action Json: {s}");
+                aszLogger.WriteLine($"[aszActionService] {key} Json: {m_JsonSchemas[key]}");
             }
             return JsonSerializer.Serialize(m_JsonSchemas, options);
         }

@@ -18,13 +18,11 @@ public class ScriptDirector : MonoBehaviour
 
     public void RunScript(aszScript script, Action callBack)
     {
-        Debug.Log("PPAP");
         StartCoroutine(this.CoroutineWithCallback(RunningScript(script), callBack));
     }
 
     public IEnumerator RunningScript(aszScript script)
     {
-        Debug.Log("8787");
         while (!script.IsFinished)
         {
             if (script.NextEvent(out aszIEvent currentEvent) == Result.Success)

@@ -96,9 +96,9 @@ namespace Aishizu.UnityCore
         {
             return await m_Writter.SetUpScene();
         }
-        public async Task<Result> UpdateStage()
+        public async Task<Result> UpdateStage(string userPrompt)
         {
-            return await m_Writter.DescribeCurrentScene();
+            return await m_Writter.DescribeCurrentScene(userPrompt: userPrompt);
         }
 
         public aszScript GetScript()

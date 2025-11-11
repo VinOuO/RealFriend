@@ -60,13 +60,13 @@ namespace Aishizu.Native
 
 
         public string Endpoint { get; set; } = "http://localhost:1234/v1/chat/completions";
-        public string Model { get; set; } = "gpt-4o-mini";
+        public string Model { get; set; } = "Unknown";
         public float Temperature { get; set; } = 0.65f;
         public int MaxRetries { get; set; } = 3;
         public bool UseJsonSchemaResponseFormat { get; set; } = true;
         public bool ValidateJsonResponse { get; set; } = true;
         private bool m_IsDescribing = false;
-        public bool DebugMode = true;
+        public bool DebugMode = false;
         public aszScriptWriter()
         {
             m_ActorService = new aszActorService();
@@ -104,25 +104,25 @@ namespace Aishizu.Native
             prompt.AppendLine();
             prompt.AppendLine("Example Response:");
             const string exampleJson = @"{
-  \"Actors\": [
-    { \"Id\": 0, \"Name\": \"Friend\", \"Description\": \"Primary VRM companion\" }
+  ""Actors"": [
+    { ""Id"": 0, ""Name"": ""Friend"", ""Description"": ""Primary VRM companion"" }
   ],
-  \"Targets\": [
-    { \"Id\": 0, \"Name\": \"Player\" }
+  ""Targets"": [
+    { ""Id"": 0, ""Name"": ""Player"" }
   ],
-  \"Actions\": [
+  ""Actions"": [
     {
-      \"ActorId\": 0,
-      \"TargetId\": -1,
-      \"ActionName\": \"Dialogue\",
-      \"Text\": \"Hello there!\",
-      \"IsValid\": true
+      ""ActorId"": 0,
+      ""TargetId"": -1,
+      ""ActionName"": ""Dialogue"",
+      ""Text"": ""Hello there!"",
+      ""IsValid"": true
     }
   ],
-  \"Events\": [
-    { \"Type\": \"ActionBegin\", \"ActionId\": 0 },
-    { \"Type\": \"Wait\", \"Duration\": 1.5 },
-    { \"Type\": \"ActionEnd\", \"ActionId\": 0 }
+  ""Events"": [
+    { ""Type"": ""ActionBegin"", ""ActionId"": 0 },
+    { ""Type"": ""Wait"", ""Duration"": 1.5 },
+    { ""Type"": ""ActionEnd"", ""ActionId"": 0 }
   ]
 }";
             prompt.AppendLine(exampleJson);
@@ -186,12 +186,7 @@ namespace Aishizu.Native
                 WriteIndented = true
             });
 
-            aszLogger.WriteLine("SystemPrompt: \n" + systemPrompt);
-            if (!string.IsNullOrWhiteSpace(userPrompt))
-            {
-                aszLogger.WriteLine("UserPrompt: \n" + userPrompt);
-            }
-
+            aszLogger.WriteLine($"[aszScriptWriter]Send Message: {jsonPayload}");
             Exception? lastException = null;
             int attempts = Math.Max(1, MaxRetries);
 
@@ -512,7 +507,7 @@ namespace Aishizu.Native
     { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Natural"", ""Duration"": 1.5 }
   ]
 }";
-        public async Task<Result> DescribeCurrentScene()
+        public async Task<Result> DescribeCurrentScene(string userPrompt)
         {
             if (m_IsDescribing)
             {
@@ -522,11 +517,16 @@ namespace Aishizu.Native
             m_IsDescribing = true;
             try
             {
-                PromptResult result = await SendPromptAsync(systemPrompt: "");
+                PromptResult result;
                 if (DebugMode)
                 {
                     result = new PromptResult(true, mockData, "");
                 }
+                else
+                {
+                    result = await SendPromptAsync(systemPrompt: InitSystemPrompt(), userPrompt: userPrompt);
+                }
+                aszLogger.WriteLine($"[aszScriptWriter] LLM Response: {result.Response}");
                 if (result.IsValid)
                 {
                     if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success &&
