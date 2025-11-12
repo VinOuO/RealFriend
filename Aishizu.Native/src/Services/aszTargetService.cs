@@ -40,6 +40,11 @@ namespace Aishizu.Native.Services
             m_TargetList[id] = new aszTargetData(id, name, description, type);
         }
 
+        public void CleanTargetList()
+        {
+            m_TargetList.Clear();
+        }
+
         /// <summary>
         /// Returns a read-only collection of all registered targets.
         /// </summary>

@@ -36,6 +36,11 @@ public class ScriptDirector : MonoBehaviour
                             if (actionS is aszVRMAction vrmAction)
                             {
                                 vrmAction.OnStart();
+                                if(vrmAction.Stage == aszVRMAction.aszVRMActionStage.Failed)
+                                {
+                                    Debug.Log($"[ScriptDirector] {actionS.ActionName} failed on start");
+                                    continue;
+                                }
                                 while (vrmAction.Stage != aszVRMAction.aszVRMActionStage.Running)
                                 {
                                     yield return aszUnityCoroutine.WaitForEndOfFrame;
@@ -76,6 +81,11 @@ public class ScriptDirector : MonoBehaviour
                             if (actionE is aszVRMAction vrmAction)
                             {
                                 vrmAction.OnEnd();
+                                if (vrmAction.Stage == aszVRMAction.aszVRMActionStage.Failed)
+                                {
+                                    Debug.Log($"[ScriptDirector] {actionE.ActionName} failed on end");
+                                    continue;
+                                }
                                 while (vrmAction.Stage != aszVRMAction.aszVRMActionStage.Ended)
                                 {
                                     yield return aszUnityCoroutine.WaitForEndOfFrame;

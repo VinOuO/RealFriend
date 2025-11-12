@@ -23,8 +23,21 @@ public class StageManager : MonoBehaviour
         {
             return;
         }
-        aszScriptManager.Instance.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.Mouth.GetComponent<aszKissable>());
-        aszScriptManager.Instance.InterableManager.AddInterable(m_DummyBodyInfo.GetSupportJoints.HeadCenter.GetComponent<aszHoldable>());
+        aszScriptManager.Instance.InterableManager.AddInterable(
+            new aszInteractableInfo(
+                interactable: m_DummyBodyInfo.GetSupportJoints.Mouth.GetComponent<aszKissable>(),
+                name: $"{m_DummyBodyInfo.name}_mouth",
+                discription: "The mouth of the player character."
+                )
+            );
+        aszScriptManager.Instance.InterableManager.AddInterable(
+            new aszInteractableInfo(
+                interactable: m_DummyBodyInfo.GetSupportJoints.HeadCenter.GetComponent<aszHoldable>(),
+                name: $"{m_DummyBodyInfo.name}_face",
+                discription: "The face of the player character."
+                )
+            );
+        aszScriptManager.Instance.RegisterInterableList();
     }
     private void RegisterActions()
     {
@@ -41,6 +54,7 @@ public class StageManager : MonoBehaviour
 
     IEnumerator Acting()
     {
+        /*
         Task<Result> setupTask = aszScriptManager.Instance.SetUpStage();
         #region SetUpStage
         yield return new WaitUntil(() => setupTask.IsCompleted);
@@ -51,6 +65,7 @@ public class StageManager : MonoBehaviour
             yield break;
         }
         #endregion
+        */
         while (true)
         {
             #region PlayerInput

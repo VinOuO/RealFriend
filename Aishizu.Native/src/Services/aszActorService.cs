@@ -30,6 +30,10 @@ namespace Aishizu.Native.Services
         {
             m_ActorList[id] = new aszActorData(id, name, description, tags);
         }
+        public void CleanActorList()
+        {
+            m_ActorList.Clear();
+        }
 
         public IReadOnlyDictionary<int, aszActorData> GetAll() => m_ActorList;
         public bool TryGetActor(int id, out aszActorData actor) => m_ActorList.TryGetValue(id, out actor);

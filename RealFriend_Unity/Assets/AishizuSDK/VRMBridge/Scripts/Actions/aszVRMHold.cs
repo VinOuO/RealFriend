@@ -13,19 +13,23 @@ namespace Aishizu.VRMBridge.Actions
             base.OnStart();
             if(aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (target is not aszHoldable holdable)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             m_Holdable = holdable;
             if (aszScriptManager.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             aszVRMActor.HoldObject(this, undo: false);
@@ -36,19 +40,23 @@ namespace Aishizu.VRMBridge.Actions
             base.OnEnd();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (target is not aszHoldable holdable)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             m_Holdable = holdable;
             if (aszScriptManager.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             aszVRMActor.HoldObject(this, undo: true);

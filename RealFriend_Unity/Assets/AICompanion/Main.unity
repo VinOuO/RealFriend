@@ -181,8 +181,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InterableList:
-  - {fileID: 2089527389}
-  - {fileID: 543254294}
+  - Interable: {fileID: 2089527389}
+    Name: Dummy_Hugable
+    Discription: Where you can hug dummy.
+  - Interable: {fileID: 543254294}
+    Name: Cube
+    Discription: Cube is a place you can sit on.
 --- !u!114 &122238845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +200,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ActorList:
-  - {fileID: 2112320673193545698}
+  - Actor: {fileID: 2112320673193545698}
+    Name: Aishizu
+    Discription: The character you are controlling, a girl, is dating the player's
+      character.
 --- !u!114 &122238846
 MonoBehaviour:
   m_ObjectHideFlags: 0

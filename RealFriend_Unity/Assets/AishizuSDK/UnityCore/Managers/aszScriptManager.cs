@@ -46,18 +46,12 @@ namespace Aishizu.UnityCore
         {
             m_Writter = new aszScriptWriter();
             m_Writter.Endpoint = "http://localhost:1234/v1/chat/completions";
-            m_Writter.Model = "Mythomax L2 13B";
+            m_Writter.Model = "Unknown";
             #region Register Actors
-            for (int i = 0; i < m_ActorManager.ActorList.Count; i++)
-            {
-                m_Writter.ActorService.RegisterActor(i, m_ActorManager.ActorList[i].name);
-            }
+            RegisterActorList();
             #endregion
             #region Register Interables
-            for (int i = 0; i < m_InterableManager.InterableList.Count; i++)
-            {
-                m_Writter.TargetService.RegisterTarget(i, m_InterableManager.InterableList[i].name);
-            }
+            RegisterInterableList();
             #endregion
 
             Debug.Log("[AishizuCore] Mediator and services initialized.");
@@ -69,6 +63,26 @@ namespace Aishizu.UnityCore
         {
             m_Writter.ActionService.RegisterAction<T>();
             Debug.Log("[AishizuCore] Register Action: " + typeof(T).Name);
+        }
+        #endregion
+        #region Actor
+        public void RegisterActorList()
+        {
+            m_Writter.ActorService.CleanActorList();
+            for (int i = 0; i < m_ActorManager.ActorList.Count; i++)
+            {
+                m_Writter.ActorService.RegisterActor(id: i, name: m_ActorManager.ActorList[i].Name, description: m_ActorManager.ActorList[i].Discription);
+            }
+        }
+        #endregion
+        #region Interable
+        public void RegisterInterableList()
+        {
+            m_Writter.TargetService.CleanTargetList();
+            for (int i = 0; i < m_InterableManager.InterableList.Count; i++)
+            {
+                m_Writter.TargetService.RegisterTarget(i, m_InterableManager.InterableList[i].Name, description: m_InterableManager.InterableList[i].Discription);
+            }
         }
         #endregion
         /*

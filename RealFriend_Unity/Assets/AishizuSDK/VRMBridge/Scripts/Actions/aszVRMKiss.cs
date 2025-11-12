@@ -13,19 +13,23 @@ namespace Aishizu.VRMBridge.Actions
             base.OnStart();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (target is not aszKissable kissable)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             m_Kissable = kissable;
             if (aszScriptManager.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
 
@@ -37,19 +41,23 @@ namespace Aishizu.VRMBridge.Actions
             base.OnEnd();
             if (aszScriptManager.Instance.InterableManager.GetInterable(TargetId, out aszInteractable target) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (target is not aszKissable kissable)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             m_Kissable = kissable;
             if (aszScriptManager.Instance.ActorManager.GetActor(ActorId, out aszActor actor) != Result.Success)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
             if (actor is not aszVRMCharacter aszVRMActor)
             {
+                m_Stage = aszVRMActionStage.Failed;
                 return;
             }
 

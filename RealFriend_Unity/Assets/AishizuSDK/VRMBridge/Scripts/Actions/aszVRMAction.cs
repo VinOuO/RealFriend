@@ -5,7 +5,7 @@ namespace Aishizu.VRMBridge.Actions
 {
     public class aszVRMAction : aszAction
     {
-        private aszVRMActionStage m_Stage = aszVRMActionStage.Idling; public aszVRMActionStage Stage => m_Stage;
+        protected aszVRMActionStage m_Stage = aszVRMActionStage.Idling; public aszVRMActionStage Stage => m_Stage;
         public void ProgressStage()
         {
             if(m_Stage != aszVRMActionStage.Ended)
@@ -30,6 +30,7 @@ namespace Aishizu.VRMBridge.Actions
             Running = 3,
             Ending = 4,
             Ended = 5,
+            Failed = -1,
         }
     }
 }

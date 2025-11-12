@@ -105,7 +105,7 @@ namespace Aishizu.Native
             prompt.AppendLine("Example Response:");
             const string exampleJson = @"{
   ""Actors"": [
-    { ""Id"": 0, ""Name"": ""Friend"", ""Description"": ""Primary VRM companion"" }
+    { ""Id"": 0, ""Name"": ""Aishizu"", ""Description"": ""Primary VRM companion"" }
   ],
   ""Targets"": [
     { ""Id"": 0, ""Name"": ""Player"" }
