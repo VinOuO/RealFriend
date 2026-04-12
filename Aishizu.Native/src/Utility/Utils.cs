@@ -7,8 +7,12 @@ namespace Aishizu.Native
     public enum Result
     {
         Unkown = -1,
-        Success = 1,
-        Failed = 2,
+        Success = 100,
+        Failed = 200,
+        Failed_EventIndexOutOfRange = 201,
+        Failed_ResponseToJson = 202,
+        Failed_JsonToActionList = 203,
+        Failed_JsonToEventList = 204,
     }
     public struct PromptResult
     {

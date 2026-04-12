@@ -131,6 +131,56 @@ namespace Aishizu.Native
             return prompt.ToString();
         }
 
+        private string ReattemptPrompt_EventOutOfRange(string previousJsonResponse)
+        {
+            var prompt = new StringBuilder();
+
+            prompt.AppendLine("You are an AI that controls character behavior.");
+            prompt.AppendLine("You generate character actions and event sequences using JSON format.");
+            prompt.AppendLine();
+
+            prompt.AppendLine("IMPORTANT: Your previous response was INVALID and could not be executed.");
+            prompt.AppendLine("Reason:");
+            prompt.AppendLine("- One or more Events referenced an ActionId that does NOT exist in the Actions array.");
+            prompt.AppendLine();
+
+            prompt.AppendLine("Rules you MUST follow:");
+            prompt.AppendLine("- Every Event that references an ActionId MUST use a valid ActionId.");
+            prompt.AppendLine("- You MUST NOT reference any ActionId outside the valid range.");
+            prompt.AppendLine("- You MUST NOT invent new ActionIds.");
+            prompt.AppendLine("- If an Event references an invalid ActionId, you must fix it by:");
+            prompt.AppendLine("  - Reusing an existing valid ActionId, OR");
+            prompt.AppendLine("  - Removing that Event if it cannot be fixed logically.");
+            prompt.AppendLine();
+
+            prompt.AppendLine("=== Available Actions (index-based) ===");
+            prompt.AppendLine("The Actions array is zero-based indexed.");
+            prompt.AppendLine("The first action has ActionId = 0, the second has ActionId = 1, and so on.");
+            prompt.AppendLine();
+
+            prompt.AppendLine("=== Your Previous INVALID JSON Response ===");
+            prompt.AppendLine("You must correct the JSON below.");
+            prompt.AppendLine("Keep the same overall intention and behavior whenever possible.");
+            prompt.AppendLine();
+
+            prompt.AppendLine(previousJsonResponse);
+            prompt.AppendLine();
+
+            prompt.AppendLine("Output Requirements:");
+            prompt.AppendLine("- Respond with a single JSON object using UTF-8 encoding.");
+            prompt.AppendLine("- Use the SAME JSON schema as before (Actors, Targets, Actions, Events).");
+            prompt.AppendLine("- Do NOT add new top-level fields.");
+            prompt.AppendLine("- Do NOT remove required fields.");
+            prompt.AppendLine("- Do NOT wrap the JSON in markdown code fences.");
+            prompt.AppendLine("- Do NOT add any commentary or explanation.");
+            prompt.AppendLine();
+
+            prompt.AppendLine("When responding, output ONLY the corrected JSON.");
+
+            return prompt.ToString();
+        }
+
+
         /// <summary>
         /// Sends a user prompt + world context to the AI endpoint and retrieves a structured response.
         /// </summary>
@@ -138,7 +188,7 @@ namespace Aishizu.Native
         {
             if (DebugMode)
             {
-                return new PromptResult(true, "DebugMode", "DebugMode");
+                return new PromptResult(true, mockData, "");
             }
             if (string.IsNullOrWhiteSpace(userPrompt) && string.IsNullOrWhiteSpace(systemPrompt))
             {
@@ -507,7 +557,7 @@ namespace Aishizu.Native
     { ""Type"": ""EmotionChange"", ""ActorId"": 0, ""Emotion"": ""Natural"", ""Duration"": 1.5 }
   ]
 }";
-        public async Task<Result> DescribeCurrentScene(string userPrompt)
+        public async Task<Result> GenerateScript(string userPrompt)
         {
             if (m_IsDescribing)
             {
@@ -515,34 +565,63 @@ namespace Aishizu.Native
                 return Result.Failed;
             }
             m_IsDescribing = true;
+
             try
             {
                 PromptResult result;
-                if (DebugMode)
-                {
-                    result = new PromptResult(true, mockData, "");
-                }
-                else
-                {
-                    result = await SendPromptAsync(systemPrompt: InitSystemPrompt(), userPrompt: userPrompt);
-                }
+
+                #region Init Prompt
+                result = await SendPromptAsync(systemPrompt: InitSystemPrompt(), userPrompt: userPrompt);
                 aszLogger.WriteLine($"[aszScriptWriter] LLM Response: {result.Response}");
-                if (result.IsValid)
+                #endregion
+
+                Result generatingResult = Result.Unkown;
+                while (generatingResult != Result.Success)
                 {
-                    if(m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success &&
-                       m_SequenceService.JsonToSequence(result.Response, out List<aszIEvent> eventList) == Result.Success)
+                    #region Process Response & Get Result
+                    if (result.IsValid)
                     {
-                        m_SequenceService.GenerateSequence(actionList, eventList);
-                        aszLogger.WriteLine("[aszScriptWriter] DescribeCurrentScene Success.");
-                        return Result.Success;
+                        if (m_ActionService.JsonToActions(result.Response, out List<aszAction> actionList) == Result.Success)
+                        {
+                            if (m_SequenceService.JsonToSequence(result.Response, out List<aszIEvent> eventList) == Result.Success)
+                            {
+                                generatingResult = m_SequenceService.GenerateSequence(actionList, eventList);
+                            }
+                            else
+                            {
+                                generatingResult = Result.Failed_JsonToEventList;
+                            }
+                        }
+                        else
+                        {
+                            generatingResult = Result.Failed_JsonToActionList;
+                        }
                     }
                     else
                     {
-                        aszLogger.WriteLine("[aszScriptWriter] DescribeCurrentScene Failed.");
-                        return Result.Failed;
+                        generatingResult = Result.Failed_ResponseToJson;
                     }
+                    #endregion
+
+                    #region Handle Result
+                    string reAttemptPrompt = "Reattempt";
+                    switch (generatingResult)
+                    {
+                        case Result.Failed_JsonToEventList:
+                            reAttemptPrompt = ReattemptPrompt_EventOutOfRange(result.Response);
+                            break; 
+                        case Result.Failed_JsonToActionList:
+                            //TODO: Get the prompt for when json to action failed
+                            break;
+                        case Result.Failed_ResponseToJson:
+                            //TODO: Get the prompt for when json to event failed
+                            break;
+                    }
+                    result = await SendPromptAsync(systemPrompt: reAttemptPrompt, userPrompt: userPrompt);
+                    #endregion
+
                 }
-                return result.IsValid ? Result.Success : Result.Failed;
+                return Result.Success;
             }
             finally
             {

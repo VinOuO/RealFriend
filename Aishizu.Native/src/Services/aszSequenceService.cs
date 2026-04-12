@@ -3,6 +3,7 @@ using Aishizu.Native.Actions;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Linq;
 
 namespace Aishizu.Native.Services
 {
@@ -76,8 +77,11 @@ namespace Aishizu.Native.Services
             }
         }
 
-        public Queue<aszIEvent> GenerateSequence(List<aszAction> actions, List<aszIEvent> events) 
+        public Result GenerateSequence(List<aszAction> actions, List<aszIEvent> events) 
         {
+            m_Sequence = new Queue<aszIEvent>();
+            int dirtyActionCount = 0;
+
             for (int i = 0; i < events.Count; i++)
             {
                 switch (events[i])
@@ -87,19 +91,36 @@ namespace Aishizu.Native.Services
                         {
                             actionStart.Name = "Start" + actions[actionStart.actionId].ActionName;
                         }
+                        else
+                        {
+                            dirtyActionCount++;
+                        }
                         break;
                     case aszActionEnd actionEnd:
                         if (actionEnd.actionId >= 0 && actionEnd.actionId < actions.Count)
                         {
                             actionEnd.Name = "End" + actions[actionEnd.actionId].ActionName;
                         }
+                        else
+                        {
+                            dirtyActionCount++;
+                        }
                         break;
                 }
                 aszLogger.WriteLine($"[aszSequenceService] Queued Event: {events[i].Name}");
                 Enqueue(events[i]);
             }
-            m_Actions = actions;
-            return m_Sequence;
+
+            if(dirtyActionCount == 0)
+            {
+                m_Actions = actions;
+                return Result.Success;
+            }
+            else
+            {
+                m_Actions.Clear();
+                return Result.Failed_EventIndexOutOfRange;
+            }
         }
 
         private void Enqueue(aszIEvent asz_Event)
