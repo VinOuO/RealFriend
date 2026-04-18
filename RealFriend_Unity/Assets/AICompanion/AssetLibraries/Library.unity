@@ -390,8 +390,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 0.9802577, b: 0.9264151, a: 1}
+  m_Intensity: 1.54
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -400,7 +400,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.411
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -506,18 +506,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1100176256953808706, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 5999801800477934532, guid: 32aa0c90064f9474ba9455450755ad69, type: 3}
-    - target: {fileID: 3263451946957189253, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.243
-      objectReference: {fileID: 0}
-    - target: {fileID: 3625184599953678609, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 148ea13904b6c21429a1ea1b3ce2461f, type: 2}
     - target: {fileID: 4735401778703613517, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -558,38 +546,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6747795108287000444, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6747795108287000444, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6747795108287000444, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6747795108287000444, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8110215668347829260, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8110215668347829260, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 148ea13904b6c21429a1ea1b3ce2461f, type: 2}
-    - target: {fileID: 8110215668347829260, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 3992d7e93c37b2047aa04bf9694cbb95, type: 2}
-    - target: {fileID: 8110215668347829260, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
-      propertyPath: 'm_Materials.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 148ea13904b6c21429a1ea1b3ce2461f, type: 2}
     - target: {fileID: 9162719977754598709, guid: 8f52270f2fe1335429c8442244a5663a, type: 3}
       propertyPath: m_Name
       value: ApartmetRoom
