@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Sofa_Seat
-  m_Shader: {fileID: -6465566751694194690, guid: 3d60817b747341b4584241a39bee37ed, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 42478654b20832d4b90c4a9b056ca8ff, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -33,7 +33,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Color:
-        m_Texture: {fileID: 2800000, guid: f14c51d9e607c8c49b8e1a57fe0b3288, type: 3}
+        m_Texture: {fileID: 2800000, guid: a392143273270ef408e3459397e809fa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorDetail:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -64,8 +68,16 @@ Material:
         m_Texture: {fileID: 2800000, guid: 84092733321a2ec46a62212aa4c69382, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalDetail:
+        m_Texture: {fileID: 2800000, guid: 174c9562f767e1d4b8d4014fbafb5f9c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ORM:
         m_Texture: {fileID: 2800000, guid: a02fff382fb2a5346a56946fbc4053ed, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ORMDetail:
+        m_Texture: {fileID: 2800000, guid: 0cee367dd645580418ea357ae8ad0592, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -98,6 +110,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AODetailStrength: 0.216
     - _AOStrength: 1
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
@@ -119,13 +132,14 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _NormalDetailStrength: 0.729
     - _NormalStrength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SmoothStrength: 0.883
+    - _SmoothStrength: 0.494
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -137,11 +151,11 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorTint: {r: 1, g: 1, b: 1, a: 0}
+    - _ColorTint: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Tiling: {r: 5.07, g: 2.5, b: 0, a: 0}
+    - _Tiling: {r: 5, g: 5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &4169384070464388221

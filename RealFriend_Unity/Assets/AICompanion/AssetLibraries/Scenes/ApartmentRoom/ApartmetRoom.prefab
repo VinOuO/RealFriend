@@ -13201,19 +13201,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3128131337608664872, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3128131337608664872, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3128131337608664872, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3128131337608664872, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3128131337608664872, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13232,9 +13232,17 @@ PrefabInstance:
       value: Sofa
       objectReference: {fileID: 0}
     - target: {fileID: 6254211483271251476, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6254211483271251476, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 5634c168ee3a6c24b9de1ce519869854, type: 2}
+      objectReference: {fileID: 2100000, guid: e0a1311cbf450094db7e41479f19012e, type: 2}
+    - target: {fileID: 6254211483271251476, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 66c4c3cd70df2a04f847d6c939fbf9fa, type: 2}
     - target: {fileID: 6254211483271251476, guid: 2770d5cffc847624a9165f59610934cd, type: 3}
       propertyPath: 'm_Materials.Array.data[2]'
       value: 

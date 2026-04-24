@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Leather
-  m_Shader: {fileID: -6465566751694194690, guid: 3d60817b747341b4584241a39bee37ed, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: eb7e00756ef509f43a8257ea58ee0b08, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -33,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Color:
-        m_Texture: {fileID: 2800000, guid: f14c51d9e607c8c49b8e1a57fe0b3288, type: 3}
+        m_Texture: {fileID: 2800000, guid: f78ce0cf597489441b1aff3489ea2a29, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
